@@ -64,9 +64,9 @@ task karateDebug(type: JavaExec) {
 test {
     useJUnitPlatform()
     // Pull karate options into the runtime
-    systemProperty "karate.options", System.properties.getProperty("karate.options")
+    systemProperty "karate.options", System.getenv("karate.options")
     // Pull karate options into the JVM
-    systemProperty "karate.env", System.properties.getProperty("karate.env")
+    systemProperty "karate.env", System.getenv("env")
 
     include '**/*Test*'
 
