@@ -5,7 +5,7 @@ Feature: Common Utility Functions
     * def generateRandom =
     """
     function() {
-    var GenerateMAC = Java.type('com.znsio.common.GenerateMAC');
-    return new GenerateMAC().generateRandomAlphaNumericString(arguments[0]);
+    var SampleJava = Java.type('com.znsio.common.SampleJava');
+    return new SampleJava().generateRandomAlphaNumericString(arguments[0]);
     }
     """
