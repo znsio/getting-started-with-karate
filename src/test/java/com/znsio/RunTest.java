@@ -95,7 +95,7 @@ public class RunTest {
 
     private String getKarateEnv() {
         String karateEnv = System.getProperty("karate.env");
-        if(null == karateEnv) {
+        if((null == karateEnv) || (karateEnv.isBlank())) {
             throw new RuntimeException("karate.env is not specified as a system property");
         }
         return karateEnv;
