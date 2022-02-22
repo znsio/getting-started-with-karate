@@ -50,11 +50,6 @@ dependencies {
     implementation "org.apache.commons:commons-lang3:$project.commonsLang3Version"
     implementation "org.junit.platform:junit-platform-launcher:${junitPlatformsLauncherVersion}"
 }
-//
-//task karateExecute(type: JavaExec) {
-//    classpath = sourceSets.test.runtimeClasspath
-//    mainClass = 'com.intuit.karate.cli.Main'
-//}
 
 task karateDebug(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
