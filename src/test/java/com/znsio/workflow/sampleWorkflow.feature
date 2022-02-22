@@ -1,3 +1,4 @@
+@prod
 Feature: sample workflow
 
   @eat @first

@@ -1,11 +1,6 @@
 function fn() {
   var env = karate.env; // get system property 'karate.env'
-  karate.log('karate.env system property was:', env);
   karate.configure('ssl', { trustAll: true });
-  if (!env) {
-    env = 'local';
-  }
-  karate.log('Running tests in env: ', env);
   var config = read('classpath:test_data.json')
   karate.configure('connectTimeout', 30000);
   karate.configure('readTimeout', 60000);
