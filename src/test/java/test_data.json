@@ -1,0 +1,20 @@
+{
+  "local": {
+    "env": {
+      "baseUrl": "http://localhost:5000",
+      "specmaticUrl": "http://localhost:9000"
+    }
+  },
+  "eat": {
+    "env": {
+      "baseUrl": "http://eat:5000",
+      "specmaticUrl": "http://eat:9000"
+    }
+  },
+  "prod": {
+    "env": {
+      "baseUrl": "http://dummy.restapiexample.com",
+      "specmaticUrl": "not-required"
+    }
+  }
+}

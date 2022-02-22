@@ -28,3 +28,4 @@ reports
 .gradle
 gradle/
 .idea
+target
