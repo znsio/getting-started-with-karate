@@ -1,21 +1,23 @@
 {
   "local": {
     "env": {
-      "baseUrl": "http://localhost:5000",
-      "specmaticUrl": "http://localhost:9000"
+      "baseUrl": "https://github.com",
+      "confEngineUrl": "https://local.confengine.com/api/v3",
+      "dummyRestAPIUrl": "https://local.jsonplaceholder.typicode.com"
     }
   },
   "eat": {
     "env": {
-      "baseUrl": "http://eat:5000",
-      "specmaticUrl": "http://eat:9000"
+      "baseUrl": "https://github.com",
+      "confEngineUrl": "https://eat.confengine.com/api/v3",
+      "dummyRestAPIUrl": "https://eat.jsonplaceholder.typicode.com"
     }
   },
   "prod": {
     "env": {
+      "baseUrl": "https://github.com",
       "confEngineUrl": "https://confengine.com/api/v3",
-      "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
-      "specmaticUrl": "not-required"
+      "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com"
     }
   }
 }

@@ -1,3 +1,4 @@
+@demo @eat @prod
 Feature: sample api
 
   Scenario: first hello world api
