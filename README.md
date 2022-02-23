@@ -13,5 +13,8 @@ Results are published in junit, html and cucumber-reporting format
 * `type=[api | workflow]` -> What type of test you want to run?
 * `tag=...` -> What subset of tests you want to run? Ex: `tag=confengine` will run all tests having the tag confengine
 
+# Guidelines 
+Read the [Guidelines](READMEGuideline.md) for writing tests in this framework
+
 # Contact
-Contact [@BagmarAnand|https://twitter.com/BagmarAnand] for help / information / feedback on this repo 
+Contact [@BagmarAnand](https://twitter.com/BagmarAnand) for help / information / feedback on this repo
