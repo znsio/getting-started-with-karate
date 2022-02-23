@@ -31,7 +31,7 @@ Feature: Templates for ConfEngine
     function(conferenceUrls){
       for (let index = 0; index < conferenceUrls.length; index++) {
         var confUrl = conferenceUrls[index];
-        if (index < 3) {
+        if (index < 10) {
           karate.log("Getting number of proposals for: " + confUrl + " at index: " + index);
           var response = karate.call('classpath:com/znsio/templates/confEngineTemplates.feature@t_getProposalsForAConference', {confUrl: confUrl}).proposals;
           karate.log("Number of proposals for: " + confUrl + " at index: " + index + ": " + response.length);
