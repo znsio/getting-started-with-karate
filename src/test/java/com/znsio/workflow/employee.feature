@@ -7,4 +7,4 @@ Feature: Implementation for querying Employee APIs
     * call read('classpath:com/znsio/common/CommonFunctions.feature@generateRandom')
     * def val = generateRandom(20)
     * print val
-    * call read('classpath:com/znsio/templates/Employees.feature@t_getEmployees')
+    * call read('classpath:com/znsio/templates/employeeTemplates.feature@t_getEmployees')

@@ -14,6 +14,7 @@
   "prod": {
     "env": {
       "baseUrl": "http://confengine.com",
+      "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
       "specmaticUrl": "not-required"
     }
   }
