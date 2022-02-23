@@ -116,6 +116,9 @@ function fn(config) {
       throw (e);
     }
   };
+  config.isNumberInRange = function(number, min, max) {
+    return number >= min && number <= max;
+  };
   function escapeRegExp(stringToGoIntoTheRegex) {
     return stringToGoIntoTheRegex.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
   }
