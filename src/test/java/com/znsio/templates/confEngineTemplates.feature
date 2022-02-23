@@ -2,7 +2,7 @@
 Feature: Templates for ConfEngine
 
   Background:
-    Given url 'https://confengine.com/api/v3'
+    Given url env.confEngineUrl
 
   @t_getConferences
   Scenario: Get Conference Ids
@@ -33,7 +33,7 @@ Feature: Templates for ConfEngine
         var confUrl = conferenceUrls[index];
         if (index < 10) {
           karate.log("Getting number of proposals for: " + confUrl + " at index: " + index);
-          var response = karate.call('classpath:com/znsio/templates/confEngineTemplates.feature@t_getProposalsForAConference', {confUrl: confUrl}).proposals;
+          var response = karate.call('classpath:com/znsio/templates/confEngineTemplates.feature@t_getProposalsForAConference', {confUrl: confUrl, 'expectedStatus': 200}).proposals;
           karate.log("Number of proposals for: " + confUrl + " at index: " + index + ": " + response.length);
           karate.appendTo(proposalsInAllConferences, {'url': confUrl, 'numberOfProposals': response.length});
         }
@@ -46,8 +46,9 @@ Feature: Templates for ConfEngine
   @t_getProposalsForAConference
   Scenario: Find list of proposals for a conference
     * print "Get list of proposals for conference: " + confUrl
+    * print "Expected status code: " + expectedStatus
     Given path confUrl
     When method GET
-    Then status 200
+    Then match responseStatus == expectedStatus
     * def proposals = response
 

@@ -13,7 +13,7 @@
   },
   "prod": {
     "env": {
-      "baseUrl": "http://confengine.com",
+      "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
       "specmaticUrl": "not-required"
     }

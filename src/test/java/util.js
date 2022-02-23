@@ -116,7 +116,8 @@ function fn(config) {
       throw (e);
     }
   };
-  config.isNumberInRange = function(number, min, max) {
+  config.isNumberBetween = function(number, min, max) {
+    karate.log('Is number: ' + number + ' in between ' + min + ' and ' + max);
     return number >= min && number <= max;
   };
   function escapeRegExp(stringToGoIntoTheRegex) {

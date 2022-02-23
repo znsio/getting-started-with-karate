@@ -5,7 +5,7 @@ Feature: ConfEngine.com
     * print "Find number of proposals in all the conferences"
     * def ids = call read('classpath:com/znsio/templates/confEngineTemplates.feature@t_getConferences')
     * def len =  ids.confIds.length
-    * def isInRange = isNumberInRange(len, 100, 200)
+    * def isInRange = isNumberBetween(len, 100, 200)
     * match isInRange == true
     * def proposalsInTheConferences = karate.call('classpath:com/znsio/templates/confEngineTemplates.feature@t_getNumberOfProposalsInEachConference').proposalsInAllConferences
     * print "proposalsInTheConferences: " + proposalsInTheConferences.length
