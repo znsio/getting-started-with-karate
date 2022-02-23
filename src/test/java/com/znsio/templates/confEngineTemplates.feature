@@ -1,9 +1,10 @@
+@template
 Feature: Templates for ConfEngine
 
   Background:
     Given url 'https://confengine.com/api/v3'
 
-  @template @t_getConferences
+  @t_getConferences
   Scenario: Get Conference Ids
     Given path '/conferences'
     * print "Get all conference Ids"
@@ -15,7 +16,7 @@ Feature: Templates for ConfEngine
     * def getConfIds = function(x){ karate.appendTo(confIds, x.id) }
     * karate.forEach(listOfConferences, getConfIds)
 
-  @template @t_getNumberOfProposalsInEachConference
+  @t_getNumberOfProposalsInEachConference
   Scenario: Find Number of proposals in each conference
     * def confIds = get ids.confIds
     * print "Get number of proposals for " + confIds.length + " conferences"
@@ -42,7 +43,7 @@ Feature: Templates for ConfEngine
     * getProposalsPerConference(conferenceUrls)
     * print "proposalsInAllConferences: " + proposalsInAllConferences.length
 
-  @template @t_getProposalsForAConference
+  @t_getProposalsForAConference
   Scenario: Find list of proposals for a conference
     * print "Get list of proposals for conference: " + confUrl
     Given path confUrl
