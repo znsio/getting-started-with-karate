@@ -86,15 +86,6 @@ test {
 
 }
 
-clean.doFirst {
-    delete "${rootDir}/target"
-    delete "${rootDir}/bin"
-    delete "${rootDir}/build"
-    delete "${rootDir}/out"
-    delete "${rootDir}/reports"
-    println "Clean: Deleted bin, build, out, target and reports directories"
-}
-
 jar {
     manifest {
         attributes "Main-Class": "com.znsio.FatJarRunner"
