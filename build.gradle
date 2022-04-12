@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 buildscript {
     ext {
         gradleVersionProperty = '7.3.3'
@@ -19,7 +21,7 @@ plugins {
     id 'idea'
 }
 
-project.ext.logDir = "${rootDir}/reports"
+project.ext.logDir = "${rootDir}/target/" + getCurrentDatestamp() + "/" + getCurrentTimestamp()
 
 group 'com.znsio.getting-started-with-karate'
 version '0.0.1'
@@ -55,12 +57,30 @@ task karateDebug(type: JavaExec) {
     mainClass = 'com.intuit.karate.cli.Main'
 }
 
+static def getCurrentDatestamp() {
+    Date today = new Date()
+    SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy")
+    return df.format(today)
+}
+
+static def getCurrentTimestamp() {
+    Date today = new Date()
+    SimpleDateFormat df = new SimpleDateFormat("HH-mm-ss")
+    return df.format(today)
+}
+
 test {
     useJUnitPlatform()
     // Pull karate options into the runtime
     systemProperty "karate.options", System.getenv("karate.options")
     // Pull karate options into the JVM
     systemProperty "karate.env", System.getenv("env")
+
+    reports.html.getRequired().set(true)
+    reports.html.getOutputLocation().set(file("${project.logDir}/html"))
+
+    reports.junitXml.getRequired().set(true)
+    reports.junitXml.getOutputLocation().set(file("${project.logDir}/junit"))
 
     include '**/*Test*'
 
