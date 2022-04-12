@@ -19,9 +19,8 @@ plugins {
     id 'eclipse'
     id 'java'
     id 'idea'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
-
-project.ext.logDir = "${rootDir}/target/" + getCurrentDatestamp() + "/" + getCurrentTimestamp()
 
 group 'com.znsio.getting-started-with-karate'
 version '0.0.1'
@@ -76,12 +75,6 @@ test {
     // Pull karate options into the JVM
     systemProperty "karate.env", System.getenv("env")
 
-    reports.html.getRequired().set(true)
-    reports.html.getOutputLocation().set(file("${project.logDir}/html"))
-
-    reports.junitXml.getRequired().set(true)
-    reports.junitXml.getOutputLocation().set(file("${project.logDir}/junit"))
-
     include '**/*Test*'
 
     // Ensure tests are always run
@@ -102,22 +95,35 @@ test {
     if (System.getProperty('debug', 'false') == 'true') {
         jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009'
     }
-
 }
 
-jar {
+shadowJar {
+    archiveBaseName.set("$project.name")
+    archiveClassifier.set('')
+    archiveVersion.set("$project.version")
+    zip64 true
     manifest {
         attributes "Main-Class": "com.znsio.FatJarRunner"
     }
-    from { configurations.runtimeClasspath.findAll { it.isDirectory() ? it : zipTree(it) } }
     from sourceSets.test.output
     from('.') { include 'gradle/**/*' }
     from('.') { include 'gradlew*' }
     from('.') { include 'build.gradle' }
+//    from('.') { include 'src/test/**/*' }
     destinationDir file("${rootDir}/upload")
     doLast {
         println "Created jar: ${rootDir}/upload/${project.name}-${project.version}.jar"
     }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.test.allJava
+}
+
+artifacts {
+    archives sourcesJar
+    archives shadowJar
 }
 
 task copyToUpload(type: Copy) {
@@ -126,8 +132,6 @@ task copyToUpload(type: Copy) {
 }
 
 test.dependsOn clean
-jar.dependsOn clean
-jar.finalizedBy copyToUpload
 
 wrapper {
     gradleVersion = gradleVersionProperty
