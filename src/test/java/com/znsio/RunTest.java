@@ -91,18 +91,24 @@ public class RunTest {
         DateTime dateTime = DateTime.now();
         String date = dateTime.getDayOfMonth() + "-" + dateTime.getMonthOfYear() + "-" + dateTime.getYear();
         String time = dateTime.getHourOfDay() + "-" + dateTime.getMinuteOfHour() + "-" + dateTime.getSecondOfMinute();
-        return getPath(workingDir, "target/" + date + "/" + time);
+        String reportsDirPath = getPath(workingDir, "target/" + date + "/" + time);
+        System.out.println("Reports directory: " + reportsDirPath);
+        return reportsDirPath;
     }
 
     private String getKarateEnv() {
-        String karateEnv = System.getProperty("karate.env");
+        String karateEnv = System.getenv("env");
         if((null == karateEnv) || (karateEnv.isBlank())) {
-            throw new RuntimeException("karate.env is not specified as a system property");
+            String message = "env is not specified as a system property";
+            System.out.println(message);
+            throw new RuntimeException(message);
         }
+        System.setProperty("karate.env", karateEnv);
         return karateEnv;
     }
 
     private List<String> getTags() {
+        System.out.println("In " + this.getClass().getSimpleName() + " :: getTags");
         String customTagsToRun = System.getenv("tag");
         java.util.List<String> strings = new java.util.ArrayList<>();
         strings.add("~@ignore");
@@ -128,8 +134,10 @@ public class RunTest {
     }
 
     private String getClasspath() {
+        System.out.println("In " + this.getClass().getSimpleName() + " :: getClassPath");
         String type = System.getenv("type");
         if(null == type) {
+            System.out.println("type [api | workflow] is not provided");
             throw new RuntimeException("type [api | workflow] is not provided");
         }
         String classPath = "classpath:com/znsio/" + type;
@@ -138,7 +146,7 @@ public class RunTest {
     }
 
     private int getParallelCount() {
-        String parallel = System.getProperty("parallel");
+        String parallel = System.getenv("parallel");
         int parallelCount = (null == parallel || parallel.isEmpty()) ? 5 : Integer.parseInt(parallel);
         System.out.printf("Parallel count: %d %n", parallelCount);
         return parallelCount;
