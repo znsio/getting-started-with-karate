@@ -28,6 +28,7 @@ public class RunTest {
 
     @Test
     void runKarateTests() {
+        System.out.printf("Class: %s :: Test: runKarateTests%n", this.getClass().getSimpleName());
         Results results = Karate.run(getClasspath())
                 .tags(getTags())
                 .karateEnv(getKarateEnv())
