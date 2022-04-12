@@ -13,3 +13,11 @@ Feature: ConfEngine.com
       | confName             | min | max | expectedStatus |
       | functional-conf-2022 | 10  | 200 | 200            |
       | appium-conf-2021     | 10  | 200 | 200            |
+
+  @confengineapi
+  Scenario: Find number of conferences
+    * print "Find number conferences"
+    * def ids = call read('classpath:com/znsio/templates/confEngineTemplates.feature@t_getConferences')
+    * def len =  ids.confIds.length
+    * def isInRange = isNumberBetween(len, 100, 200)
+    * match isInRange == true
