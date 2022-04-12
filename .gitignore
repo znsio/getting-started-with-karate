@@ -29,3 +29,5 @@ reports
 gradle/
 .idea
 target
+
+upload
