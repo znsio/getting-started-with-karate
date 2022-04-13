@@ -3,12 +3,28 @@ Sample project to get started with implementing and running karate tests, in a s
 
 Results are published in junit, html and cucumber-reporting format
 
-## Usage
+## Running the tests with gradle command:
 
     `./gradlew test`
 
 Example
     
+    `env=prod type=workflow ./gradlew test`
+
+## Running the tests as an uber jar:
+
+- Build an uber jar
+
+
+    `parallel=3 env=prod tag=demo type=api ./gradlew shadowJar` 
+
+-  in the upload folder with the name like: `upload/getting-started-with-karate-0.0.1.jar`
+
+
+    `parallel=3 env=prod tag=demo type=api java -jar upload/getting-started-with-karate-0.0.1.jar`
+
+Example
+
     `env=prod type=workflow ./gradlew test`
 
 ### Additional parameters
