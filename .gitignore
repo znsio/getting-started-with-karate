@@ -26,7 +26,6 @@ build
 temp
 reports
 .gradle
-gradle/
 .idea
 target
 
