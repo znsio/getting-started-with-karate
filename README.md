@@ -16,7 +16,7 @@ Example
 - Build an uber jar
 
 
-    `parallel=3 env=prod tag=demo type=api ./gradlew shadowJar` 
+    `./gradlew shadowJar` 
 
 -  in the upload folder with the name like: `upload/getting-started-with-karate-0.0.1.jar`
 
