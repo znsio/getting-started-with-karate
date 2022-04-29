@@ -1,6 +1,7 @@
 Feature: Implementation for querying Employee APIs
 
   Background:
+    * print "env.dummyRestAPIUrl: " + env.dummyRestAPIUrl
     Given url env.dummyRestAPIUrl
 
   @t_getEmployees @template

@@ -2,7 +2,11 @@
   Feature: API tests for https://restcountries.com/
 
     Background:
-      Given url env.restCountryUrl
+#      * print "user: " + user
+#      * print "number between: " + isNumberBetween(5,2,19)
+#      * print "time: " + getCurrentTimeInMillis()
+      Given print "restCountryUrl: " + env.restCountryUrl
+      And url env.restCountryUrl
 
     @t_getCountries
     Scenario: Get list of countries
@@ -13,4 +17,3 @@
       Then status 200
       * print response.length
       * def countries = response
-
