@@ -21,6 +21,6 @@ function fn() {
   }
   config = loadCommonFunctions();
 
-  karate.log('Running test with config:', config);
+//  karate.log('Running test with config:', config);
   return config;
 }
