@@ -2,11 +2,24 @@
   Feature: API tests for https://restcountries.com/
 
     Background:
-#      * print "user: " + user
-#      * print "number between: " + isNumberBetween(5,2,19)
-#      * print "time: " + getCurrentTimeInMillis()
+      * print "user: " + user
+      * print "number between: " + isNumberBetween(5,2,19)
+      * print "time: " + getCurrentTimeInMillis()
+      * print "addLeadingZeroes: " + addLeadingZeroes(5)
+      * print "generateRandomEmail: " + generateRandomEmail("email")
+      * print "dateBeforeXDaysInDDMMMYYYYFormat: " + dateBeforeXDaysInDDMMMYYYYFormat(5)
+      * print "dateBeforeXDaysInDDMMYYYYFormat: " + dateBeforeXDaysInDDMMYYYYFormat(5)
+      * print "dateAfterXDaysInDDMMMYYYYFormat: " + dateAfterXDaysInDDMMMYYYYFormat(5)
+      * print "dateInDDMMYYYYFormatWithSlash: " + dateInDDMMYYYYFormatWithSlash(5)
+      * print "generateStartTime: " + generateStartTime()
+      * print "generateEndTime: " + generateEndTime()
+      * print "generateEndDate: " + generateEndDate()
+      * print "generateAlphaNumericRandomString: " + generateAlphaNumericRandomString(20)
+      * print "randomNumberInRange: " + randomNumberInRange(20,1000)
+      * print "generateTime: " + generateTime(5,10,20)
+      * print "offsetCurrentTimeByHours: " + offsetCurrentTimeByHours(5)
       Given url env.restCountryUrl
-#      And print "restCountryUrl: " + env.restCountryUrl
+      And print "restCountryUrl: " + env.restCountryUrl
 
     @t_getCountries
     Scenario: Get list of countries

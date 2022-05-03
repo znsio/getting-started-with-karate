@@ -95,7 +95,7 @@ function fn(config) {
     date.setDate(date.getDate() + adjDays);
     date.setHours(date.getHours() + adjHours);
     date.setMinutes(date.getMinutes() + adjMins);
-    karate.log("#######", date.toISOString())
+//    karate.log("#######", date.toISOString())
     return date.toISOString();
   };
   config.offsetCurrentTimeByHours = function (offsetInHours) {
@@ -120,8 +120,5 @@ function fn(config) {
     karate.log('Is number: ' + number + ' in between ' + min + ' and ' + max);
     return number >= min && number <= max;
   };
-  function escapeRegExp(stringToGoIntoTheRegex) {
-    return stringToGoIntoTheRegex.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-  }
   return config;
 }
