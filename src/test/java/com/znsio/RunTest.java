@@ -43,9 +43,8 @@ public class RunTest {
         message += "\n\t" + "Tags: " + getTags();
         message += "\n\t" + "Environment: " + getKarateEnv();
         message += "\n\t" + "Parallel count: " + getParallelCount();
-        message += "\n\n\t" + results.getFeaturesFailed() + " features failed out of " + results.getFeaturesTotal();
-        message += "\n\t" + results.getScenariosFailed() + " scenarios failed out of " + results.getScenariosTotal();
-        message += "\n\t" + "Total failed tests: " + results.getFailCount();
+        message += "\n\t" + "Scenarios: Failed: " + results.getScenariosFailed() + ", Passed: " + results.getScenariosPassed() + ", Total: " + results.getScenariosTotal();
+        message += "\n\t" + "Features : Failed: " + results.getFeaturesFailed() + ", Passed: " + results.getFeaturesPassed() + ", Total: " + results.getFeaturesTotal();
         message += "\n\t" + "Reports available here: file://" + reportFilePath;
         if (results.getScenariosFailed()>0) {
             throw new TestExecutionException(message);
