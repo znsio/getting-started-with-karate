@@ -5,15 +5,35 @@
 #      * print "user: " + user
 #      * print "number between: " + isNumberBetween(5,2,19)
 #      * print "time: " + getCurrentTimeInMillis()
-      Given print "restCountryUrl: " + env.restCountryUrl
-      And url env.restCountryUrl
+      Given url env.restCountryUrl
+#      And print "restCountryUrl: " + env.restCountryUrl
 
     @t_getCountries
     Scenario: Get list of countries
-      * print "Get list of countries from " + env.restCountryUrl
-      * def path = "/all"
-      Given path path
+      Given def path = "/all"
+      And print "Get list of countries from " + env.restCountryUrl + path
+      And path path
       When method GET
       Then status 200
-      * print response.length
-      * def countries = response
+      And print response.length
+      And def countries = response
+
+    @t_getCountryDetails
+    Scenario: Get country details
+      Given def path = "/name/" + countryName
+      And print "Get country details for '" + countryName + "' from " + env.restCountryUrl + path
+      And path path
+      When method GET
+      Then status 200
+#      And print response
+#      And def countryDetails = response
+
+    @t_getCountryCapitalDetails
+    Scenario: Get capital city details
+      Given def path = "/capital/" + capitalName
+      And print "Get capital city details for '" + capitalName + "' from " + env.restCountryUrl + path
+      And path path
+      When method GET
+      Then status 200
+#      And print response
+#      And def capitalCity = response
