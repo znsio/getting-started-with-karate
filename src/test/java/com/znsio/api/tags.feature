@@ -2,7 +2,7 @@
 Feature: tags api test
 
   @first
-  Scenario: first api
+  Scenario Outline: first api
     * print 'first api'
 
   @second @local
