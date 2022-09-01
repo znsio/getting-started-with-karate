@@ -11,9 +11,7 @@ import org.junit.platform.launcher.listeners.TestExecutionSummary.Failure;
 
 import java.io.PrintWriter;
 
-import static org.junit.platform.engine.discovery.ClassNameFilter.includeClassNamePatterns;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
-import static org.junit.platform.engine.discovery.DiscoverySelectors.selectPackage;
 
 public class FatJarRunner {
 
@@ -23,10 +21,8 @@ public class FatJarRunner {
     public void runAll() {
         System.out.println("In " + FatJarRunner.class.getSimpleName() + " :: runAll");
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
-//                .selectors(selectPackage("com.znsio"))
-//                .filters(includeClassNamePatterns(".*Test"))
-                .selectors(selectClass(RunTest.class))
-                .build();
+                                                                          .selectors(selectClass(RunTest.class))
+                                                                          .build();
         Launcher launcher = LauncherFactory.create();
         TestPlan testPlan = launcher.discover(request);
         launcher.registerTestExecutionListeners(listener);
@@ -40,10 +36,12 @@ public class FatJarRunner {
 
         TestExecutionSummary summary = runner.listener.getSummary();
         summary.printTo(new PrintWriter(System.out));
-        if (summary.getTestsAbortedCount()>0 || summary.getTestsFailedCount()>0) {
+        if(summary.getTestsAbortedCount() > 0 || summary.getTestsFailedCount() > 0) {
             String testFailureSummary = "";
             for(Failure failure : summary.getFailures()) {
-                testFailureSummary += failure.getTestIdentifier().getDisplayName() + "->\n" + failure.getException().toString() + "\n";
+                testFailureSummary += failure.getTestIdentifier()
+                                             .getDisplayName() + "->\n" + failure.getException()
+                                                                                 .toString() + "\n";
             }
 
             throw new RuntimeException("Tests failed" + testFailureSummary);

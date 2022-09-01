@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RunTest {
@@ -21,7 +22,7 @@ public class RunTest {
     private final String CUCUMBER_REPORTS_FILE_NAME = "/cucumber-html-reports/overview-features.html";
     private final String TEST_DATA_FILE_NAME = "src/test/java/test_data.json";
     private final String BASE_URL = "baseUrl";
-    private final String ENVIRONMENT_KEY = "env";
+    private final String TARGET_ENVIRONMENT = "TARGET_ENVIRONMENT";
 
     public RunTest() {
         reportsDirectory = getReportsDirectory();
@@ -91,8 +92,8 @@ public class RunTest {
         java.util.Map<String, Object> envConfig = null;
         String baseUrl = "";
         try {
-            envConfig = JsonPath.parse(new File(getPath(workingDir, TEST_DATA_FILE_NAME))).read("$." + getKarateEnv(), Map.class);
-            baseUrl = ((java.util.Map) envConfig.get(ENVIRONMENT_KEY)).get(BASE_URL).toString();
+            envConfig = JsonPath.parse(new File(getPath(workingDir, TEST_DATA_FILE_NAME))).read("$." + getKarateEnv() + ".env", Map.class);
+            baseUrl = envConfig.get(BASE_URL).toString();
         } catch (IOException e) {
             System.out.println("Error in loading the test_data.json file");
         }
@@ -112,9 +113,9 @@ public class RunTest {
     }
 
     private String getKarateEnv() {
-        String karateEnv = System.getenv("env");
+        String karateEnv = System.getenv("TARGET_ENVIRONMENT");
         if((null == karateEnv) || (karateEnv.isBlank())) {
-            String message = "env is not specified as a system property";
+            String message = "TARGET_ENVIRONMENT is not specified as a system property";
             System.out.println(message);
             throw new RuntimeException(message);
         }
@@ -124,7 +125,7 @@ public class RunTest {
 
     private List<String> getTags() {
         System.out.println("In " + this.getClass().getSimpleName() + " :: getTags");
-        String customTagsToRun = System.getenv("tag");
+        String customTagsToRun = System.getenv("TAG");
         java.util.List<String> strings = new java.util.ArrayList<>();
         strings.add("~@ignore");
         strings.add("~@wip");
@@ -140,7 +141,7 @@ public class RunTest {
 
     private String getEnvTag() {
         String env = getKarateEnv();
-        String envTag = ((null != env) && (!env.trim().isEmpty())) ? env.toLowerCase() : "@eat";
+        String envTag = ((null != env) && (!env.trim().isEmpty())) ? env.toLowerCase() : "@prod";
         if(!envTag.startsWith("@")) {
             envTag = "@" + envTag;
         }
@@ -150,18 +151,18 @@ public class RunTest {
 
     private String getClasspath() {
         System.out.println("In " + this.getClass().getSimpleName() + " :: getClassPath");
-        String type = System.getenv("type");
+        String type = System.getenv("TYPE");
         if(null == type) {
-            System.out.println("type [api | workflow] is not provided");
-            throw new RuntimeException("type [api | workflow] is not provided");
+            System.out.println("TYPE [api | workflow] is not provided");
+            throw new RuntimeException("TYPE [api | workflow] is not provided");
         }
-        String classPath = "classpath:com/znsio/" + type;
+        String classPath = "classpath:com/znsio/" + type.toLowerCase(Locale.ROOT);
         System.out.printf("Running %s tests%n", classPath);
         return classPath;
     }
 
     private int getParallelCount() {
-        String parallel = System.getenv("parallel");
+        String parallel = System.getenv("PARALLEL");
         int parallelCount = (null == parallel || parallel.isEmpty()) ? 5 : Integer.parseInt(parallel);
         System.out.printf("Parallel count: %d %n", parallelCount);
         return parallelCount;

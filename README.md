@@ -5,34 +5,55 @@ Results are published in junit, html and cucumber-reporting format
 
 ## Running the tests with gradle command:
 
-    `./gradlew test`
+    ./gradlew test
 
 Example
     
-    `env=prod type=workflow ./gradlew test`
+    TARGET_ENVRIONMENT=prod TYPE=workflow ./gradlew test
 
 ## Running the tests as an uber jar:
 
-- Build an uber jar
+### Build the uber jar
 
+- Build an uber jar:
 
     `./gradlew shadowJar` 
 
--  in the upload folder with the name like: `upload/getting-started-with-karate-0.0.1.jar`
+- The above command will create a jar in the upload folder with the name like: `upload/getting-started-with-karate-0.0.1.jar`
+
+### Running tests using the uber jar
+
+- **Gradle command**: 
+  - You can run the test using a gradle command:  
+
+    Example
 
 
-    `parallel=3 env=prod tag=demo type=api java -jar upload/getting-started-with-karate-0.0.1.jar`
+          TARGET_ENVRIONMENT=prod TYPE=workflow ./gradlew test
 
-Example
+- **Uber jar**:
+  - You can run the tests using the same format as the `./gradlew test` command:
 
-    `env=prod type=workflow ./gradlew test`
+    Example 
 
-### Additional parameters
 
-* `env=...` -> Run tests for specific environment. Data will be picked up accordingly from test_data.json
-* `type=[api | workflow]` -> What type of test you want to run?
-* `tag=...` -> What subset of tests you want to run? Ex: `tag=confengine` will run all tests having the tag confengine
-* `parallel=...` -> What is the parallel count for the test execution. Default is `parallel=5`
+          PARALLEL=3 TARGET_ENVRIONMENT=prod TAG=demo TYPE=api java -jar getting-started-with-karate-0.0.1.jar
+
+- **Shell Script**:
+  - You can also run the tests using a script file using this command:
+
+    Example
+
+
+          PARALLEL=3 TARGET_ENVRIONMENT=prod TAG=demo TYPE=api ./runAPIWorkflowTests.sh
+
+
+### Configuration parameters
+
+* `TARGET_ENVRIONMENT=...` -> Run tests for specific environment. Data will be picked up accordingly from test_data.json
+* `TYPE=[api | workflow]` -> What type of test you want to run?
+* `TAG=...` -> What subset of tests you want to run? Ex: `TAG=confengine` will run all tests having the tag confengine
+* `PARALLEL=...` -> What is the parallel count for the test execution. Default is `PARALLEL=5`
 
 # Guidelines 
 Read the [Guidelines](READMEGuideline.md) for writing tests in this framework

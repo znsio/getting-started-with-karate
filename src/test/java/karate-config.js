@@ -21,6 +21,14 @@ function fn() {
   }
   config = loadCommonFunctions();
 
+  var randomizer = function() {
+    return karate.callSingle('classpath:com/znsio/common/Randomizer.feature@randomizerUtilities', config);
+  }
+  config = randomizer();
+
+//  Calling a function from randomizer
+//  karate.log("Random number: ", config.generateRandomNumber(10))
+
 //  karate.log('Running test with config:', config);
   return config;
 }

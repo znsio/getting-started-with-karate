@@ -5,7 +5,7 @@ Feature: tags api test
   Scenario: first api
     * print 'first api'
 
-  @second @local
+  @second @local @demo2
   Scenario: second api
     * print 'second api'
     * print 'system property foo in second api:', karate.properties['foo']

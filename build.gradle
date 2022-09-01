@@ -8,6 +8,8 @@ buildscript {
         junitPlatformsLauncherVersion = '1.9.0'
     }
     repositories {
+        mavenLocal()
+        mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
 }
@@ -28,6 +30,7 @@ sourceCompatibility = 11
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url 'https://plugins.gradle.org/m2/' }
 }
 
 sourceSets {
@@ -49,18 +52,6 @@ dependencies {
 task karateDebug(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.intuit.karate.cli.Main'
-}
-
-static def getCurrentDatestamp() {
-    Date today = new Date()
-    SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy")
-    return df.format(today)
-}
-
-static def getCurrentTimestamp() {
-    Date today = new Date()
-    SimpleDateFormat df = new SimpleDateFormat("HH-mm-ss")
-    return df.format(today)
 }
 
 test {
@@ -104,7 +95,7 @@ shadowJar {
     from('.') { include 'gradle/**/*' }
     from('.') { include 'gradlew*' }
     from('.') { include 'build.gradle' }
-//    from('.') { include 'src/test/**/*' }
+    from('.') { include 'src/test/**/*' }
     destinationDir file("${rootDir}/upload")
     doLast {
         println "Created jar: ${rootDir}/upload/${project.name}-${project.version}.jar"
@@ -124,9 +115,12 @@ artifacts {
 task copyToUpload(type: Copy) {
     from 'java/test_data.json'
     into 'upload/src/test/java'
+    from 'runAPIWorkflowTests.sh'
+    into 'upload'
 }
 
 test.dependsOn clean
+shadowJar.finalizedBy copyToUpload
 
 wrapper {
     gradleVersion = gradleVersionProperty
