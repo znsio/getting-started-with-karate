@@ -115,7 +115,7 @@ public class RunTest {
     private String getKarateEnv() {
         String karateEnv = System.getenv("TARGET_ENVIRONMENT");
         if((null == karateEnv) || (karateEnv.isBlank())) {
-            String message = "TARGET_ENVIRONMENT is not specified as a system property";
+            String message = "TARGET_ENVIRONMENT is not specified as an environment variable";
             System.out.println(message);
             throw new RuntimeException(message);
         }

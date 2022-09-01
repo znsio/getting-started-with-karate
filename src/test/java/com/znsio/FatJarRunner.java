@@ -15,7 +15,6 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 
 public class FatJarRunner {
 
-    private final String PACKAGE_NAME = "znsio";
     SummaryGeneratingListener listener = new SummaryGeneratingListener();
 
     public void runAll() {
