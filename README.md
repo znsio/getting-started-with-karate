@@ -58,5 +58,27 @@ Example
 # Guidelines 
 Read the [Guidelines](READMEGuideline.md) for writing tests in this framework
 
+# Machine setup
+
+* Install JDK 11 or higher
+* Install IntelliJ Idea Community Edition
+* Install the following plugins
+  * .ignore
+  * Cucumber for Java
+  * Gherkin
+  * SonarLint
+  * Gradle
+  * Maven
+  * Groovy
+  * Markdown
+  * Properties
+  * Shell Script
+  * YAML
+  * JUnit
+  * TestNG
+  * Git
+  * GitHub
+  * Terminal
+
 # Contact
 Contact [@BagmarAnand](https://twitter.com/BagmarAnand) for help / information / feedback on this repo
