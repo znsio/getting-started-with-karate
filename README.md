@@ -53,6 +53,8 @@ Example
 * `TARGET_ENVRIONMENT=...` -> Run tests for specific environment. Data will be picked up accordingly from test_data.json
 * `TYPE=[api | workflow]` -> What type of test you want to run?
 * `TAG=...` -> What subset of tests you want to run? Ex: `TAG=confengine` will run all tests having the tag confengine
+  * To run test with multiple tags specified, you can use a command like:
+  `TAG=@demo,~@sanity TARGET_ENVRIONMENT=prod TYPE=workflow ./gradlew test`
 * `PARALLEL=...` -> What is the parallel count for the test execution. Default is `PARALLEL=5`
 
 # Guidelines 

@@ -30,15 +30,16 @@ public class RunTest {
 
     @Test
     void runKarateTests() {
-        System.out.printf("Class: %s :: Test: runKarateTests%n", this.getClass().getSimpleName());
+        System.out.printf("Class: %s :: Test: runKarateTests%n", this.getClass()
+                                                                     .getSimpleName());
         Results results = Karate.run(getClasspath())
-                .tags(getTags())
-                .karateEnv(getKarateEnv())
-                .reportDir(reportsDirectory + File.separator + KARATE_REPORTS_DIR)
-                .outputCucumberJson(true)
-                .outputJunitXml(true)
-                .outputHtmlReport(true)
-                .parallel(getParallelCount());
+                                .tags(getTags())
+                                .karateEnv(getKarateEnv())
+                                .reportDir(reportsDirectory + File.separator + KARATE_REPORTS_DIR)
+                                .outputCucumberJson(true)
+                                .outputJunitXml(true)
+                                .outputHtmlReport(true)
+                                .parallel(getParallelCount());
         String reportFilePath = generateReport(results.getReportDir());
         String message = "\n\n" + "Test execution summary: ";
         message += "\n\t" + "Tags: " + getTags();
@@ -47,7 +48,7 @@ public class RunTest {
         message += "\n\t" + "Scenarios: Failed: " + results.getScenariosFailed() + ", Passed: " + results.getScenariosPassed() + ", Total: " + results.getScenariosTotal();
         message += "\n\t" + "Features : Failed: " + results.getFeaturesFailed() + ", Passed: " + results.getFeaturesPassed() + ", Total: " + results.getFeaturesTotal();
         message += "\n\t" + "Reports available here: file://" + reportFilePath;
-        if (results.getScenariosFailed()>0) {
+        if(results.getScenariosFailed() > 0) {
             throw new TestExecutionException(message);
         } else {
             System.out.println(message);
@@ -58,23 +59,22 @@ public class RunTest {
         System.out.println("================================================================================================");
         System.out.println("===================================  Generating reports  =======================================");
         System.out.println("================================================================================================");
-        java.util.Collection<java.io.File> jsonFiles = org.apache.commons.io.FileUtils
-                .listFiles(new java.io.File(karateOutputPath), new String[]{"json"}, true);
+        java.util.Collection<java.io.File> jsonFiles = org.apache.commons.io.FileUtils.listFiles(new java.io.File(karateOutputPath), new String[]{"json"}, true);
         String reportFilePath = null;
         if(jsonFiles.size() == 0) {
             System.out.println("Reports NOT generated");
         } else {
             java.util.List<String> jsonPaths = new java.util.ArrayList<>(jsonFiles.size());
             jsonFiles.forEach(file -> jsonPaths.add(file.getAbsolutePath()));
-            net.masterthought.cucumber.Configuration config = new net.masterthought.cucumber.Configuration(
-                    new File(getPath(reportsDirectory, CUCUMBER_REPORTS_DIR)), PROJECT_NAME);
+            net.masterthought.cucumber.Configuration config = new net.masterthought.cucumber.Configuration(new File(getPath(reportsDirectory, CUCUMBER_REPORTS_DIR)), PROJECT_NAME);
 
-//        config.setTagsToExcludeFromChart("@checkout", "@feature.*");
+            // config.setTagsToExcludeFromChart("@checkout", "@feature.*");
             addClassifications(config);
 
             net.masterthought.cucumber.ReportBuilder reportBuilder = new net.masterthought.cucumber.ReportBuilder(jsonPaths, config);
             reportBuilder.generateReports();
-            reportFilePath = config.getReportDirectory().getAbsolutePath() + CUCUMBER_REPORTS_FILE_NAME;
+            reportFilePath = config.getReportDirectory()
+                                   .getAbsolutePath() + CUCUMBER_REPORTS_FILE_NAME;
         }
         System.out.println("================================================================================================");
         return reportFilePath;
@@ -92,9 +92,11 @@ public class RunTest {
         java.util.Map<String, Object> envConfig = null;
         String baseUrl = "";
         try {
-            envConfig = JsonPath.parse(new File(getPath(workingDir, TEST_DATA_FILE_NAME))).read("$." + getKarateEnv() + ".env", Map.class);
-            baseUrl = envConfig.get(BASE_URL).toString();
-        } catch (IOException e) {
+            envConfig = JsonPath.parse(new File(getPath(workingDir, TEST_DATA_FILE_NAME)))
+                                .read("$." + getKarateEnv() + ".env", Map.class);
+            baseUrl = envConfig.get(BASE_URL)
+                               .toString();
+        } catch(IOException e) {
             System.out.println("Error in loading the test_data.json file");
         }
 
@@ -124,15 +126,19 @@ public class RunTest {
     }
 
     private List<String> getTags() {
-        System.out.println("In " + this.getClass().getSimpleName() + " :: getTags");
-        String customTagsToRun = System.getenv("TAG");
+        System.out.println("In " + this.getClass()
+                                       .getSimpleName() + " :: getTags");
         java.util.List<String> strings = new java.util.ArrayList<>();
         strings.add("~@ignore");
         strings.add("~@wip");
         strings.add("~@template");
         strings.add("~@data");
-        if((null != customTagsToRun) && (!customTagsToRun.trim().isEmpty())) {
-            strings.add(customTagsToRun);
+        String customTagsToRun = System.getenv("TAG");
+        if((null != customTagsToRun) && (!customTagsToRun.trim()
+                                                         .isEmpty())) {
+            String[] individualCustomTags = customTagsToRun.trim()
+                                                           .split(",");
+            strings.addAll(List.of(individualCustomTags));
         }
         strings.add(getEnvTag());
         System.out.println("Run tests with tags: " + strings);
@@ -141,7 +147,8 @@ public class RunTest {
 
     private String getEnvTag() {
         String env = getKarateEnv();
-        String envTag = ((null != env) && (!env.trim().isEmpty())) ? env.toLowerCase() : "@prod";
+        String envTag = ((null != env) && (!env.trim()
+                                               .isEmpty())) ? env.toLowerCase() : "@prod";
         if(!envTag.startsWith("@")) {
             envTag = "@" + envTag;
         }
@@ -150,7 +157,8 @@ public class RunTest {
     }
 
     private String getClasspath() {
-        System.out.println("In " + this.getClass().getSimpleName() + " :: getClassPath");
+        System.out.println("In " + this.getClass()
+                                       .getSimpleName() + " :: getClassPath");
         String type = System.getenv("TYPE");
         if(null == type) {
             System.out.println("TYPE [api | workflow] is not provided");
