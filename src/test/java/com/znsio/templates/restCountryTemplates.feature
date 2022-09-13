@@ -22,6 +22,7 @@
       Then status 200
       And print response.length
       And def countries = response
+      * print "Response from /all: ", response
 
     @t_getCountryDetails
     Scenario: Get country details
