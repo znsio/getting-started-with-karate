@@ -9,7 +9,7 @@ Results are published in junit, html and cucumber-reporting format
 
 Example
     
-    TARGET_ENVRIONMENT=prod TYPE=workflow ./gradlew test
+    TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew test
 
 ## Running the tests as an uber jar:
 
@@ -29,7 +29,7 @@ Example
     Example
 
 
-          TARGET_ENVRIONMENT=prod TYPE=workflow ./gradlew test
+          TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew test
 
 - **Uber jar**:
   - You can run the tests using the same format as the `./gradlew test` command:
@@ -37,7 +37,7 @@ Example
     Example 
 
 
-          PARALLEL=3 TARGET_ENVRIONMENT=prod TAG=demo TYPE=api java -jar getting-started-with-karate-0.0.1.jar
+          PARALLEL=3 TARGET_ENVIRONMENT=prod TAG=demo TYPE=api java -jar getting-started-with-karate-0.0.1.jar
 
 - **Shell Script**:
   - You can also run the tests using a script file using this command:
@@ -45,16 +45,16 @@ Example
     Example
 
 
-          PARALLEL=3 TARGET_ENVRIONMENT=prod TAG=demo TYPE=api ./runAPIWorkflowTests.sh
+          PARALLEL=3 TARGET_ENVIRONMENT=prod TAG=demo TYPE=api ./runAPIWorkflowTests.sh
 
 
 ### Configuration parameters
 
-* `TARGET_ENVRIONMENT=...` -> Run tests for specific environment. Data will be picked up accordingly from test_data.json
+* `TARGET_ENVIRONMENT=...` -> Run tests for specific environment. Data will be picked up accordingly from test_data.json
 * `TYPE=[api | workflow]` -> What type of test you want to run?
 * `TAG=...` -> What subset of tests you want to run? Ex: `TAG=confengine` will run all tests having the tag confengine
   * To run test with multiple tags specified, you can use a command like:
-  `TAG=@demo,~@sanity TARGET_ENVRIONMENT=prod TYPE=workflow ./gradlew test`
+  `TAG=@demo,~@sanity TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew test`
 * `PARALLEL=...` -> What is the parallel count for the test execution. Default is `PARALLEL=5`
 
 # Guidelines 
