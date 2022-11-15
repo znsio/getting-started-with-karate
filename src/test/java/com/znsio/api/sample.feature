@@ -1,4 +1,4 @@
-@demo @demo1 @eat @prod
+@demo @demo1 @eat @prod @sample
 Feature: sample api
 
   @demo2

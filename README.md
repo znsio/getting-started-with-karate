@@ -55,7 +55,21 @@ Example
 * `TAG=...` -> What subset of tests you want to run? Ex: `TAG=confengine` will run all tests having the tag confengine
   * To run test with multiple tags specified, you can use a command like:
   `TAG=@demo,~@sanity TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew test`
-* `PARALLEL=...` -> What is the parallel count for the test execution. Default is `PARALLEL=5`
+  * To run tests having tags as @tags OR @sample:
+  
+
+        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample ./gradlew test
+  
+  * To run tests having tags as @tags OR @sample AND exclude tags @demo2
+
+    
+        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample:~@demo2 ./gradlew test
+  * To run tests having tags as @tags OR @sample AND exclude tests having either of the following tags: @demo2, @e2e
+    
+
+        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample:~@demo2:~@e2e ./gradlew test
+
+  * `PARALLEL=...` -> What is the parallel count for the test execution. Default is `PARALLEL=5`
 
 # Guidelines 
 Read the [Guidelines](READMEGuideline.md) for writing tests in this framework

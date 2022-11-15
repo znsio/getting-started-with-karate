@@ -1,4 +1,4 @@
-@eat @demo @prod
+@eat @demo @prod @tags
 Feature: tags api test
 
   @first

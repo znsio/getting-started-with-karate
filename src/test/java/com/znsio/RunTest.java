@@ -128,21 +128,24 @@ public class RunTest {
     private List<String> getTags() {
         System.out.println("In " + this.getClass()
                                        .getSimpleName() + " :: getTags");
-        java.util.List<String> strings = new java.util.ArrayList<>();
-        strings.add("~@ignore");
-        strings.add("~@wip");
-        strings.add("~@template");
-        strings.add("~@data");
+        java.util.List<String> tagsToRun = new java.util.ArrayList<>();
         String customTagsToRun = System.getenv("TAG");
         if((null != customTagsToRun) && (!customTagsToRun.trim()
                                                          .isEmpty())) {
-            String[] individualCustomTags = customTagsToRun.trim()
-                                                           .split(",");
-            strings.addAll(List.of(individualCustomTags));
+            String[] customTags = customTagsToRun.trim()
+                                                           .split(":");
+            for(String customTag : customTags) {
+                tagsToRun.addAll(List.of(customTag));
+            }
         }
-        strings.add(getEnvTag());
-        System.out.println("Run tests with tags: " + strings);
-        return strings;
+        tagsToRun.add(getEnvTag());
+        tagsToRun.add("~@ignore");
+        tagsToRun.add("~@wip");
+        tagsToRun.add("~@template");
+        tagsToRun.add("~@data");
+
+        System.out.println("Run tests with tags: " + tagsToRun);
+        return tagsToRun;
     }
 
     private String getEnvTag() {
