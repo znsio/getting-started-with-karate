@@ -96,3 +96,11 @@ Feature: Randomizer Utilities
       return number >= min && number <= max;
     }
     """
+
+    * def javaRandom =
+      """
+        function(s) {
+          var JavaRandomizer = Java.type('com.znsio.common.JavaRandomizer');
+          return new JavaRandomizer().getRandomStringFromJava(s);
+        }
+      """

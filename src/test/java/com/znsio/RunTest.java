@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -134,9 +135,7 @@ public class RunTest {
                                                          .isEmpty())) {
             String[] customTags = customTagsToRun.trim()
                                                            .split(":");
-            for(String customTag : customTags) {
-                tagsToRun.addAll(List.of(customTag));
-            }
+            tagsToRun.addAll(Arrays.asList(customTags));
         }
         tagsToRun.add(getEnvTag());
         tagsToRun.add("~@ignore");

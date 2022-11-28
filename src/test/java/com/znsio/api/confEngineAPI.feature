@@ -1,6 +1,7 @@
 @confengine @prod
 Feature: ConfEngine.com
 
+  @wip
   Scenario Outline: Find number of proposals in a conferences
     * def confUrl = "/conferences/<confName>/proposals"
     * print "Get number of proposals for conference: <confName> with path: " + confUrl
@@ -14,7 +15,7 @@ Feature: ConfEngine.com
       | functional-conf-2022 | 10  | 200 | 200            |
       | appium-conf-2021     | 10  | 200 | 200            |
 
-  @confengineapi
+  @confengineapi @wip
   Scenario: Find number of conferences
     * print "Find number conferences"
     * def ids = call read('classpath:com/znsio/templates/confEngineTemplates.feature@t_getConferences')

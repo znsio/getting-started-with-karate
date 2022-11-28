@@ -27,8 +27,13 @@ function fn() {
   config = randomizer();
 
 //  Calling a function from randomizer
-//  karate.log("Random number: ", config.generateRandomNumber(10))
+  karate.log("Java Random: ", config.javaRandom(5));
+  karate.log("Random number: ", config.generateRandomNumber(10));
+  karate.log("Current time in ms: ", config.getCurrentTimeInMillis());
 
+  var JavaRandomizer = Java.type('com.znsio.common.JavaRandomizer');
+  var jr = new JavaRandomizer();
+  karate.log("generateRandomAlphaNumericString: ", jr.generateRandomAlphaNumericString(20));
 //  karate.log('Running test with config:', config);
   return config;
 }

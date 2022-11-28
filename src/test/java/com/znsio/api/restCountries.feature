@@ -6,3 +6,10 @@ Feature: API tests for https://restcountries.com/
     Then print "listOfCountries: " + listOfCountries.length
     And assert listOfCountries.length > 200
 
+  @second @e2e
+  Scenario: restCountries e2e api
+    * print 'restCountries e2e api'
+
+  @second @e2e @flaky
+  Scenario: restCountries flaky e2e api
+    * print 'restCountries flaky e2e api'

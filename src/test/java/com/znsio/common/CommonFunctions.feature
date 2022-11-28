@@ -6,8 +6,8 @@ Feature: Common Utility Functions
     * def generateRandomAlphaNumeric =
     """
     function() {
-    var Randomizer = Java.type('com.znsio.common.Randomizer');
-    return new Randomizer().generateRandomAlphaNumericString(arguments[0]);
+      var JavaRandomizer = Java.type('com.znsio.common.JavaRandomizer');
+      return new JavaRandomizer().generateRandomAlphaNumericString(arguments[0]);
     }
     """
     * def generated = generateRandomAlphaNumeric(len)
