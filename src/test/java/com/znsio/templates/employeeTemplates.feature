@@ -1,3 +1,4 @@
+@template
 Feature: Implementation for querying Employee APIs
 
   Background:
