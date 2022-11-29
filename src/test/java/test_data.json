@@ -20,7 +20,27 @@
       "baseUrl": "https://github.com",
       "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
-      "restCountryUrl": "https://restcountries.com/v3.1"
+      "restCountryUrl": "https://restcountries.com/v3.1",
+      "jsonPlaceHolderUrl": "https://jsonplaceholder.typicode.com/"
+    },
+    "jsonPlaceHolder": {
+      "userId": "1",
+      "expectedResponsePost": {
+        "userId": 1,
+        "id": 1,
+        "title": "#string",
+        "body": "#string"
+      },
+      "expectedResponseComment": {
+        "length": 1,
+        "data": {
+          "name": "#string",
+          "postId": 1,
+          "id": "#number",
+          "body": "#string",
+          "email": "#string"
+        }
+      }
     }
   }
 }
