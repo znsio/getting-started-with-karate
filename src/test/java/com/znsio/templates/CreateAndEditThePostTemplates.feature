@@ -7,7 +7,7 @@ Feature: Template for create and edit post
   @t_createAPost
   Scenario: Create a post
     Given path '/posts'
-    And request {"title": "#(title)","body": "#(body)","userId": #(userId)}
+    And request {"title": "#(title)","body": "#(body)","userId": "#(userId)"}
     When method POST
     Then status 201
     * def createPost = response
