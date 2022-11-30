@@ -3,7 +3,7 @@ Feature: JsonPlaceHolder API
 
   @posts
   Scenario: Get all the posts with specific userId
-    * print "userId : 1" + jsonPlaceHolder.userId
+    * print "userId : 1"
     * def featureData = karate.call('classpath:com/znsio/templates/placeHolderTemplates.feature@t_getPostByUserId')
     * print 'response : ', featureData.response
     * print 'status : ', featureData.responseStatus
@@ -12,8 +12,8 @@ Feature: JsonPlaceHolder API
 
   @comments
   Scenario: Get all the comments with specific userId
-    * print "userId : " + jsonPlaceHolder.userId
-    * print "Find number of comments"
+    * print "userId : 1"
+    * print "Find the number of comments"
     * def featureData = karate.call('classpath:com/znsio/templates/placeHolderTemplates.feature@t_getCommentsByUserId')
     * print "allComments : ", featureData
     * def actualLength = featureData.response.length
@@ -71,7 +71,6 @@ Feature: JsonPlaceHolder API
       return templateCallResponse.testData.negativeResponse.expectedComment
     }
     """
-    * match templateCallResponse.responseStatus == <status>
     * match templateCallResponse.response contains getExpectedResponse(<userId>)
     * match templateCallResponse.responseStatus == <status>
 
@@ -82,3 +81,62 @@ Feature: JsonPlaceHolder API
       | 3                                   | 200    |
       | generateRandomNumber(5)             | 200    |
       | generateAlphaNumericRandomString(3) | 200    |
+
+
+  @createPost
+  Scenario Outline: Create a post
+    * def templateCallResponse = karate.call('classpath:com/znsio/templates/placeHolderTemplates.feature@t_createPost', {testCaseType: <testCaseType>})
+    * print 'response : ', templateCallResponse.response
+    * print 'status : ', templateCallResponse.responseStatus
+    * match templateCallResponse.responseStatus == <status>
+    * print 'Expected response::: ', templateCallResponse.expectedResponse
+    * match templateCallResponse.response == templateCallResponse.expectedResponse
+
+    Examples:
+      | testCaseType                     | status |
+      | "createPostWithAllValidValues"   | 201    |
+      | "createPostWithAllFieldsAreNull" | 201    |
+      | "createPostWithTitleAsNull"      | 201    |
+      | "createPostWithBodyAsNull"       | 201    |
+      | "createPostWithIdAsNull"         | 201    |
+
+
+  @updatePost
+  Scenario Outline: Update a post
+
+    * def createPost =
+    """
+    function(postType){
+      karate.log('Step: 1 :: Create a post');
+      var createPostResponse = karate.call('classpath:com/znsio/templates/placeHolderTemplates.feature@t_createPost', {testCaseType: 'postType'});
+      var id = createPostResponse.response.id;
+      karate.log("id : ", id);
+      karate.log('created post response : ', createPostResponse.response);
+      karate.log('created post status : ', createPostResponse.responseStatus);
+      karate.log('Validating create post response with expected Response');
+      return createPostResponse
+    }
+    """
+
+    * print 'Step: 1 :: Create a post'
+    * def createPostResponse = createPost('<createPostType>')
+    * match createPostResponse.responseStatus == <createStatus>;
+    * match createPostResponse.response == createPostResponse.expectedResponse;
+    * def id = createPostResponse.response.id
+
+    * print 'Step: 2 :: update the post with userId :', id
+    * def updatePostResponse = karate.call('classpath:com/znsio/templates/placeHolderTemplates.feature@t_updatePost', {id: id, testCaseType: <testCaseType>})
+    * print 'update post response : ', updatePostResponse.response
+    * print 'update post status : ', updatePostResponse.responseStatus
+    * match updatePostResponse.responseStatus == <updateStatus>
+    * print 'Validating update post response with expected Response'
+    * match updatePostResponse.response == updatePostResponse.expectedResponse
+
+    Examples:
+      | testCaseType                   | updateStatus | createPostType               | createStatus |
+      | "updateAllKeysWithValidValues" | 200          | createPostWithAllValidValues | 201          |
+      | "updateAllKeysAsNull"          | 200          | createPostWithAllValidValues | 201          |
+      | "updateBodyWithValidValue"     | 200          | createPostWithAllValidValues | 201          |
+      | "updateTitleWithValidValue"    | 200          | createPostWithAllValidValues | 201          |
+      | "updateUserIdWithValidValue"   | 200          | createPostWithAllValidValues | 201          |
+
