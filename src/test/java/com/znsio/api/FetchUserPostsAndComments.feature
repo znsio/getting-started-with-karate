@@ -1,13 +1,15 @@
-@FetchAndPostCommentForUserId1 @prod
-Feature: Fetch users posts and their comments
+@FetchUserPostsAndComments @prod
+Feature: Fetch users posts and comments
 
   Background: passing id
-    * def Id = 1
+    * def userWithId = 1
 
-  Scenario: Fetch all the posts for a user with id 1
-    Given def listOfPosts = karate.call('classpath:com/znsio/templates/FetchUserPostsAndCommentsTemplates.feature@t_getPostsById').userPost
-    And match listOfPosts.id == Id
+  Scenario: Fetch all the posts for a user using id
+    Given def fetchPosts = karate.call('classpath:com/znsio/templates/FetchUserPostsAndCommentsTemplates.feature@t_getPostsById').userPost
+    And match fetchPosts.id == userWithId
+    And match fetchPosts.userId == '#number'
 
-  Scenario: Fetch all the comments for a user with id 1
-    Given def listOfComments = karate.call('classpath:com/znsio/templates/FetchUserPostsAndCommentsTemplates.feature@t_getCommentsById').userComment
-    And match listOfComments.id == Id
+  Scenario: Fetch all the comments for a user using  id
+    Given def fetchComments = karate.call('classpath:com/znsio/templates/FetchUserPostsAndCommentsTemplates.feature@t_getCommentsById').userComment
+    And match fetchComments.id == userWithId
+    And match fetchComments.postId == '#number'

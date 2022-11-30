@@ -1,5 +1,5 @@
 @template
-Feature: Create and edit post
+Feature: Template for create and edit post
 
   Background: API url
     Given url env.dummyRestAPIUrl
@@ -7,7 +7,7 @@ Feature: Create and edit post
   @t_createAPost
   Scenario: Create a post
     Given path '/posts'
-    And request {"title": "foo","body": "bar","userId": 11}
+    And request {"title": "#(title)","body": "#(body)","userId": #(userId)}
     When method POST
     Then status 201
     * def createPost = response
@@ -15,7 +15,7 @@ Feature: Create and edit post
     And print 'created post: ' + response
 
   @t_fetchAPost
-  Scenario: Fetch the created post
+  Scenario: Fetch a post
     * def ID = karate.call('classpath:com/znsio/templates/CreateAndEditThePostTemplates.feature@t_createAPost').Id
     Given path '/posts/', ID
     * print 'get post with id' + ID
@@ -25,10 +25,10 @@ Feature: Create and edit post
     And print 'posts from user with id: ' + ID  + response
 
   @t_updatePostTitle
-  Scenario: Update the created post title
+  Scenario: Update the post title
     * def ID = karate.call('classpath:com/znsio/templates/CreateAndEditThePostTemplates.feature@t_createAPost').Id
     Given path '/posts/', ID
-    And request {"id": 101,"title": "foo2","body": "bar","userId": 1}
+    And request {"id": "#(id)","title": "#(title)","body": "#(body)","userId": "#(userId)"}
     When method PATCH
     Then status 200
     * def updatePost = response
