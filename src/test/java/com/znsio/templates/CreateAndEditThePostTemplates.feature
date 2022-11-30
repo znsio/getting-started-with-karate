@@ -17,7 +17,6 @@ Feature: Create and edit post
   @t_fetchAPost
   Scenario: Fetch the created post
     * def ID = karate.call('classpath:com/znsio/templates/CreateAndEditThePostTemplates.feature@t_createAPost').Id
-    * print 'ID: ' + ID
     Given path '/posts/', ID
     * print 'get post with id' + ID
     When method GET
@@ -28,7 +27,6 @@ Feature: Create and edit post
   @t_updatePostTitle
   Scenario: Update the created post title
     * def ID = karate.call('classpath:com/znsio/templates/CreateAndEditThePostTemplates.feature@t_createAPost').Id
-    * print 'ID: ' + ID
     Given path '/posts/', ID
     And request {"id": 101,"title": "foo2","body": "bar","userId": 1}
     When method PATCH
