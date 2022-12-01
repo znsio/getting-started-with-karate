@@ -24,79 +24,9 @@
     "expectedPost": {},
     "expectedComment": []
   },
-
   "createPost": {
-    "positive_TC1": {
-      "userId": "",
-      "title": "",
-      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
-      "id": ""
-    },
-    "positive_TC2": {
-      "userId": null,
-      "title": "",
-      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
-      "id": ""
-    },
-    "positive_TC3": {
-      "userId": null,
-      "title": null,
-      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
-      "id": ""
-    },
-    "positive_TC4": {
-      "userId": null,
-      "title": null,
-      "body": null,
-      "id": ""
-    },
-    "positive_TC5": {
-      "userId": "",
-      "title": "",
-      "body": "",
-      "id": null
-    },
-    "negative_TC1": {
-      "userId": null,
-      "title": null,
-      "body": null,
-      "id": null
-    },
-    "negative_TC2": {}
-  },
-
-  "updatePost": {
-    "positive_TC1": {
-      "userId": "",
-      "title": "",
-      "body": "",
-      "id": ""
-    },
-    "positive_TC2": {
-      "userId": null,
-      "title": "",
-      "body": "",
-      "id": ""
-    },
-    "positive_TC3": {
-      "userId": null,
-      "title": null,
-      "body": "",
-      "id": ""
-    },
-    "positive_TC4": {
-      "userId": null,
-      "title": null,
-      "body": null,
-      "id": ""
-    },
-    "negative_TC1": {
-      "userId": null,
-      "title": null,
-      "body": null,
-      "id": null
-    },
-    "negative_TC2": {}
+    "userId": "123456",
+    "title": "sample title",
+    "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum"
   }
 }
-
