@@ -16,22 +16,20 @@ Feature: Template for create and edit post
 
   @t_fetchAPost
   Scenario: Fetch a post
-    * def ID = karate.call('classpath:com/znsio/templates/CreateAndEditThePostTemplates.feature@t_createAPost').Id
-    Given path '/posts/', ID
-    * print 'get post with id' + ID
+    Given path '/posts/', id
+    * print 'get post with id' + id
     When method GET
     Then status 200
     * def fetchPost = response
-    And print 'posts from user with id: ' + ID  + response
+    And print 'posts from user with id: ' + id  + response
 
   @t_updatePostTitle
   Scenario: Update the post title
-    * def ID = karate.call('classpath:com/znsio/templates/CreateAndEditThePostTemplates.feature@t_createAPost').Id
-    Given path '/posts/', ID
+    Given path '/posts/', id
     And request {"id": "#(id)","title": "#(title)","body": "#(body)","userId": "#(userId)"}
     When method PATCH
     Then status 200
     * def updatePost = response
-    And print 'updated post from user with id: ' + ID + response
+    And print 'updated post from user with id: ' + id + response
 
 
