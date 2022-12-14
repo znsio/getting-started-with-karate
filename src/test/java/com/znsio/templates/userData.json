@@ -1,0 +1,15 @@
+{
+  "expectedPostsResponse": {
+    "userId": "#ignore",
+    "id": "#ignore",
+    "title": "#ignore",
+    "body": "#ignore"
+  },
+  "expectedCommentResponse": {
+    "postId": "#ignore",
+    "id": "#ignore",
+    "name": "#ignore",
+    "email": "#ignore",
+    "body": "#ignore"
+  }
+}
