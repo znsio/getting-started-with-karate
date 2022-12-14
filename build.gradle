@@ -103,6 +103,7 @@ shadowJar {
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
+    duplicatesStrategy = "include"
     archiveClassifier = 'sources'
     from sourceSets.test.allJava
 }
