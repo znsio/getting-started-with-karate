@@ -7,7 +7,6 @@ Feature: Fetch user posts and comments
   @posts
   Scenario: Get all posts with specific userId
     Given def userPosts = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_getPostsById',{"userId": userId})
-    And karate.log(userPosts.response)
     Then match userPosts.response.id == userId
     And match userPosts.response.userId == '#number'
 
@@ -15,13 +14,15 @@ Feature: Fetch user posts and comments
   @comments
   Scenario: Get all comments with specific userId
     Given def userComments = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_getCommentsById',{"userId": userId})
-    And karate.log(userComments.response)
+   # And karate.log(userComments.response)
     Then match each userComments.response[*].postId == userId
+
 
   @albums
   Scenario: Get all albums details
-    Given def userAlbums = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_getAlbums')
-    * def totalAlbums = userAlbums.response.length
+    Given def userAlbums = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_getAlbums').response
+    * def totalAlbums = userAlbums.length
+    * karate.log(totalAlbums)
     Then match totalAlbums == 100
 
 
