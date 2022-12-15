@@ -10,7 +10,11 @@ Feature: Fetch User Posts and Albums
     * def fetchPosts = karate.call('classpath:com/znsio/templates/fetchPostAndAlbums.feature@t_getPost', {"userId": userId, expectedStatus: 200})
     * karate.log('response : ',fetchPosts.response)
     * match each fetchPosts.response[*].userId == userId
-    * match each fetchPosts.response[*] == testData.expectedPostsResponse
+    * match fetchPosts.response.userId == '#number'
+    * match fetchPosts.response.id == '#number'
+    * match fetchPosts.response.title == '#string'
+    * match fetchPosts.response.body == '#string'
+
 
   @getPosts
   Scenario: Get posts with user id that doesn't exist
