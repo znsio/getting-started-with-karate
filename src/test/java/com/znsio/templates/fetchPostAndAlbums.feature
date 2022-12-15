@@ -9,7 +9,7 @@ Feature: Template for User Posts and Comments
     Given path '/posts/'
     * param userId = userId
     When method GET
-    * match responseStatus == expectedStatus
+    Then match responseStatus == expectedStatus
     * print "response", response
 
   @t_getAlbums
