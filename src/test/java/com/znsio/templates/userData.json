@@ -1,15 +1,13 @@
 {
   "expectedPostsResponse": {
-    "userId": "#ignore",
-    "id": "#ignore",
-    "title": "#ignore",
-    "body": "#ignore"
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string",
+    "body": "#string"
   },
-  "expectedCommentResponse": {
-    "postId": "#ignore",
-    "id": "#ignore",
-    "name": "#ignore",
-    "email": "#ignore",
-    "body": "#ignore"
+  "expectedAlbumResponse": {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string"
   }
 }
