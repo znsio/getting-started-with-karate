@@ -23,7 +23,7 @@
       "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
       "restCountryUrl": "https://restcountries.com/v3.1",
-      "jsonPlaceHolderUrl": "https://jsonplaceholder.typicode.com/"
+      "jsonPlaceHolderUrl": "https://jsonplaceholder.typicode.com"
     }
   }
 }
