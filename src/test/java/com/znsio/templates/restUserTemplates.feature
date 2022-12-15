@@ -1,5 +1,5 @@
 @template
-Feature: Template for rest user
+Feature: Template for JSONPlaceHolder api
 
   Background:
     Given url env.jsonPlaceholderUrl
@@ -12,8 +12,22 @@ Feature: Template for rest user
       When method GET
       Then status 200
 
-     @t_getUserComments
+     @t_getUserAlbums
      Scenario: Get comments for a giver post id
-       Given path '/posts/'+ postId + '/comments'
+       Given path '/users/'+ user_Id + '/albums'
        When method GET
        Then status 200
+
+    @t_createPost
+    Scenario: Create a post
+      Given path '/posts'
+      And request payload
+      When method POST
+      Then status 201
+
+    @t_updatePost
+    Scenario: Update a post
+      Given path '/posts/' + Id
+      And request payload
+      When method PATCH
+      Then status 200
