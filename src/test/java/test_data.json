@@ -4,7 +4,8 @@
       "baseUrl": "https://github.com",
       "confEngineUrl": "https://local.confengine.com/api/v3",
       "dummyRestAPIUrl": "https://local.jsonplaceholder.typicode.com",
-      "restCountryUrl": "https://local.restcountries.com/v3.1"
+      "restCountryUrl": "https://local.restcountries.com/v3.1",
+      "jsonPlaceHolderUrl": "https://jsonplaceholder.typicode.com/"
     }
   },
   "eat": {
@@ -12,7 +13,8 @@
       "baseUrl": "https://github.com",
       "confEngineUrl": "https://eat.confengine.com/api/v3",
       "dummyRestAPIUrl": "https://eat.jsonplaceholder.typicode.com",
-      "restCountryUrl": "https://eat.restcountries.com/v3.1"
+      "restCountryUrl": "https://eat.restcountries.com/v3.1",
+      "jsonPlaceHolderUrl": "https://jsonplaceholder.typicode.com/"
     }
   },
   "prod": {
@@ -20,7 +22,8 @@
       "baseUrl": "https://github.com",
       "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
-      "restCountryUrl": "https://restcountries.com/v3.1"
+      "restCountryUrl": "https://restcountries.com/v3.1",
+      "jsonPlaceHolderUrl": "https://jsonplaceholder.typicode.com/"
     }
   }
 }
