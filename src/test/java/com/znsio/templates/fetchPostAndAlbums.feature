@@ -6,15 +6,16 @@ Feature: Template for User Posts and Comments
 
   @t_getPost
   Scenario: Get User posts
-    Given path '/posts/' + userId
+    Given path '/posts/'
+    * param userId = userId
     When method GET
-    Then status 200
+    * match responseStatus == expectedStatus
     * print "response", response
 
-  @t_getComments
-  Scenario: Get User comments
-    Given path '/comments'
-    * param postId = userId
+  @t_getAlbums
+  Scenario: Get User albums
+    Given path '/albums'
+    * param userId = userId
     When method GET
-    Then status 200
+    Then match responseStatus == expectedStatus
     * print "response",response
