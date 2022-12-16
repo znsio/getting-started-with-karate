@@ -7,9 +7,13 @@ Feature: Create and update post using JSONPlaceHolder api
   Scenario: Create a post and then update title
     Given def createPost = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_createPost', {'payload': jsonData.Payload})
     Then karate.log("Response for the post created", createPost.response)
-    And match createPost.response.id == 101
+    And match createPost.response.id == jsonData.id
     And match createPost.response.title == "Abhishek-QECC"
     And match createPost.response == jsonData.createdPostSchema
+    Given def getPosts = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_getUserPosts', {'user_Id': createPost.response.userId})
+    And match getPosts.response.length == '#notpresent'
     Then def updatePost = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_updatePost', {'Id': createPost.response.id, 'payload': jsonData.Payload_Patch})
     Then karate.log("Response for the post updated", updatePost.response)
     Then match updatePost.response.title == "Abhishek-QECC-modified"
+    Given def getPosts = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_getUserPosts', {'user_Id': createPost.response.userId})
+    Then match getPosts.response.title == "Abhishek-QECC-modified"
