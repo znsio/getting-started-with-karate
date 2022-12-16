@@ -36,9 +36,10 @@ Feature: Template for fetch user posts and comments
     Then status 200
     And karate.log('albums for user' , response)
 
-  @t_t_updateTitle
+  @t_updateTitle
   Scenario: Update title
     Given path '/posts/' + userId
+    And request {"title": "#(newTitle)","body": "#(body)","userId": "#(userId)"}
     When method PUT
     Then status 200
     And karate.log('updated response' , response.title)
