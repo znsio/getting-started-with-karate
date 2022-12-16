@@ -14,7 +14,6 @@ Feature: Fetch user posts and comments
   @comments
   Scenario: Get all comments with specific userId
     Given def userComments = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_getCommentsById',{"userId": userId})
-   # And karate.log(userComments.response)
     Then match each userComments.response[*].postId == userId
 
 

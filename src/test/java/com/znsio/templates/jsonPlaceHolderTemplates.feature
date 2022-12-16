@@ -9,7 +9,7 @@ Feature: Template for fetch user posts and comments
     Given path '/posts/' + userId
     When method GET
     Then status 200
-    And print 'posts from user with id' + userId + response
+    And karate.log('posts from user with id ' + userId , response)
 
 
   @t_getCommentsById
@@ -18,20 +18,27 @@ Feature: Template for fetch user posts and comments
     And param postId = userId
     When method GET
     Then status 200
-    And karate.log('comments from user with id' + userId + response)
+    And karate.log('comments from user with id' + userId , response)
 
 
   @t_createPost
   Scenario: Create post for user
-    Given path '/posts'
-    And request
+    Given path '/posts/'
+    And request {"title": "#(title)","body": "#(body)","userId": "#(userId)"}
     When method POST
     Then status 201
-    And karate.log('posts for user with id' +userId + response)
+    And karate.log('posts for user with id' ,response)
 
   @t_getAlbums
   Scenario: Get album details
     Given path '/albums'
     When method GET
     Then status 200
-    And karate.log('albums for user' + response)
+    And karate.log('albums for user' , response)
+
+  @t_t_updateTitle
+  Scenario: Update title
+    Given path '/posts/' + userId
+    When method PUT
+    Then status 200
+    And karate.log('updated response' , response.title)
