@@ -8,7 +8,6 @@ Feature: Fetch User Posts and Albums
   Scenario Outline: Get posts with specific User id
     * def fetchPosts = karate.call('classpath:com/znsio/templates/fetchPostAndAlbums.feature@t_getPost', {"userId": <userId>, expectedStatus: <status>})
     * karate.log('response : ',fetchPosts.response)
-    * match each fetchPosts.response[*].userId == userId
     * match each fetchPosts.response == <expectedSchema>
     Examples:
       | userId                              | status | expectedSchema                 |
@@ -21,7 +20,6 @@ Feature: Fetch User Posts and Albums
   Scenario Outline: Get albums with specific User id
     * def fetchAlbums = karate.call('classpath:com/znsio/templates/fetchPostAndAlbums.feature@t_getAlbums', {"userId": <userId>, expectedStatus: <status>})
     * karate.log('response : ',fetchAlbums.response)
-    * match each fetchAlbums.response[*].userId == userId
     * match each fetchAlbums.response == <expectedSchema>
     Examples:
       | userId                              | status | expectedSchema                 |
@@ -66,7 +64,6 @@ Feature: Fetch User Posts and Albums
   Scenario Outline: Get comments with specific post id
     * def fetchComments = karate.call('classpath:com/znsio/templates/fetchPostAndAlbums.feature@t_getAlbums', {"userId": <postId>, expectedStatus: <status>})
     * karate.log('response : ',fetchComments.response)
-    * match each fetchComments.response[*].userId == userId
     * match each fetchComments.response == <expectedSchema>
     Examples:
       | postId                              | status | expectedSchema                    |
