@@ -9,5 +9,25 @@
     "userId": "#number",
     "id": "#number",
     "title": "#string"
+  },
+  "negativeResponse": [],
+  "expectedCreatePostsResponse": {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string",
+    "body": "#string"
+  },
+  "expectedUpdatePostsResponse": {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string",
+    "body": "#string"
+  },
+  "expectedCommentsResponse": {
+    "userId": "#number",
+    "id": "#number",
+    "name": "#string",
+    "email": "#string",
+    "body": "#string"
   }
 }
