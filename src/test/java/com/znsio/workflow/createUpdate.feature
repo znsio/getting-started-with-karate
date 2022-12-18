@@ -1,4 +1,6 @@
 @prod @CreateUpdate
+
+  # TARGET_ENVIRONMENT=prod TYPE=workflow TAG=@CreateUpdate ./gradlew test
 Feature: Create update and validate
 
   @createPost

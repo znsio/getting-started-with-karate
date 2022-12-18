@@ -15,10 +15,10 @@ Feature: Template for fetch user posts and comments
   @t_getCommentsById
   Scenario: Fetch comments for user with specific id
     Given path '/comments'
-    And param postId = userId
+    And param postsId = userId
     When method GET
     Then status 200
-    And karate.log('comments from user with id' + userId , response)
+    And karate.log('comments from user with id ' + userId , response)
 
 
   @t_createPost
@@ -27,14 +27,15 @@ Feature: Template for fetch user posts and comments
     And request {"title": "#(title)","body": "#(body)","userId": "#(userId)"}
     When method POST
     Then status 201
-    And karate.log('posts for user with id' ,response)
+    And karate.log('posts for user with id ' ,response)
 
-  @t_getAlbums
-  Scenario: Get album details
+  @t_getAlbumsById
+  Scenario: Get albums for user with specific user_id
     Given path '/albums'
+    And param userId = userId
     When method GET
     Then status 200
-    And karate.log('albums for user' , response)
+    And karate.log('albums for user with user_id ' + userId , response)
 
   @t_updateTitle
   Scenario: Update title
@@ -42,4 +43,4 @@ Feature: Template for fetch user posts and comments
     And request {"title": "#(newTitle)","body": "#(body)","userId": "#(userId)"}
     When method PUT
     Then status 200
-    And karate.log('updated response' , response.title)
+    And karate.log('updated response ' , response.title)
