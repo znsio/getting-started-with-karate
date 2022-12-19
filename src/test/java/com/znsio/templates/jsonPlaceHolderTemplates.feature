@@ -8,7 +8,7 @@ Feature: Template for fetch user posts and comments
   Scenario: Fetch posts for user with specific id
     Given path '/posts/' + userId
     When method GET
-    Then status 200
+    Then match responseStatus == status
     And karate.log('posts from user with id ' + userId , response)
 
 
@@ -17,7 +17,7 @@ Feature: Template for fetch user posts and comments
     Given path '/comments'
     And param postsId = userId
     When method GET
-    Then status 200
+    Then match responseStatus == status
     And karate.log('comments from user with id ' + userId , response)
 
 
@@ -26,7 +26,7 @@ Feature: Template for fetch user posts and comments
     Given path '/posts/'
     And request {"title": "#(title)","body": "#(body)","userId": "#(userId)"}
     When method POST
-    Then status 201
+    Then match responseStatus == status
     And karate.log('posts for user with id ' ,response)
 
   @t_getAlbumsById
@@ -34,7 +34,7 @@ Feature: Template for fetch user posts and comments
     Given path '/albums'
     And param userId = userId
     When method GET
-    Then status 200
+    Then match responseStatus == status
     And karate.log('albums for user with user_id ' + userId , response)
 
   @t_updateTitle
@@ -42,5 +42,5 @@ Feature: Template for fetch user posts and comments
     Given path '/posts/' + userId
     And request {"title": "#(newTitle)","body": "#(body)","userId": "#(userId)"}
     When method PUT
-    Then status 200
+    Then match responseStatus == status
     And karate.log('updated response ' , response.title)

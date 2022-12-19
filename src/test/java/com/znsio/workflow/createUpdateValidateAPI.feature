@@ -11,11 +11,11 @@ Feature: Create, update posts API
     * def expectedTitle = <title>
     * def expectedBody = <body>
     * def expectedUserId = <userId>
-    * def createPostsResponse = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_createPost',{"title": title,"body": body,"userId": userId,"status": <status>}).response
+    * def createPostsResponse = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_createPost',{"title": expectedTitle,"body": expectedBody,"userId": expectedUserId,"status": <status>}).response
     * match createPostsResponse == <expectedSchema>
     * match createPostsResponse.title == expectedTitle
     * match createPostsResponse.body == expectedBody
-    * match createPostsResponse.userId == expectedUserId
+    * assert  createPostsResponse.userId == expectedUserId
 
     Examples:
       | userId                              | title                               | body                                | status | expectedSchema            |
@@ -34,7 +34,7 @@ Feature: Create, update posts API
   @updatePosts
   Scenario Outline: Update posts with different data
     * def expectedBody = <body>
-    And def updateResponse = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_updateTitle',{"title": <newTitle>,"body": expectedBody,"userId": <userId>}).response
+    And def updateResponse = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_updateTitle',{"title": <newTitle>,"body": expectedBody,"userId": <userId>, "status": <status>}).response
     * match updateResponse == <expectedSchema>
     * match updateResponse.title == <newTitle>
     * match updateResponse.body == expectedBody
