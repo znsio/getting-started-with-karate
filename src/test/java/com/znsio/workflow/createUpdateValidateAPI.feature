@@ -22,6 +22,9 @@ Feature: Create, update posts API
     * match updateResponse.title == newTitle
     * match updateResponse.body == expectedBody
     * match updateResponse.userId == expectedUserId
+    And def getResponse = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_getPostsById',{"userId": expectedUserId, "status": new_status})
+    * match getResponse.body == expectedBody
+    * match getResponse.title == newTitle
 
     Examples:
       | userId                              | title                               | body                                | status | new_status | expectedSchema               |
