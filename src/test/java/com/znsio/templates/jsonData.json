@@ -1,0 +1,36 @@
+{
+  "postSchema":
+  {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string",
+    "body": "#string"
+  },
+
+  "albumSchema":
+  {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string"
+  },
+
+  "Payload":
+  {
+    "title": "Leohas",
+    "body": "Sample blog",
+    "userId": 1
+  },
+
+  "createdPostSchema":
+  {
+    "title": "#string",
+    "body": "#string",
+    "userId": "#number",
+    "id": "#number"
+  },
+
+  "Payload_patch":
+  {
+    "title": "Modified_title"
+  }
+}
