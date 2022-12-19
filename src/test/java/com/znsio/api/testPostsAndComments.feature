@@ -3,38 +3,51 @@ Feature: Test Posts and comments of users
 
   Background:
     Given url env.baseUrl
-    * def schema = read('classpath:com/znsio/userDetails.json');
 
-  @commentsForUserDetails
+  @testComments
   Scenario Outline: Fetch and test all the comments
-    * def userComments = karate.call('classpath:com/znsio/templates/jsonUserDetailsTemplate.feature@t_getCommentQuery',{postId:<postId>,"status": <status>})
+    * def schema = read('classpath:com/znsio/templates/getCommentsApi.json');
+    * def userComments = karate.call('classpath:com/znsio/templates/jsonUserDetailsTemplate.feature@t_getCommentQuery',{postId:<postId>, id : <id> , "status": <status>})
     * karate.log("Fetched all the Comments ", userComments)
     * match userComments.responseStatus == <status>
     * match each userComments.response[*] == <schema>
 
+    #increase test coverage (add id also in examples section)
     Examples:
-      | postId  |status|schema                      |
-      |      1   |200   | schema.getCommentSchema   |
-      |    101   |404   | schema.getInvalidSchema   |
-      |  null  |404     |schema.getInvalidSchema    |
+      | postId |id    |status|schema                      |
+      |      1 | 1    |200   | schema.getCommentSchema    |
+      |    101 | 1    |404   | schema.getInvalidSchema    |
+      |  100   |501   |404   |schema.getInvalidSchema     |
+      |&%$#@   | 1    | 404  | schema.getInvalidSchema    |
+      |    1   |&%$#@ | 404  | schema.getInvalidSchema    |
 
 
-  @postsForUserDetails
+  @testPosts
   Scenario Outline: Fetch and test all the posts
-    * def userPosts = karate.call('classpath:com/znsio/templates/jsonUserDetailsTemplate.feature@t_getPostQuery',{userId:<userId>,"status": <status>})
+    * def schema = read('classpath:com/znsio/templates/getPostApi.json');
+    * def userPosts = karate.call('classpath:com/znsio/templates/jsonUserDetailsTemplate.feature@t_getPostQuery',{userId:<userId>,id : <id>,"status": <status>})
     * karate.log("Fetched all the posts ", userPosts)
     * match userPosts.responseStatus == <status>
     * match each userPosts.response[*] == <schema>
-
+    * match each userPosts.response[*].id == <id>
+    #increase test coverage (add id also in examples section)
     Examples:
-      | userId  |status|schema                      |
-      |      1   |200   | schema.getPostSchema       |
-      |    101   |404   | schema.getInvalidSchema    |
-      |  null  |404     |schema.getInvalidSchema    |
+      | userId |id |status|schema                      |
+      |      1 | 1 |200   | schema.getPostSchema       |
+      |    101 | 1 |404   | schema.getInvalidSchema    |
+      |  null  | 1 |404   |schema.getInvalidSchema     |
+      |&%$#@   | 1 | 404 | schema.getInvalidSchema    |
+      |        | 1 | 404  | schema.getInvalidSchema    |
 
 
 #  Reference
-
+#  @commentsQuery
+#  Scenario Outline: Fetch and test all the comments
+#    * def userComments = karate.call('classpath:com/znsio/templates/jsonUserDetailsTemplate.feature@t_getCommentsForUserDetails',{'inputKey':'<inputKey>',inputValue: <inputValue>})
+#    * karate.log("Fetched all the Comments ", userComments)
+#    * match userComments.responseStatus == <status>
+#    * match each userComments.response[*] == <schema>
+#
 #    Examples:
 #      |inputKey  | inputValue  |status|schema                      |
 #      | userId   |      1      |200   | schema.getPostSchema       |

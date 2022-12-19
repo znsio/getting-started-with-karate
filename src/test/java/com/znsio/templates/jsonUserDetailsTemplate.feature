@@ -9,7 +9,7 @@ Feature: Fetching user details
     Given path "/posts/"+userId
     When method Get
     * karate.log("Response status is ",responseStatus)
-    * match responseStatus == status
+    * match responseStatus == 200
     * def listOfPosts = response
 
   @t_getComment
@@ -26,13 +26,13 @@ Feature: Fetching user details
     And path '/albums'
     And param userId = userId
     When method Get
-    Then match responseStatus == status
+    Then match responseStatus == 200
     * def listOfAlbums = response
 
   @t_getPostQuery
   Scenario: Get Posts for particular user id
     Given path "/posts"
-    And param userId = userId
+    And params {userId : '#(userId)', id : '#(id)'}
     When method Get
     * karate.log("Response status is ",responseStatus)
     * match responseStatus == status
@@ -41,10 +41,10 @@ Feature: Fetching user details
   @t_getCommentQuery
   Scenario: Get Comments for particular post id
     Given path "/comments"
-    And param postId = postId
+    And params {postId : '#(postId)', id : '#(id)'}
     When method Get
     * karate.log("Response status is ",responseStatus)
-    Then status  200
+    * match responseStatus == status
     * def listOfComments = response
 
 
@@ -74,10 +74,11 @@ Feature: Fetching user details
 
   @t_getCommentsForUserDetails
   Scenario: Get Comments for all the user
+    * def key = inputKey
     And path '/comments'
-    * karate.log(inputKey)
+    * karate.log(key)
     * karate.log(inputValue)
-    And param inputKey = inputValue
+    And param '#(key)' = inputValue
     When method Get
     * karate.log("Comments are ",response)
-    Then match responseStatus == status
+#    Then match responseStatus == status
