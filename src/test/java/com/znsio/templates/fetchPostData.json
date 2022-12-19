@@ -1,0 +1,9 @@
+{
+  "expectedPostsResponse": {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string",
+    "body": "#string"
+  },
+  "negativeResponse": []
+}
