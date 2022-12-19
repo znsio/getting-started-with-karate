@@ -7,20 +7,6 @@
     "body": "#string"
   },
 
-  "albumSchema":
-  {
-    "userId": "#number",
-    "id": "#number",
-    "title": "#string"
-  },
-
-  "Payload":
-  {
-    "title": "Leohas",
-    "body": "Sample blog",
-    "userId": 1
-  },
-
   "createdPostSchema":
   {
     "title": "#string",
@@ -29,8 +15,19 @@
     "id": "#number"
   },
 
+  "Payload":
+  {
+    "title": "ABC_10",
+    "body": "Sample blog",
+    "userId": 1
+  },
+
   "Payload_patch":
   {
     "title": "Modified_title"
-  }
+  },
+
+  "id": 101,
+  "status":200
 }
+

@@ -7,17 +7,19 @@
 
     @t_getUserPosts
     Scenario: Get all the posts for a given user
-      * def query = {userId:'(user_Id)'}
-      Given path '/posts/'
-      And params query
+ #     * def query = {userId:'#(user_Id)'}
+      Given path '/posts'
+      And params {userId:'#(user_Id)'}
       When method GET
-      Then status 200
+      Then karate.log("Response status is ", responseStatus)
+      And match responseStatus == status
 
     @t_getUserAlbums
     Scenario: Get albums for a given user
       Given path '/users/' + user_Id + '/albums'
       When method GET
-      Then status 200
+      Then karate.log("Response status is ", responseStatus)
+      And match responseStatus == status
 
     @t_createPost
     Scenario: Create a post
