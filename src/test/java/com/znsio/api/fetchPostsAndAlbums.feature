@@ -16,6 +16,3 @@ Feature: Fetch user posts and comments
   Scenario: Get all albums with specific userId
     Given def userAlbums = karate.call('classpath:com/znsio/templates/jsonPlaceHolderTemplates.feature@t_getAlbumsById',{"userId": userId, "status": 200}).response
     Then match each userAlbums[*].userId == userId
-
-
-
