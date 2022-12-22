@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
+//@KarateOptions(tags = @Post )
 public class RunTest {
     private static final String workingDir = System.getProperty("user.dir");
     private final String reportsDirectory;
@@ -27,6 +27,7 @@ public class RunTest {
     public RunTest() {
         reportsDirectory = getReportsDirectory();
     }
+
 
     @Test
     void runKarateTests() {
@@ -151,7 +152,7 @@ public class RunTest {
     private String getEnvTag() {
         String env = getKarateEnv();
         String envTag = ((null != env) && (!env.trim()
-                                               .isEmpty())) ? env.toLowerCase() : "@prod";
+                                               .isEmpty())) ? env.toLowerCase() : "@post";
         if(!envTag.startsWith("@")) {
             envTag = "@" + envTag;
         }
