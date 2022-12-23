@@ -7,17 +7,9 @@ Feature: Implementation for querying Employee APIs
   @t_getEmployees @template
   Scenario: Get list of all employees
     * print "Get list for employeeId with userId=1"
-    * def updatedPath = "/posts"
+    * def updatedPath = pathResources
     Given path updatedPath
     When method GET
     Then status 200
     * print response
 
-  @t_getAlbum @template
-  Scenario: Get list of all employees
-    * print "Get list for employeeId with userId=1"
-    * def updatedPath = "/albums"
-    Given path updatedPath
-    When method GET
-    Then status 200
-    * print response
