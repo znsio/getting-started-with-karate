@@ -24,6 +24,7 @@ Feature: Implementation for querying Employee APIs
 
     Scenario: Get the employees by calling common function
       Given print "Get the All the userid with userID_1 "
+       * def pathResources = '/posts'
 
        * def allemployeePost = call read('classpath:com/znsio/templates/employeeTemplates.feature@t_getEmployees')
       And print allemployeePost
@@ -33,6 +34,7 @@ Feature: Implementation for querying Employee APIs
 
   Scenario: Get the employees by calling common function
     Given print "Get the All the albums with UserID_1 "
+    * def pathResources = '/albums'
     * def allemployeeAlbum = call read('classpath:com/znsio/templates/employeeTemplates.feature@t_getAlbum')
     And print allemployeeAlbum
     * def album_UserIdWith1 = karate.call('classpath:com/znsio/common/Randomizer.feature' ,{'arr': allemployeeAlbum,'key': "userId",'value': 1})
