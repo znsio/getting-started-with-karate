@@ -25,17 +25,15 @@ Feature: Implementation for querying Employee APIs
     Scenario: Get the employees by calling common function
       Given print "Get the All the userid with userID_1 "
        * def pathResources = '/posts'
+      * def allemployeePost = call read('classpath:com/znsio/templates/employeeTemplates.feature@t_getEmployees')
+      And print  allemployeePost
+      Then match allemployeePost[*].userId contains ['1']
 
-       * def allemployeePost = call read('classpath:com/znsio/templates/employeeTemplates.feature@t_getEmployees')
-      And print allemployeePost
-      * def post_UserIdWith1 = karate.call('classpath:com/znsio/common/Randomizer.feature' ,{'arr': allemployeePost,'key': "userId",'value': 1})
-    Then print post_UserIdWith1
 
 
   Scenario: Get the employees by calling common function
     Given print "Get the All the albums with UserID_1 "
     * def pathResources = '/albums'
-    * def allemployeeAlbum = call read('classpath:com/znsio/templates/employeeTemplates.feature@t_getAlbum')
+    * def allemployeeAlbum = call read('classpath:com/znsio/templates/employeeTemplates.feature@t_getEmployees')
     And print allemployeeAlbum
-    * def album_UserIdWith1 = karate.call('classpath:com/znsio/common/Randomizer.feature' ,{'arr': allemployeeAlbum,'key': "userId",'value': 1})
-    Then print album_UserIdWith1
+    Then match allemployeeAlbum[*].userId contains ['1']
