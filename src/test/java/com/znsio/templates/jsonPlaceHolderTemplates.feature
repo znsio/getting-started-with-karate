@@ -1,20 +1,19 @@
 @template
-Feature: Templates for ConfEngine
+Feature: Templates for jsonPlaceholder
 
   Background:
     Given url env.dummyRestAPIUrl
 
   @t_getAllPosts
   Scenario: Get All posts
-    And path '/posts'
+    Given path '/posts'
     When method GET
-    Then status 200
-    Then print response
-    Then assert response.length > 0
+    Then match responseStatus == expectedStatus
+    Then assert karate.sizeOf(response) > 0
 
   @t_getAllAlbums
-  Scenario: Get All posts
-    And path '/albums'
+  Scenario: Get All Albums
+    Given path '/albums'
     When method GET
-    Then status 200
-    Then assert response.length > 0
+    Then match responseStatus == expectedStatus
+    Then assert karate.sizeOf(response) > 0
