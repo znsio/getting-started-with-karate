@@ -144,6 +144,7 @@ public class RunTest {
         tagsToRun.add("~@wip");
         tagsToRun.add("~@template");
         tagsToRun.add("~@data");
+        tagsToRun.add("@posts");
 
         System.out.println("Run tests with tags: " + tagsToRun);
         return tagsToRun;
