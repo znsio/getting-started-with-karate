@@ -6,14 +6,15 @@ Feature: Templates for jsonPlaceholder
 
   @t_getAllPosts
   Scenario: Get All posts
-    Given path '/posts/'+id
+    Given path '/posts/'
+    And param userId = userId
     When method GET
     Then match responseStatus == expectedStatus
-    Then assert karate.sizeOf(response) > 0
 
   @t_getAllAlbums
   Scenario: Get All Albums
-    Given path '/albums/'+id
+    Given path '/albums/'
+    And param userId = userId
     When method GET
     Then match responseStatus == expectedStatus
-    Then assert karate.sizeOf(response) > 0
+
