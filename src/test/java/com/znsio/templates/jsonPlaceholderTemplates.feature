@@ -1,36 +1,23 @@
 @template
-Feature: API tests for https://jsonplaceholder.typicode.com/
+Feature: API template to fetch posts and albums of a user
 
   Background:
     Given url env.fetchPostsAndAlbumsUrl
-    And print "fetchPostsAndAlbumsUrl: " + env.fetchPostsAndAlbumsUrl
 
-  @t_getPosts
-  Scenario: Get list of posts for userId 1
-    Given def path = "/posts"
-    * def queryParam = {userId : '1'}
-    And print "Get list of Posts from " + env.fetchPostsAndAlbumsUrl + path
-    And path path
-    And params queryParam
-    When method GET
-    Then status 200
-    And print response.length
-    And def posts = response
-    * print "Response from /posts: ", response
+  @t_getUserPosts
+  Scenario: Fetch all the posts for a user with given user id
+    Given path "/posts"
+    And karate.log("fetchPostsAndAlbumsUrl: " + env.fetchPostsAndAlbumsUrl + "/posts")
+    * param userId = userId
+    * method GET
+    * status 200
+    * def data = response
 
-#    Examples:
-#    |param|value|
-#    |'userId'|'1 '  |
-
-  @t_getAlbums
-  Scenario: Get list of albums for userId 1
-    Given def path = "/albums"
-    * def queryParam = {userId : '1'}
-    And print "Get list of Albums from " + env.fetchPostsAndAlbumsUrl + path
-    And path path
-    And params queryParam
-    When method GET
-    Then status 200
-    And print response.length
-    And def posts = response
-    * print "Response from /albums: ", response
+  @t_getUserAlbums
+  Scenario: Fetch all the albums for a user with given user id
+    Given path "/albums"
+    And karate.log("fetchPostsAndAlbumsUrl: " + env.fetchPostsAndAlbumsUrl + "/albums")
+    * param userId = userId
+    * method GET
+    * status 200
+    * def data = response
