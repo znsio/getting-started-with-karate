@@ -1,18 +1,32 @@
-Feature: Querying the API for all posts and albums employees
+Feature: Querying the API for posts and albums
 
   Background:
     Given url  env.dummyRestAPIUrl
 
-  @t_getPostsEmployees
-  Scenario: Get list of all employees posts with userId 1
-    And path pathResources
-    And params query
+  @t_getPosts
+  Scenario: Get posts
+    Given path '/posts'
+    And params '#(query)'
     When method GET
-    Then status 200
+    Then match responseStatus == ecpectedStatus
 
-  @t_getAlbumsEmployees
-  Scenario: Get list of all employees albums with userId 1
-    And path pathResources
-    And params query
+  @t_getAlbums
+  Scenario: Get list of all albums
+    Given path '/albums'
+    And params '#(query)'
     When method GET
-    Then status 200
+    Then match responseStatus == ecpectedStatus
+
+  @t_createPost
+  Scenario: create new post
+    Given path '/posts'
+    And request '#(payload)'
+    When method POST
+    Then  match responseStatus == ecpectedStatus
+
+  @t_updatePost
+  Scenario: Update post
+    Given path '/posts/1'
+    And request '#(payload)'
+    When method PUT
+    Then match responseStatus == ecpectedStatus
