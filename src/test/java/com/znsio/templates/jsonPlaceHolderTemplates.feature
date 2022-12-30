@@ -11,6 +11,13 @@ Feature: Templates for jsonPlaceholder
     When method GET
     Then match responseStatus == expectedStatus
 
+
+  @t_getPosts
+  Scenario: Get posts
+    Given path '/posts/'+id
+    When method GET
+    Then match responseStatus == expectedStatus
+
   @t_getAllAlbums
   Scenario: Get All Albums
     Given path '/albums/'
@@ -18,3 +25,18 @@ Feature: Templates for jsonPlaceholder
     When method GET
     Then match responseStatus == expectedStatus
 
+  @t_createPost
+  Scenario: Create Post
+    Given path '/posts/'
+    And request body = body
+    And header Content-Type = 'application/json'
+    When method POST
+    Then match responseStatus == expectedStatus
+
+  @t_editPost
+  Scenario: Edit Post
+    Given path '/posts/'+id
+    And request body = body
+    And header Content-Type = 'application/json'
+    When method PATCH
+    Then match responseStatus == expectedStatus

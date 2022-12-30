@@ -21,6 +21,26 @@
       "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
       "restCountryUrl": "https://restcountries.com/v3.1"
+    },
+    "jsonPlaceholderData": {
+      "posts": {
+        "body": {
+          "userId": 1,
+          "title": "Test Title",
+          "body": "Test Body"
+        },
+        "update": {
+          "body": {
+            "title": "New Test Title"
+          }
+        },
+        "schema": {
+          "title": "#string",
+          "body": "#string",
+          "userId": "#number",
+          "id": "#number"
+        }
+      }
     }
   }
 }
