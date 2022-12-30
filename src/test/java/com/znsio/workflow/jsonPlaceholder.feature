@@ -9,7 +9,7 @@
 #- Get that post and validate if the title is updated.
 Feature: Create and update post of a user
   Background:
-    * def jsonData = jsonPlaceholderData
+    * def jsonData = env.jsonPlaceholderData
 
   Scenario: Create a post and then update title
     Given def createdPost = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_createUserPost', {'request': jsonData.payload})
