@@ -9,24 +9,24 @@
 #- Get that post and validate if the title is updated.
 Feature: Create and update post of a user
   Background:
-    * def jsonData = env.jsonPlaceholderData
+    * def jsonData = jsonPlaceholderData
 
   Scenario: Create a post and then update title
-    Given def createdPost = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_createUserPost', {'request': jsonData.payload})
-    Then print createdPost
+    Given def createdPost = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_createUserPost',{'request': jsonData.payload})
+    Then karate.log("Created Post Response :" , createdPost.response)
     And match createdPost.response.id == 101
     And match createdPost.response.title == "foo"
     And match createdPost.response.body == "bar"
     And match createdPost.response == jsonData.postSchema
 
-    Then def getCreatedPost = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_getSinglePost', {'id': createPosted.response.id})
+    Then def getCreatedPost = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getSinglePost', {'id': createdPost.response.id})
     And match getCreatedPost.response.id == 101
     And match getCreatedPost.response.title == "foo"
     And match getCreatedPost.response.body == "bar"
 
-    Then def updatedPost = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_updateUserPost', {'id': createPosted.response.id, 'request': payloadPatch.title})
+    Then def updatedPost = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_updateUserPost', {'id': createdPost.response.id, 'request': jsonData.payloadPatch})
     And print updatedPost
     Then match updatedPost.response.title == "foo-updated"
 
-    Then def getCreatedPost = karate.call('classpath:com/znsio/templates/restUserTemplates.feature@t_getSinglePost',{'id': updatedPost.response.id})
+    Then def getCreatedPost = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getSinglePost',{'id': updatedPost.response.id})
     And match getCreatedPost.response.title == "foo-updated"
