@@ -1,14 +1,23 @@
 @template @prod
-Feature: api tests for 'https://jsonplaceholder.typicode.com'
+Feature: Templates for posts and albums
 
   Background:
-    * url env.dummyRestAPIUrl
+    Given url env.dummyRestAPIUrl
 
-  @t_getUserDetails
-  Scenario: Fetch all the details for a user with given user id
+  @t_getUserPosts
+  Scenario: Get posts for user
 
-    * path dataType
-    * param userId = userId
-    * method GET
-    * status 200
-    * def data = response
+    Given path 'posts'
+    And param userId = userId
+    When method GET
+    Then match responseStatus == status_code
+    And def posts = response
+
+  @t_getUserAlbums
+  Scenario: Get albums for user
+
+    Given path 'albums'
+    And param userId = userId
+    When method GET
+    Then match responseStatus == status_code
+    And def albums = response
