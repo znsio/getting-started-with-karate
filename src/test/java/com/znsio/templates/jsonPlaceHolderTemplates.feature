@@ -4,7 +4,7 @@ Feature: Querying the API for posts and albums
     Given url  env.dummyRestAPIUrl
 
   @t_getPosts
-  Scenario: Get posts
+  Scenario: Get list af all posts
     Given path '/posts'
     And params '#(query)'
     When method GET
