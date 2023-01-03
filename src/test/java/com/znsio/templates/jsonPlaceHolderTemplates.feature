@@ -11,6 +11,13 @@ Feature: Templates for jsonPlaceholder
     When method GET
     Then match responseStatus == expectedStatus
 
+  @t_getPostsByParams
+  Scenario: Get All posts
+    Given path '/posts/'
+    And params params
+    When method GET
+    * karate.log("Request url", karate.prevRequest.url)
+    Then match responseStatus == expectedStatus
 
   @t_getPosts
   Scenario: Get posts
@@ -39,4 +46,12 @@ Feature: Templates for jsonPlaceholder
     And request body = body
     And header Content-Type = 'application/json'
     When method PATCH
+    Then match responseStatus == expectedStatus
+
+  @t_getCommentsByParams
+  Scenario: Get All posts
+    Given path '/comments/'
+    And params params
+    When method GET
+    * karate.log("Request url", karate.prevRequest.url)
     Then match responseStatus == expectedStatus
