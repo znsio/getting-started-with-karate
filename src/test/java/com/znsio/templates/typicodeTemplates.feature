@@ -11,7 +11,14 @@ Feature: Templates for posts and albums
     And param userId = userId
     When method GET
     Then match responseStatus == status_code
-    And def posts = response
+
+  @t_fetchPosts
+  Scenario: Get posts for user with query params
+
+    Given path 'posts'
+    And params query_params
+    When method GET
+    Then match responseStatus == status_code
 
   @t_getUserAlbums
   Scenario: Get albums for user
@@ -20,7 +27,6 @@ Feature: Templates for posts and albums
     And param userId = userId
     When method GET
     Then match responseStatus == status_code
-    And def albums = response
 
   @t_createPosts
   Scenario: Create post for user
@@ -35,13 +41,14 @@ Feature: Templates for posts and albums
   Scenario: Fetch post
 
     Given path 'posts', postId
+    * print postId
     When method GET
     Then match responseStatus == status_code
 
   @t_editPosts
   Scenario: Edit post for user
 
-    Given path 'posts', userId
+    Given path 'posts', postId
     And header Content-Type = 'application/json'
     And request editPostPayload
     When method PATCH
