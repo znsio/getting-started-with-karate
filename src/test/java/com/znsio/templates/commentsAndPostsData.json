@@ -1,0 +1,16 @@
+{
+  "negativeResponse": [],
+  "expectedCommentsResponse": {
+    "postId": "#number",
+    "id": "#number",
+    "name": "#string",
+    "email": "#string",
+    "body": "#string"
+  },
+  "expectedPostsResponse": {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string",
+    "body": "#string"
+  }
+}
