@@ -20,7 +20,8 @@
       "baseUrl": "https://github.com",
       "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
-      "restCountryUrl": "https://restcountries.com/v3.1"
+      "restCountryUrl": "https://restcountries.com/v3.1",
+      "jsonPlaceHolderUrl" : "https://jsonplaceholder.typicode.com"
     }
   }
 }
