@@ -39,7 +39,18 @@
           "body": "#string",
           "userId": "#number",
           "id": "#number"
-        }
+        },
+        "negativeResponseSchema": []
+      },
+      "comments": {
+          "schema": {
+            "postId": "#number",
+            "id": "#number",
+            "name": "#string",
+            "email": "#string",
+            "body": "#string"
+          },
+          "negativeResponseSchema": []
       }
     }
   }
