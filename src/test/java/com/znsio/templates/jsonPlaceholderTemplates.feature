@@ -7,16 +7,14 @@ Feature: API templates to perform CRUD operations on posts, albums and comments 
   @t_getUserPosts
   Scenario: Fetch all the posts for a user with given user id
     Given path "/posts"
-    And param userId = userId
-    And karate.log("fetchPostsAndAlbumsUrl: " + env.fetchPostsAndAlbumsUrl + "/posts" + "?userId=" + userId)
+    And params query_params
     When method GET
     Then match responseStatus == expectedStatus
 
   @t_getUserComments
   Scenario: Fetch all the comments
     Given path "/comments"
-    And param postId = postId
-    And karate.log("fetchPostsAndAlbumsUrl: " + env.fetchPostsAndAlbumsUrl + "/comments" + "?postId=" + postId)
+    And params query_params
     When method GET
     Then match responseStatus == expectedStatus
 

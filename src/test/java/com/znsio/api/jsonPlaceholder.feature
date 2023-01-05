@@ -2,8 +2,8 @@
 Feature: Fetch posts, albums and comments of a user
 
   @jsonPlaceholder
-  Scenario: Get list of Posts
-    Given def listOfPosts = call read('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getUserPosts') {"userId": 1, "expectedStatus": 200}
+  Scenario: Get list of Posts with specific user id
+    Given def listOfPosts = call read('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getUserPosts') {"query_params": {"userId":1}, "expectedStatus": 200}
     Then  karate.log("listOfPosts: " + listOfPosts.data.length)
     And karate.log("This is my list of posts-------------> ", listOfPosts.data)
     And match listOfPosts.data[*].userId contains [1]
@@ -16,29 +16,40 @@ Feature: Fetch posts, albums and comments of a user
     And match listOfAlbums.data[*].userId contains [1]
 
   @getComments
-  Scenario Outline: Get comments with specific post id
+  Scenario Outline: Get all comments
     * def testData = read('classpath:com/znsio/templates/commentsAndPostsData.json')
-    * def fetchComments = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getUserComments', {"postId": <postId>, "expectedStatus": <status>})
+    * def fetchComments = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getUserComments', {"query_params": {<key> : <value>}, "expectedStatus": <status>})
     * karate.log("This is my response",fetchComments.response)
     * match each fetchComments.response == <expectedSchema>
+    * match each <statement>
     Examples:
-      | postId                              | status | expectedSchema                    |
-      | 1                                   | 200    | testData.expectedCommentsResponse |
-      | generateRandomNumber(4)             | 200    | testData.negativeResponse         |
-      | generateAlphaNumericRandomString(7) | 200    | testData.negativeResponse         |
-      | ""                                  | 200    | testData.negativeResponse         |
-      | 'null'                              | 200    | testData.negativeResponse         |
+      | key    | value                                | status | expectedSchema                  | statement                                                                     |
+      | postId | 1                                    | 200    | testData.expectedCommentsSchema | fetchComments.response contains {postId:1}                                    |
+      | postId | generateRandomNumber(4)              | 200    | testData.negativeResponseSchema | fetchComments.response == []                                                  |
+      | postId | generateAlphaNumericRandomString(7)  | 200    | testData.negativeResponseSchema | fetchComments.response == []                                                  |
+      | postId | ""                                   | 200    | testData.negativeResponseSchema | fetchComments.response == []                                                  |
+      | postId | 'null'                               | 200    | testData.negativeResponseSchema | fetchComments.response == []                                                  |
+      | id     | 500                                  | 200    | testData.expectedCommentsSchema | fetchComments.response contains testData.expectedCommentsResponse.uniqueId[0] |
+      | id     | -1                                   | 200    | testData.negativeResponseSchema | fetchComments.response == []                                                  |
+      | id     | 'null'                               | 200    | testData.negativeResponseSchema | fetchComments.response == []                                                  |
+      | name   | generateAlphaNumericRandomString(10) | 200    | testData.negativeResponseSchema | fetchComments.response == []                                                  |
+      | email  | generateAlphaNumericRandomString(10) | 200    | testData.negativeResponseSchema | fetchComments.response == []                                                  |
 
   @getPosts
-  Scenario Outline: Get posts with specific user id
+  Scenario Outline: Get all posts
     * def testData = read('classpath:com/znsio/templates/commentsAndPostsData.json')
-    * def fetchPosts = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getUserPosts', {"userId": <userId>, "expectedStatus": <status>})
+    * def fetchPosts = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getUserPosts', {"query_params": {<key> : <value>}, "expectedStatus": <status>})
     * karate.log("This is my response",fetchPosts.response)
     * match each fetchPosts.response == <expectedSchema>
+    * match each <statement>
     Examples:
-      | userId                              | status | expectedSchema                    |
-      | 1                                   | 200    | testData.expectedPostsResponse    |
-      | generateRandomNumber(4)             | 200    | testData.negativeResponse         |
-      | generateAlphaNumericRandomString(7) | 200    | testData.negativeResponse         |
-      | ""                                  | 200    | testData.negativeResponse         |
-      | 'null'                              | 200    | testData.negativeResponse         |
+      | key    | value                                | status | expectedSchema                  | statement                                                               |
+      | userId | 1                                    | 200    | testData.expectedPostsSchema    | fetchPosts.response contains {userId:1}                                 |
+      | userId | generateRandomNumber(4)              | 200    | testData.negativeResponseSchema | fetchPosts.response == []                                               |
+      | userId | generateAlphaNumericRandomString(7)  | 200    | testData.negativeResponseSchema | fetchPosts.response == []                                               |
+      | userId | ""                                   | 200    | testData.negativeResponseSchema | fetchPosts.response == []                                               |
+      | userId | 'null'                               | 200    | testData.negativeResponseSchema | fetchPosts.response == []                                               |
+      | id     | 100                                  | 200    | testData.expectedPostsSchema    | fetchPosts.response contains testData.expectedPostsResponse.uniqueId[0] |
+      | id     | -1                                   | 200    | testData.negativeResponseSchema | fetchPosts.response == []                                               |
+      | id     | 'null'                               | 200    | testData.negativeResponseSchema | fetchPosts.response == []                                               |
+      | title  | generateAlphaNumericRandomString(10) | 200    | testData.negativeResponseSchema | fetchPosts.response == []                                               |
