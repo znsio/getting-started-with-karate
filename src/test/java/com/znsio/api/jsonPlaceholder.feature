@@ -3,10 +3,10 @@ Feature: Fetch posts, albums and comments of a user
 
   @jsonPlaceholder
   Scenario: Get list of Posts with specific user id
-    Given def listOfPosts = call read('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getUserPosts') {"query_params": {"userId":1}, "expectedStatus": 200}
-    Then  karate.log("listOfPosts: " + listOfPosts.data.length)
-    And karate.log("This is my list of posts-------------> ", listOfPosts.data)
-    And match listOfPosts.data[*].userId contains [1]
+    Given def listOfPosts = karate.call('classpath:com/znsio/templates/jsonPlaceholderTemplates.feature@t_getUserPosts', {"query_params": {"userId":1}, "expectedStatus": 200})
+    Then  karate.log("listOfPosts: " + listOfPosts.response.length)
+    And karate.log("This is my list of posts-------------> ", listOfPosts.response)
+    And match listOfPosts.response[*].userId contains [1]
 
   @jsonPlaceholder
   Scenario: Get list of Albums
