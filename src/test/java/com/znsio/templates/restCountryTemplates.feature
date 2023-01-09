@@ -1,45 +1,41 @@
 @template
-  Feature: API tests for https://restcountries.com/
+  Feature: API tests for Rest Countries
 
     Background:
-      * print "user: " + user
-      * print "number between: " + isNumberBetween(5,2,19)
-      * print "time: " + getCurrentTimeInMillis()
-      * print "addLeadingZeroes: " + addLeadingZeroes(5)
-      * print "generateRandomEmail: " + generateRandomEmail("email")
-      * print "dateBeforeXDaysInDDMMMYYYYFormat: " + dateBeforeXDaysInDDMMMYYYYFormat(5)
-      * print "generateAlphaNumericRandomString: " + generateAlphaNumericRandomString(20)
-      * print "randomNumberInRange: " + randomNumberInRange(20,1000)
+      * karate.log("user: " + user)
+      * karate.log("number between: " + isNumberBetween(5,2,19))
+      * karate.log("time: " + getCurrentTimeInMillis())
+      * karate.log("addLeadingZeroes: " + addLeadingZeroes(5))
+      * karate.log("generateRandomEmail: " + generateRandomEmail("email"))
+      * karate.log("dateBeforeXDaysInDDMMMYYYYFormat: " + dateBeforeXDaysInDDMMMYYYYFormat(5))
+      * karate.log("generateAlphaNumericRandomString: " + generateAlphaNumericRandomString(20))
+      * karate.log("randomNumberInRange: " + randomNumberInRange(20,1000))
       Given url env.restCountryUrl
-      And print "restCountryUrl: " + env.restCountryUrl
+      And karate.log("restCountryUrl: " + env.restCountryUrl)
 
     @t_getCountries
     Scenario: Get list of countries
       Given def path = "/all"
-      And print "Get list of countries from " + env.restCountryUrl + path
+      And karate.log("Get list of countries from " + env.restCountryUrl + path)
       And path path
       When method GET
       Then status 200
-      And print response.length
+      And karate.log("Length of response:",response.length)
       And def countries = response
-      * print "Response from /all: ", response
+      * karate.log("Response from /all: ", response)
 
     @t_getCountryDetails
     Scenario: Get country details
       Given def path = "/name/" + countryName
-      And print "Get country details for '" + countryName + "' from " + env.restCountryUrl + path
+      And karate.log("Get country details for '" + countryName + "' from " + env.restCountryUrl + path)
       And path path
       When method GET
       Then status 200
-#      And print response
-#      And def countryDetails = response
 
     @t_getCountryCapitalDetails
     Scenario: Get capital city details
       Given def path = "/capital/" + capitalName
-      And print "Get capital city details for '" + capitalName + "' from " + env.restCountryUrl + path
+      And karate.log("Get capital city details for '" + capitalName + "' from " + env.restCountryUrl + path)
       And path path
       When method GET
       Then status 200
-#      And print response
-#      And def capitalCity = response

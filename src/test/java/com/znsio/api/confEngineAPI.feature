@@ -1,11 +1,11 @@
 @confengine @prod
-Feature: ConfEngine.com
+Feature: API tests for ConfEngine
 
   Scenario Outline: Find number of proposals in a conferences
     * def confUrl = "/conferences/<confName>/proposals"
-    * print "Get number of proposals for conference: <confName> with path: " + confUrl
+    * karate.log("Get number of proposals for conference: <confName> with path: " + confUrl)
     * def proposalsInTheConferences = karate.call('classpath:com/znsio/templates/confEngineTemplates.feature@t_getProposalsForAConference', {'confUrl': confUrl, 'expectedStatus': <expectedStatus>}).proposals
-    * print "proposalsInTheConferences: " + proposalsInTheConferences.length
+    * karate.log("proposalsInTheConferences: " + proposalsInTheConferences.length)
     * def isInRange = isNumberBetween(proposalsInTheConferences.length, <min>, <max>)
     * match isInRange == true
 
@@ -16,7 +16,7 @@ Feature: ConfEngine.com
 
   @confengineapi
   Scenario: Find number of conferences
-    * print "Find number conferences"
+    * karate.log("Find number conferences")
     * def ids = call read('classpath:com/znsio/templates/confEngineTemplates.feature@t_getConferences')
     * def len =  ids.confIds.length
     * def isInRange = isNumberBetween(len, 100, 200)
