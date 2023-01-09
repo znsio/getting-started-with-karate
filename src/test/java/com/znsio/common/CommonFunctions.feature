@@ -2,7 +2,7 @@ Feature: Common Utility Functions
 
   @generateRandomAlphaNumeric @template
   Scenario: Get random alphanumeric string
-    * print "Get random alphanumeric string of length: " + len
+    * karate.log("Get random alphanumeric string of length: " + len)
     * def generateRandomAlphaNumeric =
     """
     function() {
@@ -11,11 +11,11 @@ Feature: Common Utility Functions
     }
     """
     * def generated = generateRandomAlphaNumeric(len)
-    * print "generateRandomAlphaNumeric: " + generated
+    * karate.log("generateRandomAlphaNumeric: " + generated)
 
  @generateRandomNumberInRange @template
   Scenario: Generate random number in range
-    * print "Generate random number in range between: " + min + " and " + max
+    * karate.log("Generate random number in range between: " + min + " and " + max)
     * def generateRandomNumberInRange =
     """
     function() {
