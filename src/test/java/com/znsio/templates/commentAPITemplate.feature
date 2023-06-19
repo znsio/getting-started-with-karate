@@ -1,7 +1,7 @@
 @template
 Feature: API tests for https://jsonplaceholder.typicode.com/
 
-  Background: api url
+  Background:
     * url "https://jsonplaceholder.typicode.com"
 
   @t_fetchComments
@@ -10,5 +10,5 @@ Feature: API tests for https://jsonplaceholder.typicode.com/
     When method GET
     Then status 200
     And def comments = response
-    * print response
+    * karate.log("comments response: ",response)
 
