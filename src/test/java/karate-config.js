@@ -21,9 +21,6 @@ function fn() {
   }
   config = loadCommonFunctions();
 
-  var checkPrime = {};
-    config.checkPrime = karate.callSingle("primeNoCheckerUtility", config[checkPrime]);
-
   var randomizer = function() {
     return karate.callSingle('classpath:com/znsio/common/Randomizer.feature@randomizerUtilities', config);
   }
