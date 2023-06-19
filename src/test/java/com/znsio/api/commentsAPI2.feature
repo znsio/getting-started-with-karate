@@ -1,26 +1,24 @@
 @posts
 Feature: API flow tests for https://jsonplaceholder.typicode.com/
 
-  Background:
-    * def isPrime =
-"""
-function(number) {
- if (number < 2) {
-    return false;
-  }
-  for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
-    }
-  }
-  return true;
-}
-"""
-
   Scenario: Fetch comments for prime numbered posts IDs, Filter comments which contain the word “et” in text content of the body attribute and
   Patch all comments by replacing “et” with “the” for the text content of the body attribute
 
     Given def commentResponse = karate.call('classpath:com/znsio/templates/commentAPITemplate.feature@t_fetchComments').comments
+    * def isPrime =
+  """
+  function(number) {
+  if (number < 2) {
+  return false;
+  }
+  for (let i = 2; i <= Math.sqrt(number); i++) {
+  if (number % i === 0) {
+  return false;
+  }
+  }
+  return true;
+  }
+  """
     * print "response from template -->", commentResponse
     When def comments = $commentResponse[*]
     Then def primeComments = karate.filter(comments, function(x){ return isPrime(x.id) })

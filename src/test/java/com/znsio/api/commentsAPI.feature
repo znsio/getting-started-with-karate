@@ -1,34 +1,35 @@
 @posts
 Feature: API tests for https://jsonplaceholder.typicode.com/
-  Background:
-    * def isPrime =
-"""
-function(number) {
- if (number < 2) {
-    return false;
+
+  Scenario:Fetch all the comments belonging to prime numbered post IDs
+
+  Given def commentResponse = karate.call('classpath:com/znsio/templates/commentAPITemplate.feature@t_fetchComments').comments
+  * print "response from template -->", commentResponse
+  When def comments = $commentResponse[*]
+  * def isPrime =
+  """
+  function(number) {
+  if (number < 2) {
+  return false;
   }
   for (let i = 2; i <= Math.sqrt(number); i++) {
-    if (number % i === 0) {
-      return false;
-    }
+  if (number % i === 0) {
+  return false;
+  }
   }
   return true;
-}
-"""
-  Scenario:Fetch all the comments belonging to prime numbered post IDs
-    Given def commentResponse = karate.call('classpath:com/znsio/templates/commentAPITemplate.feature@t_fetchComments').comments
-    * print "response from template -->", commentResponse
-    When def comments = $commentResponse[*]
-    Then def primeComments = karate.filter(comments, function(x){ return isPrime(x.id) })
-    * print primeComments
-    * match each primeComments[*].id == '#? isPrime(_) == true'
-    * match each primeComments[*].name == "#string"
-    * match each primeComments[*].name != null
-    * match each primeComments[*].email == "#string"
-    * match each primeComments[*].email != null
-    * match each primeComments[*].body == "#string"
-    * match each primeComments[*].body != null
-    * match each primeComments[*].postId == "#number"
+  }
+  """
+  Then def primeComments = karate.filter(comments, function(x){ return isPrime(x.id) })
+  * print primeComments
+  * match each primeComments[*].id == '#? isPrime(_) == true'
+  * match each primeComments[*].name == "#string"
+  * match each primeComments[*].name != null
+  * match each primeComments[*].email == "#string"
+  * match each primeComments[*].email != null
+  * match each primeComments[*].body == "#string"
+  * match each primeComments[*].body != null
+  * match each primeComments[*].postId == "#number"
     * match each primeComments[*].postId != null
 
   Scenario:Filter the comments which contain the word “et” in text content of the body attribute of comments.
