@@ -3,7 +3,7 @@
     "env": {
       "baseUrl": "https://github.com",
       "confEngineUrl": "https://local.confengine.com/api/v3",
-      "dummyRestAPIUrl": "https://local.jsonplaceholder.typicode.com",
+      "dummyRestAPIUrl": "https://local.jsonplaceholder.typicode.com/v3.1",
       "restCountryUrl": "https://local.restcountries.com"
     }
   },
@@ -11,7 +11,7 @@
     "env": {
       "baseUrl": "https://github.com",
       "confEngineUrl": "https://eat.confengine.com/api/v3",
-      "dummyRestAPIUrl": "https://eat.jsonplaceholder.typicode.com",
+      "dummyRestAPIUrl": "https://eat.jsonplaceholder.typicode.com/v3.1",
       "restCountryUrl": "https://eat.restcountries.com/v3.1"
     }
   },
