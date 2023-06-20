@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 buildscript {
     ext {
         gradleVersionProperty = '7.3.3'
-        karateVersion = '1.3.0.RC2'
+        karateVersion = '1.4.0'
         masterThoughtVersion = '5.7.2'
         junitPlatformsLauncherVersion = '1.9.0'
     }

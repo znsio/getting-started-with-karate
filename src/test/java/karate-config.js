@@ -9,12 +9,12 @@ function fn() {
 
   var config = read('classpath:test_data.json');
   config = config[env];
-  var username = java.lang.System.getProperty('user.name').replace(".", "").toLowerCase();
-  if (['anandbagmar'].indexOf(username) < 0) {
-    username = "ci";
-  }
-  karate.log('Running test as:', username);
-  config.user = username;
+//  var username = java.lang.System.getProperty('user.name').replace(".", "").toLowerCase();
+//  if (['anandbagmar'].indexOf(username) < 0) {
+//    username = "ci";
+//  }
+//  karate.log('Running test as:', username);
+//  config.user = username;
 
   var loadCommonFunctions = function() {
     return karate.callSingle('classpath:util.js', config);
@@ -25,6 +25,7 @@ function fn() {
     return karate.callSingle('classpath:com/znsio/common/Randomizer.feature@randomizerUtilities', config);
   }
   config = randomizer();
+
 
 //  Calling a function from randomizer
 //  karate.log("Random number: ", config.generateRandomNumber(10))
