@@ -23,8 +23,8 @@ Feature: API flow tests for https://jsonplaceholder.typicode.com/
   }
   """
 
-    Then def primeComments = karate.filter(comments, function(x){ return isPrime(x.id) })
-    * match each primeComments[*].id == '#? isPrime(_) == true'
+    Then def primeComments = karate.filter(comments, function(x){ return isPrime(x.postId) })
+    * match each primeComments[*].postId == '#? isPrime(_) == true'
     * print primeComments
     * def filteredComments = primeComments.filter(x => x.body.includes(' et '))
     * print filteredComments
@@ -38,3 +38,19 @@ Feature: API flow tests for https://jsonplaceholder.typicode.com/
     * match each patchedComments[*].email != null
     * match each patchedComments[*].postId == "#number"
     * match each patchedComments[*].postId != null
+
+    And def patchCall =
+"""
+function(dataList) {
+  for (var index in dataList) {
+    karate.log('index ---', index)
+    var postId = dataList[index].postId
+    karate.log("postId ---", postId)
+    var body = dataList[index].body
+    karate.log("body ---", body)
+    karate.call('classpath:com/znsio/templates/commentAPITemplate.feature@t_patchComments', { "requestBody": { "postId": postId, "body": body } })
+  }
+}
+"""
+
+    * call patchCall(patchedComments)
