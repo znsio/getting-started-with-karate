@@ -4,6 +4,8 @@ import com.intuit.karate.Results;
 import com.intuit.karate.junit5.Karate;
 import com.jayway.jsonpath.JsonPath;
 import com.znsio.exceptions.TestExecutionException;
+import com.znsio.reportPortal.KarateReportPortalHook;
+import com.znsio.reportPortal.SessionContext;
 import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +25,6 @@ public class RunTest {
     private final String TEST_DATA_FILE_NAME = "src/test/java/test_data.json";
     private final String BASE_URL = "baseUrl";
     private final String TARGET_ENVIRONMENT = "TARGET_ENVIRONMENT";
-
     public RunTest() {
         reportsDirectory = getReportsDirectory();
     }
@@ -32,8 +33,10 @@ public class RunTest {
     void runKarateTests() {
         System.out.printf("Class: %s :: Test: runKarateTests%n", this.getClass()
                                                                      .getSimpleName());
+        System.out.println("Setting following attributes on Report Portal: " + setAttributes());
         Results results = Karate.run(getClasspath())
                                 .tags(getTags())
+                                .hook(new KarateReportPortalHook())
                                 .karateEnv(getKarateEnv())
                                 .reportDir(reportsDirectory + File.separator + KARATE_REPORTS_DIR)
                                 .outputCucumberJson(true)
@@ -48,6 +51,7 @@ public class RunTest {
         message += "\n\t" + "Scenarios: Failed: " + results.getScenariosFailed() + ", Passed: " + results.getScenariosPassed() + ", Total: " + results.getScenariosTotal();
         message += "\n\t" + "Features : Failed: " + results.getFeaturesFailed() + ", Passed: " + results.getFeaturesPassed() + ", Total: " + results.getFeaturesTotal();
         message += "\n\t" + "Reports available here: file://" + reportFilePath;
+        SessionContext.setReportPortalLaunchURL();
         if(results.getScenariosFailed() > 0) {
             throw new TestExecutionException(message);
         } else {
@@ -178,4 +182,17 @@ public class RunTest {
         System.out.printf("Parallel count: %d %n", parallelCount);
         return parallelCount;
     }
+
+    private String setAttributes()
+    {
+        String rpAttributes = String.format(
+                "ParallelCount: %d; " +
+                        "Tags: %s; "+"TargetEnvironment: %s; "+"Username: %s;"+"Type: %s",
+                getParallelCount(),
+                System.getenv("TAG"),getEnvTag(), System.getProperty("user.name"), System.getenv("TYPE"));
+        System.setProperty("rp.attributes", rpAttributes);
+        System.setProperty("rp.description", " End-2-End scenarios on "+System.getenv("TYPE"));
+        return rpAttributes;
+    }
+
 }
