@@ -45,10 +45,14 @@ public class SessionContext {
             String rpLaunchId = System.getProperty("rp.launch.id");
             LOGGER.debug(String.format("System property: rp.launch.id: '%s'", rpLaunchId));
             reportPortalLaunchURL = String.format("%s/ui/#%s/launches/all/%s", reportPortalProperties.getProperty("rp.endpoint"), reportPortalProperties.getProperty("rp.project"), rpLaunchId);
-            LOGGER.info(String.format("**** ReportPortal URL - %s ****", reportPortalLaunchURL));
-            System.out.println("**** ReportPortal URL - %s ****"+ reportPortalLaunchURL);
+            return ;
         }
+         reportPortalLaunchURL="Report Portal is not enabled in reportportal.properties";
 
+    }
+    public static String getReportPortalLaunchURL(){
+        setReportPortalLaunchURL();
+        return reportPortalLaunchURL;
     }
 }
 
