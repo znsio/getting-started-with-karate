@@ -51,12 +51,12 @@ public class RunTest {
         message += "\n\t" + "Scenarios: Failed: " + results.getScenariosFailed() + ", Passed: " + results.getScenariosPassed() + ", Total: " + results.getScenariosTotal();
         message += "\n\t" + "Features : Failed: " + results.getFeaturesFailed() + ", Passed: " + results.getFeaturesPassed() + ", Total: " + results.getFeaturesTotal();
         message += "\n\t" + "Reports available here: file://" + reportFilePath;
+        message += "\n\t" + "Report Portal Report Url :" + SessionContext.getReportPortalLaunchURL();
         if(results.getScenariosFailed() > 0) {
             throw new TestExecutionException(message);
         } else {
             System.out.println(message);
         }
-        SessionContext.setReportPortalLaunchURL();
     }
 
     private String generateReport(String karateOutputPath) {
