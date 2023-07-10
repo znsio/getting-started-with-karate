@@ -70,11 +70,11 @@ class RPReporter {
             List<Tag> featureTags = feature.getTags();
             if (featureTags != null && !featureTags.isEmpty()) {
                 for (Tag tag : featureTags) {
-                    if (tag.getName().equalsIgnoreCase("template")) return false;
+                    if (tag.getName().equalsIgnoreCase("template")) return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 
     synchronized boolean isTemplate(Scenario scenario) {
@@ -82,11 +82,11 @@ class RPReporter {
             List<Tag> scenarioTags = scenario.getTags();
             if (scenarioTags != null && !scenarioTags.isEmpty()) {
                 for (Tag tag : scenarioTags) {
-                    if (tag.getName().equalsIgnoreCase("template")) return false;
+                    if (tag.getName().equalsIgnoreCase("template")) return true;
                 }
             }
         }
-        return true;
+        return false  ;
     }
 
     synchronized void startFeature(Feature feature) {

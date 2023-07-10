@@ -22,16 +22,7 @@ public class KarateReportPortalHook implements RuntimeHook
     @Override
     public boolean beforeScenario(ScenarioRuntime sr)
     {
-        boolean flag = false;
-        try {
-            flag = this.rpReporter.isTemplate(sr.scenario);
-            if (!flag)
-                flag = false;
-        }catch (Exception e)
-        {
-            logger.error("beforeScenario exception: {}", e.getMessage(), e);
-        }
-        return flag;
+        return !this.rpReporter.isTemplate(sr.scenario);
     }
 
     @Override
@@ -58,11 +49,9 @@ public class KarateReportPortalHook implements RuntimeHook
     @Override
     public void afterFeature(FeatureRuntime fr)
     {
-        boolean flag;
         try
         {
-            flag = this.rpReporter.isTemplate(fr.feature);
-            if(flag)
+            if(!this.rpReporter.isTemplate(fr.feature))
                 this.rpReporter.finishFeature(fr.result);
         }
         catch (Exception e)
