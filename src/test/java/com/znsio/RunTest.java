@@ -188,9 +188,10 @@ public class RunTest {
         // set attributes on ReportPortal launch dashboard
         String rpAttributes = String.format(
                 "ParallelCount: %d; " +
-                        "Tags: %s; "+"TargetEnvironment: %s; "+"Username: %s;"+"Type: %s",
+                        "Tags: %s; "+"TargetEnvironment: %s; "+"Username: %s; "+"Type: %s; "+"OS: %s; ",
                 getParallelCount(),
-                System.getenv("TAG"),getEnvTag(), System.getProperty("user.name"), System.getenv("TYPE"));
+                System.getenv("TAG"),getEnvTag(), System.getProperty("user.name"), System.getenv("TYPE"),
+                System.getProperty("os.name"));
         System.setProperty("rp.attributes", rpAttributes);
         System.setProperty("rp.description", " End-2-End scenarios on "+System.getenv("TYPE"));
         return rpAttributes;
