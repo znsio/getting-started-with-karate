@@ -34,8 +34,15 @@ public class RunTest {
     void runKarateTests() {
         System.out.printf("Class: %s :: Test: runKarateTests%n", this.getClass().getSimpleName());
         System.out.println("Setting following attributes on Report Portal: " + setAttributes());
-        Results results = Karate.run(getClasspath()).tags(getTags()).hook(new KarateReportPortalHook()) // using hook to override karate's before/after methods in KarateReportPortalHook to add results to RP.
-                .karateEnv(getKarateEnv()).reportDir(reportsDirectory + File.separator + KARATE_REPORTS_DIR).outputCucumberJson(true).outputJunitXml(true).outputHtmlReport(true).parallel(getParallelCount());
+        Results results = Karate.run(getClasspath())
+                                .tags(getTags())
+                                .hook(new KarateReportPortalHook()) // using hook to override karate's before/after methods in KarateReportPortalHook to add results to RP.
+                                .karateEnv(getKarateEnv())
+                                .reportDir(reportsDirectory + File.separator + KARATE_REPORTS_DIR)
+                                .outputCucumberJson(true)
+                                .outputJunitXml(true)
+                                .outputHtmlReport(true)
+                                .parallel(getParallelCount());
         String reportFilePath = generateReport(results.getReportDir());
         String message = "\n\n" + "Test execution summary: ";
         message += "\n\t" + "Tags: " + getTags();
