@@ -36,7 +36,7 @@ public class RunTest {
         System.out.println("Setting following attributes on Report Portal: " + setAttributes());
         Results results = Karate.run(getClasspath())
                                 .tags(getTags())
-                                .hook(new KarateReportPortalHook())
+                                .hook(new KarateReportPortalHook()) // using hook to override karate's before/after methods in KarateReportPortalHook to add results to RP.
                                 .karateEnv(getKarateEnv())
                                 .reportDir(reportsDirectory + File.separator + KARATE_REPORTS_DIR)
                                 .outputCucumberJson(true)
@@ -185,6 +185,7 @@ public class RunTest {
 
     private String setAttributes()
     {
+        // set attributes on ReportPortal launch dashboard
         String rpAttributes = String.format(
                 "ParallelCount: %d; " +
                         "Tags: %s; "+"TargetEnvironment: %s; "+"Username: %s;"+"Type: %s",
