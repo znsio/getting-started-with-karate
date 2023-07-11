@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 public class SessionContext {
@@ -39,18 +40,20 @@ public class SessionContext {
             throw new RuntimeException(var4.getMessage());
         }
     }
+
     public static void setReportPortalLaunchURL() {
         boolean isReportPortalEnabledInProperties = null == reportPortalProperties.getProperty("rp.enable") || reportPortalProperties.getProperty("rp.enable").equalsIgnoreCase("true");
         if (isReportPortalEnabledInProperties) {
             String rpLaunchId = System.getProperty("rp.launch.id");
             LOGGER.debug(String.format("System property: rp.launch.id: '%s'", rpLaunchId));
             reportPortalLaunchURL = String.format("%s/ui/#%s/launches/all/%s", reportPortalProperties.getProperty("rp.endpoint"), reportPortalProperties.getProperty("rp.project"), rpLaunchId);
-            return ;
+            return;
         }
-         reportPortalLaunchURL="Report Portal is not enabled in reportportal.properties";
+        reportPortalLaunchURL = "Report Portal is not enabled in reportportal.properties";
 
     }
-    public static String getReportPortalLaunchURL(){
+
+    public static String getReportPortalLaunchURL() {
         setReportPortalLaunchURL();
         return reportPortalLaunchURL;
     }

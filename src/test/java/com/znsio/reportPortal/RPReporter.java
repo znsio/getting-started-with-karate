@@ -170,10 +170,7 @@ class RPReporter {
             Stream<FeatureResult> featureResults = suite.getFeatureResults();
 
             if (featureResults.count() > 0) {
-                Long failedCount = featureResults
-                        .filter(s -> s.getScenarioCount() > 0)
-                        .filter(s -> s.getFailedCount() > 0)
-                        .collect(Collectors.counting());
+                Long failedCount = featureResults.filter(s -> s.getScenarioCount() > 0).filter(s -> s.getFailedCount() > 0).collect(Collectors.counting());
 
                 launchStatus = (failedCount > 0) ? StatusEnum.FAILED : StatusEnum.PASSED;
             }
@@ -193,8 +190,7 @@ class RPReporter {
     }
 
     private void sendLog(final String message, final String level, final String itemUuid) {
-        ReportPortal.emitLog(itemId ->
-        {
+        ReportPortal.emitLog(itemId -> {
             SaveLogRQ saveLogRq = new SaveLogRQ();
             saveLogRq.setMessage(message);
             saveLogRq.setItemUuid(itemUuid);
@@ -232,8 +228,7 @@ class RPReporter {
         for (Map<String, Map> step : stepResultsToMap) {
             String logLevel = status.equals("PASSED") ? StatusEnum.INFO_LEVEL : StatusEnum.ERROR_LEVEL;
             if (step.get("doc_string") != null) {
-                sendLog("STEP: " + step.get("name") +
-                        "\n-----------------DOC_STRING-----------------\n" + step.get("doc_string"), logLevel, scenarioId.blockingGet());
+                sendLog("STEP: " + step.get("name") + "\n-----------------DOC_STRING-----------------\n" + step.get("doc_string"), logLevel, scenarioId.blockingGet());
             } else {
                 sendLog("STEP: " + step.get("name"), logLevel, scenarioId.blockingGet());
             }

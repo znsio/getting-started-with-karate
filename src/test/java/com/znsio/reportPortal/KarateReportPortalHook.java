@@ -42,8 +42,7 @@ public class KarateReportPortalHook implements RuntimeHook {
     @Override
     public void afterFeature(FeatureRuntime fr) {
         try {
-            if (!this.rpReporter.isTemplate(fr.feature))
-                this.rpReporter.finishFeature(fr.result);
+            if (!this.rpReporter.isTemplate(fr.feature)) this.rpReporter.finishFeature(fr.result);
         } catch (Exception e) {
             logger.error("afterFeature exception: {}", e.getMessage(), e);
         }
