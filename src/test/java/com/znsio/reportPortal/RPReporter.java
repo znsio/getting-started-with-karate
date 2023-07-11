@@ -94,6 +94,48 @@ class RPReporter {
     }
 
     synchronized void finishFeature(FeatureResult featureResult) {
+
+        StartTestItemRQ startFeatureRq = this.setFeatureDetailsInReportPortal(featureResult);
+        Maybe<String> featureId = launch.get().startTestItem(null, startFeatureRq);
+        //launches feature to report portal and logs it
+
+        for (ScenarioResult scenarioResult : featureResult.getScenarioResults()) {
+            //for multiple scenarios inside a features it will log each scenario inside the feature
+            this.setScenarioDetailsInReportPortal(scenarioResult,featureResult,featureId);
+        }
+
+        FinishTestItemRQ finishFeatureRq = new FinishTestItemRQ();
+        finishFeatureRq.setEndTime(getTime());
+        finishFeatureRq.setStatus(getFeatureStatus(featureResult));
+        launch.get().finishTestItem(featureId, finishFeatureRq);
+        //end of a feature file
+    }
+
+    synchronized private void setScenarioDetailsInReportPortal(ScenarioResult scenarioResult, FeatureResult featureResult, Maybe<String> featureId) {
+       //sets scenario details in Report portal
+        StartTestItemRQ startScenarioRq = new StartTestItemRQ();
+        startScenarioRq.setDescription(scenarioResult.getScenario().getDescription());
+        startScenarioRq.setName("Scenario: " + scenarioResult.getScenario().getName());
+        startScenarioRq.setStartTime(new Date(scenarioResult.getStartTime()));
+        startScenarioRq.setType(StatusEnum.STEP_TYPE);
+
+        if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
+            List<Tag> tags = featureResult.getFeature().getTags();
+            Set<ItemAttributesRQ> attributes = extractAttributes(tags);
+            startScenarioRq.setAttributes(attributes);
+        }
+
+        Maybe<String> scenarioId = launch.get().startTestItem(featureId, startScenarioRq);
+        this.logStatus(getScenerioStatus(scenarioResult), scenarioResult, scenarioId);
+        FinishTestItemRQ finishScenarioRq = buildStopScenerioRq(scenarioResult);
+        finishScenarioRq.setEndTime(new Date(scenarioResult.getEndTime()));
+        finishScenarioRq.setStatus(getScenerioStatus(scenarioResult));
+
+        launch.get().finishTestItem(scenarioId, finishScenarioRq);
+    }
+
+    synchronized private StartTestItemRQ setFeatureDetailsInReportPortal(FeatureResult featureResult) {
+        //sets feature name attributes and tags in report portal
         Feature feature = featureResult.getFeature();
         String featureUri = getUri(feature);
 
@@ -112,38 +154,7 @@ class RPReporter {
             Set<ItemAttributesRQ> attributes = extractAttributes(tags);
             startFeatureRq.setAttributes(attributes);
         }
-
-        Maybe<String> featureId = launch.get().startTestItem(null, startFeatureRq);
-
-        for (ScenarioResult scenarioResult : featureResult.getScenarioResults()) {
-            StartTestItemRQ startScenarioRq = new StartTestItemRQ();
-            startScenarioRq.setDescription(scenarioResult.getScenario().getDescription());
-            startScenarioRq.setName("Scenario: " + scenarioResult.getScenario().getName());
-            startScenarioRq.setStartTime(new Date(scenarioResult.getStartTime()));
-            startScenarioRq.setType(StatusEnum.STEP_TYPE);
-
-            if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
-                List<Tag> tags = feature.getTags();
-                Set<ItemAttributesRQ> attributes = extractAttributes(tags);
-                startScenarioRq.setAttributes(attributes);
-            }
-
-            Maybe<String> scenarioId = launch.get().startTestItem(featureId, startScenarioRq);
-
-            this.logStatus(getScenerioStatus(scenarioResult), scenarioResult, scenarioId);
-
-            FinishTestItemRQ finishScenarioRq = buildStopScenerioRq(scenarioResult);
-            finishScenarioRq.setEndTime(new Date(scenarioResult.getEndTime()));
-            finishScenarioRq.setStatus(getScenerioStatus(scenarioResult));
-
-            launch.get().finishTestItem(scenarioId, finishScenarioRq);
-        }
-
-        FinishTestItemRQ finishFeatureRq = new FinishTestItemRQ();
-        finishFeatureRq.setEndTime(getTime());
-        finishFeatureRq.setStatus(getFeatureStatus(featureResult));
-
-        launch.get().finishTestItem(featureId, finishFeatureRq);
+        return startFeatureRq;
     }
 
     private String getLaunchStatus(Suite suite) {
@@ -154,12 +165,8 @@ class RPReporter {
 
             if (featureResults.count() > 0) {
                 Long failedCount = featureResults
-                        .filter(s -> {
-                            return s.getScenarioCount() > 0;
-                        })
-                        .filter(s -> {
-                            return s.getFailedCount() > 0;
-                        })
+                        .filter(s -> s.getScenarioCount() > 0)
+                        .filter(s -> s.getFailedCount() > 0)
                         .collect(Collectors.counting());
 
                 launchStatus = (failedCount > 0) ? StatusEnum.FAILED : StatusEnum.PASSED;
