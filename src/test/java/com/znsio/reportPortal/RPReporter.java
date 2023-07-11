@@ -32,6 +32,7 @@ class RPReporter {
     }
 
     void startLaunch() {
+        // Launch report portal and set different attributes
         this.launch = Suppliers.memoize(new Supplier<Launch>() {
             private final Date startTime = getTime();
 
@@ -58,6 +59,7 @@ class RPReporter {
     }
 
     void finishLaunch(Suite suite) {
+        // Finishes launch in ReportPortal. Blocks until all items are reported correctly
         FinishExecutionRQ finishLaunchRq = new FinishExecutionRQ();
         finishLaunchRq.setEndTime(getTime());
         finishLaunchRq.setStatus(getLaunchStatus(suite));
@@ -66,6 +68,7 @@ class RPReporter {
     }
 
     synchronized boolean isTemplate(Feature feature) {
+        // return boolean based on if the feature has tag "@template". If true, then the feature won't get displayed on reportPortal.
         if (feature != null) {
             List<Tag> featureTags = feature.getTags();
             if (featureTags != null && !featureTags.isEmpty()) {
@@ -78,6 +81,7 @@ class RPReporter {
     }
 
     synchronized boolean isTemplate(Scenario scenario) {
+        // return boolean based on if the scenario has tag "@template". If true, then the scenario won't get displayed on reportPortal.
         if (scenario != null) {
             List<Tag> scenarioTags = scenario.getTags();
             if (scenarioTags != null && !scenarioTags.isEmpty()) {
@@ -86,11 +90,12 @@ class RPReporter {
                 }
             }
         }
-        return false  ;
+        return false;
     }
 
     synchronized void startFeature(Feature feature) {
         featureStartDate.put(getUri(feature), getTime());
+        // set the feature start date and time
     }
 
     synchronized void finishFeature(FeatureResult featureResult) {
@@ -101,7 +106,7 @@ class RPReporter {
 
         for (ScenarioResult scenarioResult : featureResult.getScenarioResults()) {
             //for multiple scenarios inside a features it will log each scenario inside the feature
-            this.setScenarioDetailsInReportPortal(scenarioResult,featureResult,featureId);
+            this.setScenarioDetailsInReportPortal(scenarioResult, featureResult, featureId);
         }
 
         FinishTestItemRQ finishFeatureRq = new FinishTestItemRQ();
@@ -112,7 +117,7 @@ class RPReporter {
     }
 
     synchronized private void setScenarioDetailsInReportPortal(ScenarioResult scenarioResult, FeatureResult featureResult, Maybe<String> featureId) {
-       //sets scenario details in Report portal
+        //sets scenario details in Report portal
         StartTestItemRQ startScenarioRq = new StartTestItemRQ();
         startScenarioRq.setDescription(scenarioResult.getScenario().getDescription());
         startScenarioRq.setName("Scenario: " + scenarioResult.getScenario().getName());
@@ -158,6 +163,7 @@ class RPReporter {
     }
 
     private String getLaunchStatus(Suite suite) {
+        // return report portal launch status
         String launchStatus = StatusEnum.SKIPPED;
 
         try {
@@ -204,6 +210,7 @@ class RPReporter {
     }
 
     private FinishTestItemRQ buildStopScenerioRq(ScenarioResult scenarioResult) {
+        // After completion of each scenario returns the results
         Date now = Calendar.getInstance().getTime();
         FinishTestItemRQ rq = new FinishTestItemRQ();
         if (scenarioResult != null && scenarioResult.getScenario() != null) {
@@ -219,6 +226,7 @@ class RPReporter {
     }
 
     private synchronized void logStatus(String status, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
+        // send step logs to report portal
         List<Map<String, Map>> stepResultsToMap = (List<Map<String, Map>>) scenarioResult.toCucumberJson().get("steps");
 
         for (Map<String, Map> step : stepResultsToMap) {
@@ -233,6 +241,7 @@ class RPReporter {
     }
 
     private String getFeatureStatus(FeatureResult featureResult) {
+        // return feature status
         String status = StatusEnum.SKIPPED;
         if (featureResult.getScenarioCount() > 0) {
             if (featureResult.isFailed()) {
@@ -245,6 +254,7 @@ class RPReporter {
     }
 
     private String getScenerioStatus(ScenarioResult scenarioResult) {
+        // return scenario status
         String status = StatusEnum.SKIPPED;
         if (scenarioResult.getStepResults() != null && scenarioResult.getStepResults().size() > 0) {
             if (scenarioResult.getFailedStep() != null) {
@@ -257,6 +267,7 @@ class RPReporter {
     }
 
     public static Set<ItemAttributesRQ> extractAttributes(List<Tag> tags) {
+        // returns tags used at feature/scenario level
         Set<ItemAttributesRQ> attributes = new HashSet<ItemAttributesRQ>();
         tags.forEach((tag) -> {
             attributes.add(new ItemAttributesRQ(null, tag.getName()));
