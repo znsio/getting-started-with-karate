@@ -27,6 +27,7 @@ class RPReporter {
     private final Map<String, Date> featureStartDate = Collections.synchronizedMap(new HashMap<String, Date>());
     private static final Logger LOGGER = Logger.getLogger(RPReporter.class.getName());
     private Supplier<Launch> launch;
+    int step;
 
     RPReporter() {
     }
@@ -63,7 +64,7 @@ class RPReporter {
         FinishExecutionRQ finishLaunchRq = new FinishExecutionRQ();
         finishLaunchRq.setEndTime(getTime());
         finishLaunchRq.setStatus(getLaunchStatus(suite));
-
+        System.out.println("total step calls "+step);
         launch.get().finish(finishLaunchRq);
     }
 
@@ -98,16 +99,16 @@ class RPReporter {
         // set the feature start date and time
     }
 
-    synchronized void finishFeature(FeatureResult featureResult) {
+    synchronized void finishFeature(FeatureResult featureResult,Maybe<String> featureId) {
 
-        StartTestItemRQ startFeatureRq = this.setFeatureDetailsInReportPortal(featureResult);
-        Maybe<String> featureId = launch.get().startTestItem(null, startFeatureRq);
+//        StartTestItemRQ startFeatureRq = this.setFeatureDetailsInReportPortal(featureResult);
+//        Maybe<String> featureId = launch.get().startTestItem(null, startFeatureRq);
         //launches feature to report portal and logs it
 
-        for (ScenarioResult scenarioResult : featureResult.getScenarioResults()) {
-            //for multiple scenarios inside a features it will log each scenario inside the feature
-            this.setScenarioDetailsInReportPortal(scenarioResult, featureResult, featureId);
-        }
+//        for (ScenarioResult scenarioResult : featureResult.getScenarioResults()) {
+//            //for multiple scenarios inside a features it will log each scenario inside the feature
+//            this.setScenarioDetailsInReportPortal(scenarioResult, featureResult, featureId);
+//        }
 
         FinishTestItemRQ finishFeatureRq = new FinishTestItemRQ();
         finishFeatureRq.setEndTime(getTime());
@@ -118,25 +119,25 @@ class RPReporter {
 
     synchronized private void setScenarioDetailsInReportPortal(ScenarioResult scenarioResult, FeatureResult featureResult, Maybe<String> featureId) {
         //sets scenario details in Report portal
-        StartTestItemRQ startScenarioRq = new StartTestItemRQ();
-        startScenarioRq.setDescription(scenarioResult.getScenario().getDescription());
-        startScenarioRq.setName("Scenario: " + scenarioResult.getScenario().getName());
-        startScenarioRq.setStartTime(new Date(scenarioResult.getStartTime()));
-        startScenarioRq.setType(StatusEnum.STEP_TYPE);
-
-        if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
-            List<Tag> tags = featureResult.getFeature().getTags();
-            Set<ItemAttributesRQ> attributes = extractAttributes(tags);
-            startScenarioRq.setAttributes(attributes);
-        }
-
-        Maybe<String> scenarioId = launch.get().startTestItem(featureId, startScenarioRq);
-        this.logStatus(getScenerioStatus(scenarioResult), scenarioResult, scenarioId);
-        FinishTestItemRQ finishScenarioRq = buildStopScenerioRq(scenarioResult);
-        finishScenarioRq.setEndTime(new Date(scenarioResult.getEndTime()));
-        finishScenarioRq.setStatus(getScenerioStatus(scenarioResult));
-
-        launch.get().finishTestItem(scenarioId, finishScenarioRq);
+//        StartTestItemRQ startScenarioRq = new StartTestItemRQ();
+//        startScenarioRq.setDescription(scenarioResult.getScenario().getDescription());
+//        startScenarioRq.setName("Scenario: " + scenarioResult.getScenario().getName());
+//        startScenarioRq.setStartTime(new Date(scenarioResult.getStartTime()));
+//        startScenarioRq.setType(StatusEnum.STEP_TYPE);
+//
+//        if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
+//            List<Tag> tags = featureResult.getFeature().getTags();
+//            Set<ItemAttributesRQ> attributes = extractAttributes(tags);
+//            startScenarioRq.setAttributes(attributes);
+//        }
+//
+//        Maybe<String> scenarioId = launch.get().startTestItem(featureId, startScenarioRq);
+//        this.logStatus(getScenerioStatus(scenarioResult), scenarioResult, scenarioId);
+//        FinishTestItemRQ finishScenarioRq = buildStopScenerioRq(scenarioResult);
+//        finishScenarioRq.setEndTime(new Date(scenarioResult.getEndTime()));
+//        finishScenarioRq.setStatus(getScenerioStatus(scenarioResult));
+//
+//        launch.get().finishTestItem(scenarioId, finishScenarioRq);
     }
 
     synchronized private StartTestItemRQ setFeatureDetailsInReportPortal(FeatureResult featureResult) {
@@ -221,20 +222,6 @@ class RPReporter {
         return rq;
     }
 
-    private synchronized void logStatus(String status, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
-        // send step logs to report portal
-        List<Map<String, Map>> stepResultsToMap = (List<Map<String, Map>>) scenarioResult.toCucumberJson().get("steps");
-
-        for (Map<String, Map> step : stepResultsToMap) {
-            String logLevel = status.equals("PASSED") ? StatusEnum.INFO_LEVEL : StatusEnum.ERROR_LEVEL;
-            if (step.get("doc_string") != null) {
-                sendLog("STEP: " + step.get("name") + "\n-----------------DOC_STRING-----------------\n" + step.get("doc_string"), logLevel, scenarioId.blockingGet());
-            } else {
-                sendLog("STEP: " + step.get("name"), logLevel, scenarioId.blockingGet());
-            }
-        }
-    }
-
     private String getFeatureStatus(FeatureResult featureResult) {
         // return feature status
         String status = StatusEnum.SKIPPED;
@@ -268,5 +255,67 @@ class RPReporter {
             attributes.add(new ItemAttributesRQ(null, tag.getName()));
         });
         return attributes;
+    }
+
+    synchronized public Maybe<String> launchFeatureToReportPortal(FeatureResult featureResult) {
+        StartTestItemRQ startFeatureRq = this.setFeatureDetailsInReportPortal(featureResult);
+        return launch.get().startTestItem(null, startFeatureRq);
+    }
+
+    synchronized public Maybe<String> launchScenarioToReportPortal(ScenarioResult scenarioResult, Maybe<String> featureId) {
+        String scenario="Scenario : ";
+        StartTestItemRQ startScenarioRq = new StartTestItemRQ();
+        startScenarioRq.setDescription(scenarioResult.getScenario().getDescription());
+        if(scenarioResult.getScenario().isOutlineExample())
+            scenario="Scenario Outline : ";
+        startScenarioRq.setName(scenario + scenarioResult.getScenario().getName());
+        startScenarioRq.setStartTime(new Date(scenarioResult.getStartTime()));
+        startScenarioRq.setType(StatusEnum.STEP_TYPE);
+
+        if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
+            List<Tag> tags = scenarioResult.getScenario().getTags();
+            Set<ItemAttributesRQ> attributes = extractAttributes(tags);
+            startScenarioRq.setAttributes(attributes);
+        }
+
+        return launch.get().startTestItem(featureId, startScenarioRq);
+    }
+
+    synchronized public void finishScenarioInReportPortal(ScenarioResult scenarioResult, Maybe<String> scenarioId) {
+//        this.logStatus(getScenerioStatus(scenarioResult), scenarioResult, scenarioId);
+        FinishTestItemRQ finishScenarioRq = buildStopScenerioRq(scenarioResult);
+        finishScenarioRq.setEndTime(new Date(scenarioResult.getEndTime()));
+        finishScenarioRq.setStatus(getScenerioStatus(scenarioResult));
+
+        launch.get().finishTestItem(scenarioId, finishScenarioRq);
+    }
+
+    synchronized protected void writeStepToReportPortal(StepResult stepResult, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
+        step++;
+        String logLevel = stepResult.isFailed() ? StatusEnum.ERROR_LEVEL : StatusEnum.INFO_LEVEL;
+        List<Map<String, Map>> step = (List<Map<String, Map>>) scenarioResult.toCucumberJson().get("steps");
+        sendLog(stepResult.getStep().toString() + "\n-----------------DOC_STRING-----------------\n", logLevel,scenarioId.blockingGet());
+
+
+        System.out.println("Steps that can be used getStep: "+stepResult.getStep());
+        System.out.println("Steps that can be used isFailed: "+stepResult.isFailed());
+        System.out.println("Steps that can be used toCucumberJson: "+stepResult.toCucumberJson());
+        System.out.println("Steps that can be used isWithCallResults: "+stepResult.isWithCallResults());
+        System.out.println("Steps that can be used getCallResults: "+stepResult.getCallResults());
+        System.out.println("Steps that can be used getErrorMessage: "+stepResult.getErrorMessage());
+
+    }
+    private synchronized void logStatus(String status, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
+        // send step logs to report portal
+        List<Map<String, Map>> stepResultsToMap = (List<Map<String, Map>>) scenarioResult.toCucumberJson().get("steps");
+
+        for (Map<String, Map> step : stepResultsToMap) {
+            String logLevel = status.equals("PASSED") ? StatusEnum.INFO_LEVEL : StatusEnum.ERROR_LEVEL;
+            if (step.get("doc_string") != null) {
+                sendLog("STEP: " + step.get("name") + "\n-----------------DOC_STRING-----------------\n" + step.get("doc_string"), logLevel, scenarioId.blockingGet());
+            } else {
+                sendLog("STEP: " + step.get("name"), logLevel, scenarioId.blockingGet());
+            }
+        }
     }
 }
