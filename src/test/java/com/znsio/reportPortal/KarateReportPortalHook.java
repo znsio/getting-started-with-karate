@@ -26,21 +26,12 @@ public class KarateReportPortalHook implements RuntimeHook {
     }
 
     @Override
-    public boolean beforeScenario(ScenarioRuntime sr) {
-        if(this.rpReporter.isTemplate(sr.scenario))
-            return false;
-        if(featureIdentifier.containsKey(sr.scenario.getFeature().getName())) {
-            Maybe<String> scenarioId=this.rpReporter.launchScenarioToReportPortal(sr.result, featureIdentifier.get(sr.scenario.getFeature().getName()));;
-            scenarioIdentifier.put(sr.scenario.getUniqueId(),scenarioId);
+    public void beforeSuite(Suite suite) {
+        try {
+            this.rpReporter.startLaunch();
+        } catch (Exception e) {
+            logger.error("beforeSuite exception: {}", e.getMessage(), e);
         }
-        return true;
-    }
-
-    @Override
-    public void afterScenario(ScenarioRuntime sr) {
-        if(!this.rpReporter.isTemplate(sr.scenario))
-            if(scenarioIdentifier.containsKey(sr.scenario.getUniqueId()))
-                this.rpReporter.finishScenarioInReportPortal(sr.result,scenarioIdentifier.get(sr.scenario.getUniqueId()));
     }
 
     @Override
@@ -58,6 +49,35 @@ public class KarateReportPortalHook implements RuntimeHook {
 
         return true;
     }
+    @Override
+    public boolean beforeScenario(ScenarioRuntime sr) {
+        if(this.rpReporter.isTemplate(sr.scenario))
+            return false;
+        if(featureIdentifier.containsKey(sr.scenario.getFeature().getName())) {
+            Maybe<String> scenarioId=this.rpReporter.launchScenarioToReportPortal(sr.result, featureIdentifier.get(sr.scenario.getFeature().getName()));;
+            scenarioIdentifier.put(sr.scenario.getUniqueId(),scenarioId);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean beforeStep(Step step, ScenarioRuntime sr) {
+        return true;
+    }
+
+    @Override
+    public void afterStep(StepResult result, ScenarioRuntime sr) {
+        this.rpReporter.writeStepToReportPortal(result,sr.result,scenarioIdentifier.get(sr.scenario.getUniqueId()));
+    }
+
+    @Override
+    public void afterScenario(ScenarioRuntime sr) {
+        if(!this.rpReporter.isTemplate(sr.scenario))
+            if(scenarioIdentifier.containsKey(sr.scenario.getUniqueId()))
+                this.rpReporter.finishScenarioInReportPortal(sr.result,scenarioIdentifier.get(sr.scenario.getUniqueId()));
+    }
+
+
 
     @Override
     public void afterFeature(FeatureRuntime fr) {
@@ -70,14 +90,7 @@ public class KarateReportPortalHook implements RuntimeHook {
         }
     }
 
-    @Override
-    public void beforeSuite(Suite suite) {
-        try {
-            this.rpReporter.startLaunch();
-        } catch (Exception e) {
-            logger.error("beforeSuite exception: {}", e.getMessage(), e);
-        }
-    }
+
 
     @Override
     public void afterSuite(Suite suite) {
@@ -89,13 +102,4 @@ public class KarateReportPortalHook implements RuntimeHook {
         }
     }
 
-    @Override
-    public boolean beforeStep(Step step, ScenarioRuntime sr) {
-        return true;
-    }
-
-    @Override
-    public void afterStep(StepResult result, ScenarioRuntime sr) {
-        this.rpReporter.writeStepToReportPortal(result,sr.result,scenarioIdentifier.get(sr.scenario.getUniqueId()));
-    }
 }
