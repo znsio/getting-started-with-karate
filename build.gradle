@@ -6,6 +6,8 @@ buildscript {
         karateVersion = '1.3.0.RC2'
         masterThoughtVersion = '5.7.2'
         junitPlatformsLauncherVersion = '1.9.0'
+        junitReportPortalAgentVersion = '5.1.7'
+        log4jVersion = '1.2.17'
     }
     repositories {
         mavenLocal()
@@ -47,6 +49,8 @@ dependencies {
     implementation "com.intuit.karate:karate-junit5:${karateVersion}"
     implementation "net.masterthought:cucumber-reporting:${masterThoughtVersion}"
     implementation "org.junit.platform:junit-platform-launcher:${junitPlatformsLauncherVersion}"
+    testImplementation "com.epam.reportportal:agent-java-junit5:${junitReportPortalAgentVersion}"
+    implementation "log4j:log4j:${log4jVersion}"
 }
 
 task karateDebug(type: JavaExec) {
