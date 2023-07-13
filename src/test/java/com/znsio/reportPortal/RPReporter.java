@@ -259,8 +259,8 @@ class RPReporter {
 
     synchronized public Maybe<String> launchFeatureToReportPortal(FeatureResult featureResult) {
         StartTestItemRQ startFeatureRq = this.setFeatureDetailsInReportPortal(featureResult);
-        if(featureResult.getFeature().getName().contains("Randomizer Utilities"))
-            return null;
+//        if(featureResult.getFeature().getName().contains("Randomizer Utilities"))
+//            return null;
         return launch.get().startTestItem(null, startFeatureRq);
     }
 
@@ -279,9 +279,6 @@ class RPReporter {
             List<Tag> tags = scenarioResult.getScenario().getTags();
             Set<ItemAttributesRQ> attributes = extractAttributes(tags);
             startScenarioRq.setAttributes(attributes);
-            System.out.println("Tags are "+tags.toString()+ tags.toString().startsWith("[@t_"));
-            if(tags.toString().startsWith("[@t_"))
-                return null;
         }
         return launch.get().startTestItem(featureId, startScenarioRq);
     }
@@ -300,11 +297,13 @@ class RPReporter {
         boolean stepFailed = stepResult.isFailed();
         String logLevel = stepFailed ? StatusEnum.ERROR_LEVEL : StatusEnum.INFO_LEVEL;
         List<Map<String, Map>> step = (List<Map<String, Map>>) scenarioResult.toCucumberJson().get("steps");
+        stepResult.appendToStepLog("Step log yo");
+
         if(stepFailed){
             sendLog(stepResult.getStep().toString() + "\n-----------------DOC_STRING-----------------\n"+stepResult.getErrorMessage(), logLevel,scenarioId.blockingGet());
         }
         else
-            sendLog(stepResult.getStep().toString() , logLevel,scenarioId.blockingGet());
+            sendLog(stepResult.getStep().toString() + stepResult.getStepLog() , logLevel,scenarioId.blockingGet());
 
 
         System.out.println("Steps that can be used getStep: "+stepResult.getStep());
@@ -329,17 +328,14 @@ class RPReporter {
         }
     }
 
-     synchronized boolean isScenarioTemplate(Scenario scenario) {
-        // return boolean based on if the feature has tag "@template". If true, then the feature won't get displayed on reportPortal.
-        if (scenario != null) {
-            List<Tag> featureTags = scenario.getFeature().getTags();
-            if (featureTags != null && !featureTags.isEmpty()) {
-                for (Tag tag : featureTags) {
-                    if (tag.getName().equalsIgnoreCase("template")) return true;
-                }
-            }
-        }
-        return false;
+     synchronized boolean isScenarioTemplate(ScenarioResult scenarioResult) {
+        // return boolean based on if the Scenario has a tag starting with @t_  . If true, then the feature won't get displayed on reportPortal.
+         if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
+             List<Tag> tags = scenarioResult.getScenario().getTags();
+             return (tags.toString().startsWith("[@t_"));
+         }
+         return false;
+
     }
 
     synchronized boolean isRandomizer(Feature feature) {
