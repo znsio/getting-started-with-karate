@@ -302,6 +302,7 @@ class RPReporter {
         }
         templateStep.remove(Thread.currentThread().getId());
         templateStepLog.remove(Thread.currentThread().getId());
+        templateStepResult.remove(Thread.currentThread().getId());
 
     }
 
