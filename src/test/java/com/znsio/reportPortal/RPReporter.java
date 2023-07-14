@@ -16,6 +16,7 @@ import com.intuit.karate.Suite;
 import com.intuit.karate.core.*;
 import io.reactivex.Maybe;
 import org.apache.log4j.Logger;
+import org.junit.jupiter.api.Assertions;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,6 +32,8 @@ class RPReporter {
     HashMap <Maybe<String>,String> templateSteps=new HashMap<>();
     Map<Long,List<Step>> templateStep = new HashMap<>();
     Map<Long,List<String>> templateStepLog= new HashMap<>();
+    Map<Long,List<Boolean>> templateStepResult= new HashMap<>();
+
     RPReporter() {
     }
 
@@ -182,6 +185,8 @@ class RPReporter {
 
     }
 
+
+
     static String getURI(Feature feature) {
         return feature.getResource().getPackageQualifiedName().toString();
     }
@@ -239,8 +244,6 @@ class RPReporter {
 
     synchronized public Maybe<String> launchFeatureToReportPortal(FeatureResult featureResult) {
         StartTestItemRQ startFeatureRq = this.setFeatureDetailsInReportPortal(featureResult);
-//        if(featureResult.getFeature().getName().contains("Randomizer Utilities"))
-//            return null;
         return launch.get().startTestItem(null, startFeatureRq);
     }
 
@@ -277,39 +280,28 @@ class RPReporter {
     synchronized protected void writeStepToReportPortal(StepResult stepResult, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
         step++;
         if(scenarioId==null) {
-            this.logTemplateSteps(stepResult,!stepResult.isFailed(),scenarioId);
+            this.logTemplateSteps(stepResult,!stepResult.isFailed());
             return;
         }
         System.out.println("Current active thread scenario name  "+scenarioResult.getScenario().getName()+" "+ Thread.currentThread().getId());
         boolean stepFailed = stepResult.isFailed();
         String logLevel = stepFailed ? StatusEnum.ERROR_LEVEL : StatusEnum.INFO_LEVEL;
-//        List<Map<String, Map>> step = (List<Map<String, Map>>) scenarioResult.toCucumberJson().get("steps");
-//        Map<String,Map> lowStep=step.get(0);
-//        System.out.println("Steps that can be used getStep: "+stepResult.getStep()+"\n Shivani "+stepResult.toCucumberJson().get("name"));
-//        stepResult.
-
-//        stepResult.getStep().setDocString("setting doc string");
-//        stepResult.getStep().get
-        System.out.println("Threads Data Structure "+templateStep);
-        System.out.println("-----------------------------------------------------------------e ");
+        String background=stepResult.getStep().isBackground() ? "Background : ":"";
         if(stepFailed){
-            this.putStepInScenario(stepResult.getStep().toString(),stepResult.getStepLog(),logLevel,scenarioId.blockingGet());
+
+            this.putStepInScenario(background+stepResult.getStep().toString(),stepResult.getStepLog(),logLevel,scenarioId.blockingGet());
+//            this.putStepInScenario(stepResult,logLevel,scenarioId.blockingGet());
+
 //            sendLog(stepResult.getStep().toString() + "\n-----------------DOC_STRING-----------------\n"+stepResult.getErrorMessage(), logLevel,scenarioId.blockingGet());
 //            sendLog(stepResult.getStep().toString() +"\n "+templateSteps.get(null)+ "\n-----------------DOC_STRING-----------------\n"+stepResult.getErrorMessage(), logLevel,scenarioId.blockingGet());
         }
         else {
-            this.putStepInScenario(stepResult.getStep().toString(), stepResult.getStepLog(), logLevel, scenarioId.blockingGet());
-//            sendLog(stepResult.getStep().toString() +"\n-----------------DOC_STRING-----------------\n" +stepResult.getStepLog(), logLevel,scenarioId.blockingGet());
+            this.putStepInScenario(background+stepResult.getStep().toString(), stepResult.getStepLog(), logLevel, scenarioId.blockingGet());
+//            this.putStepInScenario(background+stepResult.getStep().toString(), stepResult.getStepLog(), logLevel, scenarioId.blockingGet());
 
-//            sendLog(stepResult.getStep().toString() + "\n-----------------DOC_STRING-----------------\n" + templateSteps.get(null), logLevel, scenarioId.blockingGet());
         }
         templateStep.remove(Thread.currentThread().getId());
         templateStepLog.remove(Thread.currentThread().getId());
-        System.out.println("Threads Data Structure after deletion "+templateStep);
-        System.out.println("-----------------------------------------------------------------e ");
-
-//        System.out.println("Steps that can be used getCallResults: "+stepResult.getCallResults());
-//        System.out.println("Steps that can be used getErrorMessage: "+stepResult.getErrorMessage());
 
     }
 
@@ -317,31 +309,47 @@ class RPReporter {
     synchronized void putStepInScenario(String stepResult, String stepLog, String logLevel, String sId) {
 
         this.sendLog(stepResult+"\n"+stepLog,logLevel,sId);
-        if(templateStep.get(Thread.currentThread().getId())!=null && templateStepLog.get(Thread.currentThread().getId())!=null) {
-//            System.out.println("Max lenght "+max+" Thread "+Thread.currentThread().getId());
-//            System.out.println("lenght templateStep "+templateStep.size()+" lenght templateStepLog "+templateStepLog.size());
+        if(templateStep.get(Thread.currentThread().getId())!=null && templateStepLog.get(Thread.currentThread().getId())!=null)
+            this.logSteps(" Calls Made for above STEP :");
+
+//        if(templateStep.get(Thread.currentThread().getId())!=null && templateStepLog.get(Thread.currentThread().getId())!=null) {
+//            List<Step> templateStepsList=templateStep.get(Thread.currentThread().getId());
+//            List<String> templateStepsLogList=templateStepLog.get(Thread.currentThread().getId());
+//            int max= Math.max(templateStepsList.size(), templateStepsLogList.size());
+//            System.out.println("lenght templateStep "+templateStepsList.size()+" lenght templateStepLog "+templateStepsLogList.size());
+//            for(int index=0;index<max;index++)
+//            {
+////                this.putTemplateLogsInStep(templateStepsList.get(index),templateStepsLogList.get(index),index);
+////                this.putTemplateStepsLogsInTemplateLogs(templateStepsLogList.get(i));
+//                ReportPortal.emitLog(String.valueOf(templateStepsList.get(index)),logLevel,new Date());
+//            }
+//        }
+    }
+
+    @com.epam.reportportal.annotations.Step("{stepCalls}")
+    private void logSteps(String stepCalls) {
             List<Step> templateStepsList=templateStep.get(Thread.currentThread().getId());
             List<String> templateStepsLogList=templateStepLog.get(Thread.currentThread().getId());
+            List<Boolean> templateStepResultList=templateStepResult.get(Thread.currentThread().getId());
             int max= Math.max(templateStepsList.size(), templateStepsLogList.size());
             System.out.println("lenght templateStep "+templateStepsList.size()+" lenght templateStepLog "+templateStepsLogList.size());
-            for(int i=0;i<max;i++)
+            for(int index=0;index<max;index++)
             {
+                ReportPortal.emitLog(String.valueOf(templateStepsList.get(index)),templateStepResultList.get(index) ? StatusEnum.INFO_LEVEL : StatusEnum.ERROR_LEVEL,new Date());
+                if(!String.valueOf(templateStepsLogList.get(index)).isEmpty())
+                    ReportPortal.emitLog(String.valueOf(templateStepsLogList.get(index)),templateStepResultList.get(index) ? StatusEnum.STEP_TYPE : StatusEnum.ERROR_LEVEL,new Date());
 
-                System.out.println("steplog values here");
-                System.out.println("TemplateStep "+templateStepsList.get(i));
-                System.out.println("TemplateStepLog "+templateStepsLogList.get(i));
-                putTemplateLogsInStep(templateStepsList.get(i),templateStepsLogList.get(i));
-//                putTemplateLogsInStep(templateStep.get(i),"\n",templateStepLog.get(i));
             }
-        }
-
 
     }
 
     @com.epam.reportportal.annotations.Step("{step}")
-    private void putTemplateLogsInStep(Step step,String stepLogs) {
+    private void putTemplateLogsInStep(Step step,String stepLogs,int index) {
 //        LOGGER.info("info "+step.toString());
         putTemplateStepsLogsInTemplateLogs(stepLogs);
+
+//        return templateStepResult.get(index);
+
 
     }
     @com.epam.reportportal.annotations.Step("{stepLogs}")
@@ -350,39 +358,27 @@ class RPReporter {
 
     }
 
-//    @com.epam.reportportal.annotations.Step("{stepResult}")
-    synchronized void logTemplateSteps(StepResult stepResult, boolean status, Maybe<String> scenarioId) {
+    synchronized void logTemplateSteps(StepResult stepResult, boolean hasStepPassed) {
 
         long currentThread=Thread.currentThread().getId();
         if(!templateStep.containsKey(currentThread)){
             templateStep.put(currentThread,new ArrayList<Step>());
         }
-
         templateStep.get(currentThread).add(stepResult.getStep());
-//        else
-//             this.templateStep.add(stepResult.getStep());
-//        stepResult
+
         if(!templateStepLog.containsKey(currentThread)){
             templateStepLog.put(currentThread,new ArrayList<String>());
         }
         templateStepLog.get(currentThread).add(stepResult.getStepLog());
-//        this.templateStepLog.add(stepResult.getStepLog());
 
-    }
-
-
-    private synchronized void logStatus(String status, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
-        // send step logs to report portal
-        List<Map<String, Map>> stepResultsToMap = (List<Map<String, Map>>) scenarioResult.toCucumberJson().get("steps");
-
-        for (Map<String, Map> step : stepResultsToMap) {
-            String logLevel = status.equals("PASSED") ? StatusEnum.INFO_LEVEL : StatusEnum.ERROR_LEVEL;
-            if (step.get("doc_string") != null) {
-                sendLog("STEP: " + step.get("name") + "\n-----------------DOC_STRING-----------------\n" + step.get("doc_string"), logLevel, scenarioId.blockingGet());
-            } else {
-                sendLog("STEP: " + step.get("name"), logLevel, scenarioId.blockingGet());
-            }
+        if(!templateStepResult.containsKey(currentThread)){
+            templateStepResult.put(currentThread,new ArrayList<Boolean>());
         }
+        templateStepResult.get(currentThread).add(hasStepPassed);
+
+//        templateStepResult.add(hasStepPassed);
+
+
     }
 
      synchronized boolean isScenarioTemplate(ScenarioResult scenarioResult) {
@@ -399,8 +395,4 @@ class RPReporter {
         return feature.getName().equalsIgnoreCase("Randomizer Utilities");
     }
 
-    synchronized void launchStepToReportPortal(com.intuit.karate.core.Step step, ScenarioResult result, Maybe<String> scenarioId) {
-        sendLog(step.toString() ,StatusEnum.INFO_LEVEL ,scenarioId.blockingGet());
-
-    }
 }
