@@ -77,7 +77,10 @@ public class ReportPortalLogger {
     }
 
     public static void logMessageWithLevel(String message, String logLevel) {
-        logMessage(message, logLevel);
+        if (message.isEmpty())
+            return;
+        else
+            logMessage(message, logLevel);
     }
 }
 
