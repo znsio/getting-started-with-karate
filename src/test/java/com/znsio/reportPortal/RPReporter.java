@@ -8,7 +8,6 @@ import com.epam.ta.reportportal.ws.model.FinishTestItemRQ;
 import com.epam.ta.reportportal.ws.model.StartTestItemRQ;
 import com.epam.ta.reportportal.ws.model.attribute.ItemAttributesRQ;
 import com.epam.ta.reportportal.ws.model.launch.StartLaunchRQ;
-import com.epam.ta.reportportal.ws.model.log.SaveLogRQ;
 import com.google.common.base.Strings;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
@@ -27,6 +26,11 @@ class RPReporter {
     private final Map<String, Date> featureStartDate = Collections.synchronizedMap(new HashMap<String, Date>());
     private static final Logger LOGGER = Logger.getLogger(RPReporter.class.getName());
     private Supplier<Launch> launch;
+    int step;
+    Map<Long, List<Step>> templateStep = new HashMap<>();
+    Map<Long, List<String>> templateStepLog = new HashMap<>();
+    Map<Long, List<String>> templateStepLevel = new HashMap<>();
+
 
     RPReporter() {
     }
@@ -63,7 +67,6 @@ class RPReporter {
         FinishExecutionRQ finishLaunchRq = new FinishExecutionRQ();
         finishLaunchRq.setEndTime(getTime());
         finishLaunchRq.setStatus(getLaunchStatus(suite));
-
         launch.get().finish(finishLaunchRq);
     }
 
@@ -80,63 +83,18 @@ class RPReporter {
         return false;
     }
 
-    synchronized boolean isTemplate(Scenario scenario) {
-        // return boolean based on if the scenario has tag "@template". If true, then the scenario won't get displayed on reportPortal.
-        if (scenario != null) {
-            List<Tag> scenarioTags = scenario.getTags();
-            if (scenarioTags != null && !scenarioTags.isEmpty()) {
-                for (Tag tag : scenarioTags) {
-                    if (tag.getName().equalsIgnoreCase("template")) return true;
-                }
-            }
-        }
-        return false;
-    }
 
     synchronized void startFeature(Feature feature) {
         featureStartDate.put(getUri(feature), getTime());
         // set the feature start date and time
     }
 
-    synchronized void finishFeature(FeatureResult featureResult) {
-
-        StartTestItemRQ startFeatureRq = this.setFeatureDetailsInReportPortal(featureResult);
-        Maybe<String> featureId = launch.get().startTestItem(null, startFeatureRq);
-        //launches feature to report portal and logs it
-
-        for (ScenarioResult scenarioResult : featureResult.getScenarioResults()) {
-            //for multiple scenarios inside a features it will log each scenario inside the feature
-            this.setScenarioDetailsInReportPortal(scenarioResult, featureResult, featureId);
-        }
-
+    synchronized void finishFeature(FeatureResult featureResult, Maybe<String> featureId) {
         FinishTestItemRQ finishFeatureRq = new FinishTestItemRQ();
         finishFeatureRq.setEndTime(getTime());
         finishFeatureRq.setStatus(getFeatureStatus(featureResult));
         launch.get().finishTestItem(featureId, finishFeatureRq);
         //end of a feature file
-    }
-
-    synchronized private void setScenarioDetailsInReportPortal(ScenarioResult scenarioResult, FeatureResult featureResult, Maybe<String> featureId) {
-        //sets scenario details in Report portal
-        StartTestItemRQ startScenarioRq = new StartTestItemRQ();
-        startScenarioRq.setDescription(scenarioResult.getScenario().getDescription());
-        startScenarioRq.setName("Scenario: " + scenarioResult.getScenario().getName());
-        startScenarioRq.setStartTime(new Date(scenarioResult.getStartTime()));
-        startScenarioRq.setType(StatusEnum.STEP_TYPE);
-
-        if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
-            List<Tag> tags = featureResult.getFeature().getTags();
-            Set<ItemAttributesRQ> attributes = extractAttributes(tags);
-            startScenarioRq.setAttributes(attributes);
-        }
-
-        Maybe<String> scenarioId = launch.get().startTestItem(featureId, startScenarioRq);
-        this.logStatus(getScenerioStatus(scenarioResult), scenarioResult, scenarioId);
-        FinishTestItemRQ finishScenarioRq = buildStopScenerioRq(scenarioResult);
-        finishScenarioRq.setEndTime(new Date(scenarioResult.getEndTime()));
-        finishScenarioRq.setStatus(getScenerioStatus(scenarioResult));
-
-        launch.get().finishTestItem(scenarioId, finishScenarioRq);
     }
 
     synchronized private StartTestItemRQ setFeatureDetailsInReportPortal(FeatureResult featureResult) {
@@ -177,7 +135,6 @@ class RPReporter {
         } catch (Exception e) {
             // do nothing
         }
-
         return launchStatus;
     }
 
@@ -187,18 +144,6 @@ class RPReporter {
 
     private String getUri(Feature feature) {
         return feature.getResource().getRelativePath();
-    }
-
-    private void sendLog(final String message, final String level, final String itemUuid) {
-        ReportPortal.emitLog(itemId -> {
-            SaveLogRQ saveLogRq = new SaveLogRQ();
-            saveLogRq.setMessage(message);
-            saveLogRq.setItemUuid(itemUuid);
-            saveLogRq.setLevel(level);
-            saveLogRq.setLogTime(getTime());
-
-            return saveLogRq;
-        });
     }
 
     static String getURI(Feature feature) {
@@ -219,20 +164,6 @@ class RPReporter {
             rq.setStatus(this.getScenerioStatus(scenarioResult));
         }
         return rq;
-    }
-
-    private synchronized void logStatus(String status, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
-        // send step logs to report portal
-        List<Map<String, Map>> stepResultsToMap = (List<Map<String, Map>>) scenarioResult.toCucumberJson().get("steps");
-
-        for (Map<String, Map> step : stepResultsToMap) {
-            String logLevel = status.equals("PASSED") ? StatusEnum.INFO_LEVEL : StatusEnum.ERROR_LEVEL;
-            if (step.get("doc_string") != null) {
-                sendLog("STEP: " + step.get("name") + "\n-----------------DOC_STRING-----------------\n" + step.get("doc_string"), logLevel, scenarioId.blockingGet());
-            } else {
-                sendLog("STEP: " + step.get("name"), logLevel, scenarioId.blockingGet());
-            }
-        }
     }
 
     private String getFeatureStatus(FeatureResult featureResult) {
@@ -269,4 +200,126 @@ class RPReporter {
         });
         return attributes;
     }
+
+    synchronized public Maybe<String> launchFeatureToReportPortal(FeatureResult featureResult) {
+        StartTestItemRQ startFeatureRq = this.setFeatureDetailsInReportPortal(featureResult);
+        return launch.get().startTestItem(null, startFeatureRq);
+    }
+
+    synchronized public Maybe<String> launchScenarioToReportPortal(ScenarioResult scenarioResult, Maybe<String> featureId) {
+        String scenario = "Scenario : ";
+        StartTestItemRQ startScenarioRq = new StartTestItemRQ();
+        startScenarioRq.setDescription(scenarioResult.getScenario().getDescription());
+        if (scenarioResult.getScenario().isOutlineExample())
+            scenario = "Scenario Outline : ";
+        startScenarioRq.setName(scenario + scenarioResult.getScenario().getName());
+        startScenarioRq.setStartTime(new Date(scenarioResult.getStartTime()));
+        startScenarioRq.setType(StatusEnum.STEP_TYPE);
+
+
+        if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
+            List<Tag> tags = scenarioResult.getScenario().getTags();
+            Set<ItemAttributesRQ> attributes = extractAttributes(tags);
+            startScenarioRq.setAttributes(attributes);
+        }
+        return launch.get().startTestItem(featureId, startScenarioRq);
+    }
+
+    synchronized public void finishScenarioInReportPortal(ScenarioResult scenarioResult, Maybe<String> scenarioId) {
+        FinishTestItemRQ finishScenarioRq = buildStopScenerioRq(scenarioResult);
+        finishScenarioRq.setEndTime(new Date(scenarioResult.getEndTime()));
+        finishScenarioRq.setStatus(getScenerioStatus(scenarioResult));
+
+        launch.get().finishTestItem(scenarioId, finishScenarioRq);
+    }
+
+
+    synchronized protected void writeStepToReportPortal(StepResult stepResult, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
+        // checks if the step is template step and store it in map
+        if (scenarioId == null) {//if the scenario is template its scenario id will be null as we have not stored it anywhere
+            this.logTemplateSteps(stepResult, !stepResult.isFailed(), scenarioId);
+            return;
+        }
+
+        boolean stepFailed = stepResult.isFailed();
+        String logLevel = stepFailed ? StatusEnum.ERROR_LEVEL : StatusEnum.INFO_LEVEL;
+
+
+        if (templateStep.get(Thread.currentThread().getId()) == null) {
+            this.scenarioStep(stepResult.getStep().toString(), stepResult.getStepLog(), logLevel, scenarioId.blockingGet());
+
+        } else {
+            this.putStepInScenario(stepResult.getStep().toString(), stepResult.getStepLog(), logLevel, scenarioId.blockingGet());
+        }
+
+        templateStep.remove(Thread.currentThread().getId());
+        templateStepLog.remove(Thread.currentThread().getId());
+        templateStepLevel.remove(Thread.currentThread().getId());
+
+    }
+
+    @com.epam.reportportal.annotations.Step("{stepResult} ")
+    private void scenarioStep(String stepResult, String stepLog, String logLevel, String sId) {
+        // send logs on report portal
+        ReportPortalLogger.logMessageWithLevel(stepLog, logLevel);
+    }
+
+    @com.epam.reportportal.annotations.Step("{stepResult} ")
+    synchronized void putStepInScenario(String stepResult, String stepLog, String logLevel, String sId) {
+        // iterate the template steps and send logs on report portal
+        if (templateStep.get(Thread.currentThread().getId()) != null && templateStepLog.get(Thread.currentThread().getId()) != null) {
+            List<Step> templateStepsList = templateStep.get(Thread.currentThread().getId());
+            List<String> templateStepsLogList = templateStepLog.get(Thread.currentThread().getId());
+            List<String> templateStepLevelList = templateStepLevel.get(Thread.currentThread().getId());
+            int max = Math.max(templateStepsList.size(), templateStepsLogList.size());
+            for (int i = 0; i < max; i++) {
+                String templateLogLevel = templateStepLevelList.get(i);
+                putTemplateLogsInStep(templateStepsList.get(i), templateStepsLogList.get(i), templateLogLevel, sId);
+            }
+        }
+        ReportPortalLogger.logMessageWithLevel(stepLog, logLevel);
+
+    }
+
+    @com.epam.reportportal.annotations.Step("{step}")
+    private void putTemplateLogsInStep(Step step, String stepLogs, String logLevel, String sId) {
+        // send template logs
+        ReportPortalLogger.logMessageWithLevel(stepLogs, logLevel);
+    }
+
+    synchronized void logTemplateSteps(StepResult stepResult, boolean status, Maybe<String> scenarioId) {
+        // store template steps, step logs and log levels
+        boolean stepFailed = stepResult.isFailed();
+        String logLevel = stepFailed ? StatusEnum.ERROR_LEVEL : StatusEnum.INFO_LEVEL;
+        long currentThread = Thread.currentThread().getId();
+        if (!templateStep.containsKey(currentThread)) {
+            templateStep.put(currentThread, new ArrayList<Step>());
+        }
+
+        templateStep.get(currentThread).add(stepResult.getStep());
+        if (!templateStepLog.containsKey(currentThread)) {
+            templateStepLog.put(currentThread, new ArrayList<String>());
+        }
+        templateStepLog.get(currentThread).add(stepResult.getStepLog());
+
+        if (!templateStepLevel.containsKey(currentThread)) {
+            templateStepLevel.put(currentThread, new ArrayList<String>());
+        }
+        templateStepLevel.get(currentThread).add(logLevel);
+    }
+
+    synchronized boolean isScenarioTemplate(ScenarioResult scenarioResult) {
+        // return boolean based on if the Scenario has a tag starting with @t_  . If true, then the feature won't get displayed on reportPortal.
+        if (scenarioResult.getScenario().getTags() != null && !scenarioResult.getScenario().getTags().isEmpty()) {
+            List<Tag> tags = scenarioResult.getScenario().getTags();
+            return (tags.toString().startsWith("[@t_"));
+        }
+        return false;
+
+    }
+
+    synchronized boolean isRandomizer(Feature feature) {
+        return feature.getName().equalsIgnoreCase("Randomizer Utilities");
+    }
+
 }
