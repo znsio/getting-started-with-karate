@@ -68,16 +68,13 @@ public class KarateReportPortalHook implements RuntimeHook {
 
     @Override
     public boolean beforeStep(Step step, ScenarioRuntime sr) {
-//        if (scenarioIdentifier.containsKey(sr.scenario.getUniqueId()))
-//            this.rpReporter.launchStepToReportPortal(step,sr.result, scenarioIdentifier.get(sr.scenario.getUniqueId()));
-        System.out.println("BeforeStep " + step.getText());
         return true;
     }
 
     @Override
     public void afterStep(StepResult result, ScenarioRuntime sr) {
         bfSc++;
-//        || this.rpReporter.isScenarioTemplate(sr.result)
+
         if (scenarioIdentifier.containsKey(sr.scenario.getUniqueId()) || this.rpReporter.isScenarioTemplate(sr.result))
             this.rpReporter.writeStepToReportPortal(result, sr.result, scenarioIdentifier.get(sr.scenario.getUniqueId()));
         else if (this.rpReporter.isScenarioTemplate(sr.result))
