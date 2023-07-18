@@ -31,6 +31,7 @@ class RPReporter {
     Map<Long, List<String>> templateStepLog = new HashMap<>();
     Map<Long, List<String>> templateStepLevel = new HashMap<>();
 
+
     RPReporter() {
     }
 
@@ -66,7 +67,6 @@ class RPReporter {
         FinishExecutionRQ finishLaunchRq = new FinishExecutionRQ();
         finishLaunchRq.setEndTime(getTime());
         finishLaunchRq.setStatus(getLaunchStatus(suite));
-        System.out.println("total step calls " + step);
         launch.get().finish(finishLaunchRq);
     }
 
@@ -83,18 +83,6 @@ class RPReporter {
         return false;
     }
 
-    synchronized boolean isTemplate(Scenario scenario) {
-        // return boolean based on if the scenario has tag "@template". If true, then the scenario won't get displayed on reportPortal.
-        if (scenario != null) {
-            List<Tag> scenarioTags = scenario.getTags();
-            if (scenarioTags != null && !scenarioTags.isEmpty()) {
-                for (Tag tag : scenarioTags) {
-                    if (tag.getName().equalsIgnoreCase("template")) return true;
-                }
-            }
-        }
-        return false;
-    }
 
     synchronized void startFeature(Feature feature) {
         featureStartDate.put(getUri(feature), getTime());
@@ -247,17 +235,16 @@ class RPReporter {
 
 
     synchronized protected void writeStepToReportPortal(StepResult stepResult, ScenarioResult scenarioResult, Maybe<String> scenarioId) {
-        // checks if template and send logs on reportportal
-        step++;
-        if (scenarioId == null) {
+        // checks if the step is template step and store it in map
+        if (scenarioId == null) {//if the scenario is template its scenario id will be null as we have not stored it anywhere
             this.logTemplateSteps(stepResult, !stepResult.isFailed(), scenarioId);
             return;
         }
-        System.out.println("Current active thread scenario name  " + scenarioResult.getScenario().getName() + " " + Thread.currentThread().getId());
+
         boolean stepFailed = stepResult.isFailed();
         String logLevel = stepFailed ? StatusEnum.ERROR_LEVEL : StatusEnum.INFO_LEVEL;
-        System.out.println("Threads Data Structure " + templateStep);
-        System.out.println("-----------------------------------------------------------------e ");
+
+
         if (templateStep.get(Thread.currentThread().getId()) == null) {
             this.scenarioStep(stepResult.getStep().toString(), stepResult.getStepLog(), logLevel, scenarioId.blockingGet());
 
@@ -268,8 +255,7 @@ class RPReporter {
         templateStep.remove(Thread.currentThread().getId());
         templateStepLog.remove(Thread.currentThread().getId());
         templateStepLevel.remove(Thread.currentThread().getId());
-        System.out.println("Threads Data Structure after deletion " + templateStep);
-        System.out.println("-----------------------------------------------------------------e ");
+
     }
 
     @com.epam.reportportal.annotations.Step("{stepResult} ")
@@ -281,25 +267,18 @@ class RPReporter {
     @com.epam.reportportal.annotations.Step("{stepResult} ")
     synchronized void putStepInScenario(String stepResult, String stepLog, String logLevel, String sId) {
         // iterate the template steps and send logs on report portal
-        System.out.println("Current Step: " + stepResult);
-        System.out.println("Current Step Log: " + stepLog);
         if (templateStep.get(Thread.currentThread().getId()) != null && templateStepLog.get(Thread.currentThread().getId()) != null) {
             List<Step> templateStepsList = templateStep.get(Thread.currentThread().getId());
             List<String> templateStepsLogList = templateStepLog.get(Thread.currentThread().getId());
             List<String> templateStepLevelList = templateStepLevel.get(Thread.currentThread().getId());
             int max = Math.max(templateStepsList.size(), templateStepsLogList.size());
-            System.out.println("lenght templateStep " + templateStepsList.size() + " lenght templateStepLog " + templateStepsLogList.size());
             for (int i = 0; i < max; i++) {
-
-                System.out.println("steplog values here");
-                System.out.println("TemplateStep " + templateStepsList.get(i));
-                System.out.println("TemplateStepLog " + templateStepsLogList.get(i));
-                System.out.println("TemplateStepLogLevel " + templateStepLevelList.get(i));
                 String templateLogLevel = templateStepLevelList.get(i);
                 putTemplateLogsInStep(templateStepsList.get(i), templateStepsLogList.get(i), templateLogLevel, sId);
             }
         }
         ReportPortalLogger.logMessageWithLevel(stepLog, logLevel);
+
     }
 
     @com.epam.reportportal.annotations.Step("{step}")
