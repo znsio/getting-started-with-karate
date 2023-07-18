@@ -61,3 +61,13 @@ To make it easy to log to ReportPortal, the following new methods have been adde
         ReportPortalLogger.attachFileInReportPortal("message", new File("fileName"));
         ReportPortalLogger.logMessageWithLevel("message","logLevel");
 ```
+## TODO:
+Nested Implementation is yet to be completed.
+
+As of now nested steps are showing up on report portal but not completely in a way in which it should have been. Below are the current issue or points need to implemented:
+*     Failed steps are showing up as PASSED
+*     After the failed step, further steps are not showing up on report portal
+
+Need to add code to Log all Background steps inside a "Background " keyword
+Need to find a way to log status of a Step using step Annotation (Currently all steps are getting marked as PASSED by default)
+
