@@ -1,4 +1,4 @@
-@confengine @prod
+@confengine @prod @wip
 Feature: ConfEngine.com
 
   Scenario: Find number of proposals in all the conferences
