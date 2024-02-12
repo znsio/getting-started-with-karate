@@ -118,7 +118,7 @@ task copyToUpload(type: Copy) {
     into 'upload/src/test/java'
     from 'runAPIWorkflowTests.sh'
     into 'upload'
-    from 'build/libs/getting-started-with-karate-0.0.1.jar'
+    from (jar)
     into 'upload'
 }
 
