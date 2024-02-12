@@ -4,8 +4,8 @@ buildscript {
     ext {
         gradleVersionProperty = '8.6'
         karateVersion = '1.4.1'
-        masterThoughtVersion = '5.7.7'
-        junitPlatformsLauncherVersion = '1.10.0-M1'
+        masterThoughtVersion = '5.7.8'
+        junitPlatformsLauncherVersion = '1.10.2'
     }
     repositories {
         mavenLocal()
@@ -19,7 +19,7 @@ plugins {
     id 'eclipse'
     id 'java'
     id 'idea'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group 'com.znsio.getting-started-with-karate'
