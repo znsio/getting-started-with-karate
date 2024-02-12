@@ -31,4 +31,4 @@ jobs:
           arguments: build --refresh-dependencies
       - name: Run API tests as gradle task
         run: |
-          TYPE=api TARGET_ENVIRONMENT=prod ./gradlew test
+          TYPE=api TARGET_ENVIRONMENT=prod ./gradlew clean test

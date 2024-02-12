@@ -31,4 +31,4 @@ jobs:
           arguments: build --refresh-dependencies
       - name: Run Workflow tests as gradle task
         run: |
-          TYPE=workflow TARGET_ENVIRONMENT=prod ./gradlew test
+          TYPE=workflow TARGET_ENVIRONMENT=prod ./gradlew clean test
