@@ -29,7 +29,7 @@ jobs:
         uses: gradle/gradle-build-action@0706ab3a3c20483a3f37c3d9de1b0d95297e3743
         with:
           arguments: build --refresh-dependencies
-      - name: Run API tests from fatjar
+      - name: Run Workflow tests from fatjar
         run: |
           cd upload
-          TYPE=api TARGET_ENVIRONMENT=prod  ./runAPIWorkflowTests.sh   
+          TYPE=workflow TARGET_ENVIRONMENT=prod  ./runAPIWorkflowTests.sh   

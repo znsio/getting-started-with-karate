@@ -5,7 +5,7 @@
 # This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: APITests_FatJar
+name: APITests_Gradle
 
 on:
   push:
@@ -29,7 +29,6 @@ jobs:
         uses: gradle/gradle-build-action@0706ab3a3c20483a3f37c3d9de1b0d95297e3743
         with:
           arguments: build --refresh-dependencies
-      - name: Run API tests from fatjar
+      - name: Run Workflow tests as gradle task
         run: |
-          cd upload
-          TYPE=api TARGET_ENVIRONMENT=prod  ./runAPIWorkflowTests.sh   
+          TYPE=workflow TARGET_ENVIRONMENT=prod ./gradlew test
