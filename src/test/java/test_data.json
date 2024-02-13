@@ -21,6 +21,17 @@
       "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
       "restCountryUrl": "https://restcountries.com/v3.1"
+    },
+    "createPayload": {
+      "userId": 1,
+      "id": 1,
+      "title": "title of book",
+      "Body": "content of book"
+    },
+    "updatePayload": {
+      "title": "title is changed"
     }
   }
+
 }
+

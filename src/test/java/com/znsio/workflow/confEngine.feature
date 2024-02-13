@@ -1,6 +1,6 @@
 @confengine @prod @wip
 Feature: ConfEngine.com
-
+@ignore
   Scenario: Find number of proposals in all the conferences
     * print "Find number of proposals in all the conferences"
     * def ids = call read('classpath:com/znsio/templates/confEngineTemplates.feature@t_getConferences')

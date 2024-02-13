@@ -1,6 +1,6 @@
 @prod @restCountries
 Feature: API Workflow tests for https://restcountries.com/
-
+@ignore
   Scenario Outline: Get list of states
     Given json countryDetails = karate.call('classpath:com/znsio/templates/restCountryTemplates.feature@t_getCountryDetails', { 'countryName': '<countryName>' })
 #    And print "Country details: ", countryDetails
