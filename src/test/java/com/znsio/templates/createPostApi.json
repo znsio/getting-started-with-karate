@@ -1,0 +1,14 @@
+{
+  "createRequest": {
+    "title": "Practice",
+    "body": "Hello",
+    "userId": 101
+  },
+  "createResponseSchema": {
+  "id": "#number",
+  "title": "#string",
+  "body": "#string",
+  "userId": "#number"
+}
+
+}
