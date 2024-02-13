@@ -5,11 +5,11 @@ Results are published in junit, html and cucumber-reporting format
 
 ## Running the tests with gradle command:
 
-    ./gradlew test
+    ./gradlew clean test
 
 Example
     
-    TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew test
+    TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew clean test
 
 ## Running the tests as an uber jar:
 
@@ -29,7 +29,7 @@ Example
     Example
 
 
-          TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew test
+          TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew clean test
 
 - **Uber jar**:
   - You can run the tests using the same format as the `./gradlew test` command:
@@ -54,20 +54,20 @@ Example
 * `TYPE=[api | workflow]` -> What type of test you want to run?
 * `TAG=...` -> What subset of tests you want to run? Ex: `TAG=confengine` will run all tests having the tag confengine
   * To run test with multiple tags specified, you can use a command like:
-  `TAG=@demo,~@sanity TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew test`
+  `TAG=@demo,~@sanity TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew clean test`
   * To run tests having tags as @tags OR @sample:
   
 
-        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample ./gradlew test
+        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample ./gradlew clean test
   
   * To run tests having tags as @tags OR @sample AND exclude tags @demo2
 
     
-        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample:~@demo2 ./gradlew test
+        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample:~@demo2 ./gradlew clean test
   * To run tests having tags as @tags OR @sample AND exclude tests having either of the following tags: @demo2, @e2e
     
 
-        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample:~@demo2:~@e2e ./gradlew test
+        TYPE=api  TARGET_ENVIRONMENT=prod  TAG=@tags,@sample:~@demo2:~@e2e ./gradlew clean test
 
   * `PARALLEL=...` -> What is the parallel count for the test execution. Default is `PARALLEL=5`
 
