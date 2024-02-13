@@ -12,7 +12,26 @@
       "baseUrl": "https://github.com",
       "confEngineUrl": "https://eat.confengine.com/api/v3",
       "dummyRestAPIUrl": "https://eat.jsonplaceholder.typicode.com",
-      "restCountryUrl": "https://eat.restcountries.com/v3.1"
+      "restCountryUrl": "https://eat.restcountries.com/v3.1",
+      "fetchPostsAndAlbumsUrl": "https://jsonplaceholder.typicode.com"
+    },
+    "jsonPlaceholderData": {
+      "payload": {
+        "title": "foo",
+        "body": "bar",
+        "userId": 1
+      },
+
+      "postSchema": {
+        "title": "#string",
+        "body": "#string",
+        "userId": "#number",
+        "id": "#number"
+      },
+
+      "payloadPatch": {
+        "title": "foo-updated"
+      }
     }
   },
   "prod": {
