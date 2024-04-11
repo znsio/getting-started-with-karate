@@ -2,9 +2,9 @@ import java.text.SimpleDateFormat
 
 buildscript {
     ext {
-        gradleVersionProperty = '8.6'
+        gradleVersionProperty = '8.7'
         karateVersion = '1.4.1'
-        masterThoughtVersion = '5.7.8'
+        masterThoughtVersion = '5.8.0'
         junitPlatformsLauncherVersion = '1.10.2'
     }
     repositories {
@@ -25,7 +25,9 @@ plugins {
 group 'com.znsio.getting-started-with-karate'
 version '0.0.1'
 
-sourceCompatibility = 17
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
     mavenLocal()
@@ -124,6 +126,7 @@ task copyToUpload(type: Copy) {
 
 test.dependsOn clean
 shadowJar.finalizedBy copyToUpload
+shadowJar.dependsOn wrapper
 
 wrapper {
     gradleVersion = gradleVersionProperty
