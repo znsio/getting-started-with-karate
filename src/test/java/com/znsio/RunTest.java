@@ -9,23 +9,73 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static com.znsio.OverriddenVariable.getOverriddenStringValue;
+
 public class RunTest {
-    private static final String workingDir = System.getProperty("user.dir");
+    private static final String WORKING_DIR = System.getProperty("user.dir");
+    private static final String NOT_SET = "NOT_SET";
+    private static final String LOCAL_RUN = "LOCAL_RUN";
+    private static final String NA = "N/A";
     private final String reportsDirectory;
+    private static final String KARATE_REPORTS_DIR = "karate-reports";
+    private static final String CUCUMBER_REPORTS_DIR = "reports";
+    private static final String CUCUMBER_REPORTS_FILE_NAME = "/cucumber-html-reports/overview-features.html";
+    private static final String TEST_DATA_FILE_NAME_LOCAL = "src/test/java/test_data.json";
+    private final String TEST_DATA_FILE_NAME;
+    private static final String TEST_DATA_FILE_NAME_FAT_JAR = "test_data.json";
+    private static final String BASE_URL = "baseUrl";
+    private static final String TARGET_ENVIRONMENT = "TARGET_ENVIRONMENT";
+
+    /* Begin: Custom properties section */
+    /* Update these values as appropriate to your framework */
+
+    // environment variable that indicates if build was manually triggrerd, or auto-triggered
+    private static final String BUILD_INITIATION_REASON = "BUILD_INITIATION_REASON";
+
+    // environment variable that has the id for the build
+    private static final String BUILD_ID = "BUILD_ID";
+
+    // name of your project/team/repo
     private final String PROJECT_NAME = "getting-started-with-karate";
-    private final String KARATE_REPORTS_DIR = "karate-reports";
-    private final String CUCUMBER_REPORTS_DIR = "reports";
-    private final String CUCUMBER_REPORTS_FILE_NAME = "/cucumber-html-reports/overview-features.html";
-    private final String TEST_DATA_FILE_NAME = "src/test/java/test_data.json";
-    private final String BASE_URL = "baseUrl";
-    private final String TARGET_ENVIRONMENT = "TARGET_ENVIRONMENT";
+
+    /* End: Custom properties section */
 
     public RunTest() {
+        if (null != System.getProperty("IS_FATJAR_RUNNER")) {
+            TEST_DATA_FILE_NAME = TEST_DATA_FILE_NAME_FAT_JAR;
+        } else {
+            TEST_DATA_FILE_NAME = TEST_DATA_FILE_NAME_LOCAL;
+        }
+        System.out.printf("TEST_DATA_FILE_NAME: %s%n", TEST_DATA_FILE_NAME);
         reportsDirectory = getReportsDirectory();
+    }
+
+    private static String getBuildInitiationReason() {
+        return getOverriddenStringValue(BUILD_INITIATION_REASON, LOCAL_RUN);
+    }
+
+    private static String getHostMachineName() {
+        try {
+            return InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            System.out.println("Error fetching machine name: " + e.getMessage());
+            return NOT_SET;
+        }
+    }
+
+    private static String getTestType() {
+        String type = System.getenv("TYPE");
+        if (null == type) {
+            System.out.println("TYPE [api | workflow] is not provided");
+            throw new RuntimeException("TYPE [api | workflow] is not provided");
+        }
+        return type.toLowerCase(Locale.ROOT);
     }
 
     @Test
@@ -36,14 +86,7 @@ public class RunTest {
         System.setProperty("rp.description", PROJECT_NAME + " " + getTestType() + " tests");
         System.setProperty("rp.launch.uuid.print", String.valueOf(Boolean.TRUE));
         System.setProperty("rp.client.join", String.valueOf(Boolean.FALSE));
-
-        String rpAttributes = "";
-        if (null != System.getenv("TAG")) {
-            rpAttributes += "Tags:" + System.getenv("TAG");
-        }
-        rpAttributes += ";TargetEnvironment:" + getKarateEnv();
-        rpAttributes += ";Type:" + getTestType();
-        System.setProperty("rp.attributes", rpAttributes);
+        System.setProperty("rp.attributes", getRpAttributes());
         Results results = KarateReportPortalRunner
                 .path(getClasspath())
                 .outputCucumberJson(true)
@@ -67,6 +110,34 @@ public class RunTest {
         } else {
             System.out.println(message);
         }
+    }
+
+    private String getRpAttributes() {
+        String rpAttributes = "";
+        if (null != System.getenv("TAG")) {
+            rpAttributes += "Tags:" + System.getenv("TAG");
+        }
+        rpAttributes += "RunByFatJarRunner:" + System.getProperty("IS_FATJAR_RUNNER", Boolean.FALSE.toString());
+        rpAttributes += ";TargetEnvironment:" + getKarateEnv();
+        rpAttributes += ";Type:" + getTestType();
+        rpAttributes += ";ParallelCount:" + getParallelCount();
+        rpAttributes += ";LoggedInUser:" + System.getProperty("user.name");
+        rpAttributes += ";JavaVersion:" + System.getProperty("java.specification.version");
+        rpAttributes += ";OS:" + System.getProperty("os.name");
+        rpAttributes += ";HostName:" + getHostMachineName();
+        rpAttributes += ";BuildInitiationReason:" + getBuildInitiationReason();
+        rpAttributes += ";BuildId:" + getBuildId();
+        rpAttributes += ";RunInCI:" + getIsRunInCI();
+
+        return rpAttributes;
+    }
+
+    private String getBuildId() {
+        return getOverriddenStringValue(BUILD_ID, NA);
+    }
+
+    private boolean getIsRunInCI() {
+        return (!getBuildInitiationReason().equals(LOCAL_RUN));
     }
 
     private String generateReport(String karateOutputPath) {
@@ -98,6 +169,7 @@ public class RunTest {
         for (int eachPath = 0; eachPath < testFilePaths.length; eachPath++) {
             rootDirectory += File.separator + testFilePaths[eachPath];
         }
+        System.out.printf("Path for: '%s' is: '%s'%n", pathSuffix, rootDirectory);
         return rootDirectory;
     }
 
@@ -105,7 +177,9 @@ public class RunTest {
         java.util.Map<String, Object> envConfig = null;
         String baseUrl = "";
         try {
-            envConfig = JsonPath.parse(new File(getPath(workingDir, TEST_DATA_FILE_NAME))).read("$." + getKarateEnv() + ".env", Map.class);
+            String testDataFilePath = getPath(WORKING_DIR, TEST_DATA_FILE_NAME);
+            System.out.println("Test Data file path: " + testDataFilePath);
+            envConfig = JsonPath.parse(new File(testDataFilePath)).read("$." + getKarateEnv() + ".env", Map.class);
             baseUrl = envConfig.get(BASE_URL).toString();
         } catch (IOException e) {
             System.out.println("Error in loading the test_data.json file");
@@ -120,13 +194,13 @@ public class RunTest {
         DateTime dateTime = DateTime.now();
         String date = dateTime.getDayOfMonth() + "-" + dateTime.getMonthOfYear() + "-" + dateTime.getYear();
         String time = dateTime.getHourOfDay() + "-" + dateTime.getMinuteOfHour() + "-" + dateTime.getSecondOfMinute();
-        String reportsDirPath = getPath(workingDir, "target/" + date + "/" + time);
+        String reportsDirPath = getPath(WORKING_DIR, "target/" + date + "/" + time);
         System.out.println("Reports directory: " + reportsDirPath);
         return reportsDirPath;
     }
 
     private String getKarateEnv() {
-        String karateEnv = System.getenv("TARGET_ENVIRONMENT");
+        String karateEnv = System.getenv(TARGET_ENVIRONMENT);
         if ((null == karateEnv) || (karateEnv.isBlank())) {
             String message = "TARGET_ENVIRONMENT is not specified as an environment variable";
             System.out.println(message);
@@ -172,15 +246,6 @@ public class RunTest {
         String classPath = "classpath:com/znsio/" + type;
         System.out.printf("Running %s tests%n", classPath);
         return classPath;
-    }
-
-    private static String getTestType() {
-        String type = System.getenv("TYPE");
-        if (null == type) {
-            System.out.println("TYPE [api | workflow] is not provided");
-            throw new RuntimeException("TYPE [api | workflow] is not provided");
-        }
-        return type.toLowerCase(Locale.ROOT);
     }
 
     private int getParallelCount() {

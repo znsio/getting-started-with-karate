@@ -19,6 +19,7 @@ public class FatJarRunner {
 
     public void runAll() {
         System.out.println("In " + FatJarRunner.class.getSimpleName() + " :: runAll");
+        System.setProperty("IS_FATJAR_RUNNER", "true");
         LauncherDiscoveryRequest request = LauncherDiscoveryRequestBuilder.request()
                                                                           .selectors(selectClass(RunTest.class))
                                                                           .build();

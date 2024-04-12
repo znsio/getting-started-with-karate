@@ -83,7 +83,8 @@ test {
 
     // attach debugger
     if (System.getProperty('debug', 'false') == 'true') {
-        jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9009'
+        println("In debug mode")
+        jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
     }
 }
 
