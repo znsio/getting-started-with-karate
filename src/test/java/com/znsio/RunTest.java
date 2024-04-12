@@ -3,14 +3,20 @@ package com.znsio;
 import com.epam.reportportal.karate.KarateReportPortalRunner;
 import com.intuit.karate.Results;
 import com.jayway.jsonpath.JsonPath;
+import com.znsio.exceptions.TestDataException;
 import com.znsio.exceptions.TestExecutionException;
-import org.joda.time.DateTime;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -31,6 +37,11 @@ public class RunTest {
     private static final String TEST_DATA_FILE_NAME_FAT_JAR = "test_data.json";
     private static final String BASE_URL = "baseUrl";
     private static final String TARGET_ENVIRONMENT = "TARGET_ENVIRONMENT";
+
+    private static final HashMap testMetadata = new HashMap<>();
+    private static List<Map.Entry<String, Integer>> sortedTestMetaDataKeys;
+    private static Map<String, Object> envConfig;
+    private static Map<String, Object> testDataConfig;
 
     /* Begin: Custom properties section */
     /* Update these values as appropriate to your framework */
@@ -54,6 +65,8 @@ public class RunTest {
         }
         System.out.printf("TEST_DATA_FILE_NAME: %s%n", TEST_DATA_FILE_NAME);
         reportsDirectory = getReportsDirectory();
+        getEnvConfig();
+        captureTestExecutionMetadata();
     }
 
     private static String getBuildInitiationReason() {
@@ -73,7 +86,7 @@ public class RunTest {
         String type = System.getenv("TYPE");
         if (null == type) {
             System.out.println("TYPE [api | workflow] is not provided");
-            throw new RuntimeException("TYPE [api | workflow] is not provided");
+            throw new TestDataException("TYPE [api | workflow] is not provided");
         }
         return type.toLowerCase(Locale.ROOT);
     }
@@ -113,23 +126,42 @@ public class RunTest {
     }
 
     private String getRpAttributes() {
-        String rpAttributes = "";
-        if (null != System.getenv("TAG")) {
-            rpAttributes += "Tags:" + System.getenv("TAG");
+        StringBuilder rpAttributes = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : sortedTestMetaDataKeys) {
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+            rpAttributes.append(entry.getKey()).append(":").append(entry.getValue()).append(";");
         }
-        rpAttributes += "RunByFatJarRunner:" + System.getProperty("IS_FATJAR_RUNNER", Boolean.FALSE.toString());
-        rpAttributes += ";TargetEnvironment:" + getKarateEnv();
-        rpAttributes += ";Type:" + getTestType();
-        rpAttributes += ";ParallelCount:" + getParallelCount();
-        rpAttributes += ";LoggedInUser:" + System.getProperty("user.name");
-        rpAttributes += ";JavaVersion:" + System.getProperty("java.specification.version");
-        rpAttributes += ";OS:" + System.getProperty("os.name");
-        rpAttributes += ";HostName:" + getHostMachineName();
-        rpAttributes += ";BuildInitiationReason:" + getBuildInitiationReason();
-        rpAttributes += ";BuildId:" + getBuildId();
-        rpAttributes += ";RunInCI:" + getIsRunInCI();
 
-        return rpAttributes;
+        System.out.println("rpAttributes: " + rpAttributes);
+        return rpAttributes.toString();
+    }
+
+    private void captureTestExecutionMetadata() {
+        testMetadata.put("RunByFatJarRunner", System.getProperty("IS_FATJAR_RUNNER", Boolean.FALSE.toString()));
+        testMetadata.put("TargetEnvironment", getKarateEnv());
+        testMetadata.put("Type", getTestType());
+        testMetadata.put("ParallelCount", getParallelCount());
+        testMetadata.put("LoggedInUser", System.getProperty("user.name"));
+        testMetadata.put("JavaVersion", System.getProperty("java.specification.version"));
+        testMetadata.put("OS", System.getProperty("os.name"));
+        testMetadata.put("HostName", getHostMachineName());
+        testMetadata.put("BuildInitiationReason", getBuildInitiationReason());
+        testMetadata.put("BuildId", getBuildId());
+        testMetadata.put("BaseUrl", getBaseUrl());
+        testMetadata.put("RunInCI", getIsRunInCI());
+        if (null != System.getenv("TAG")) {
+            testMetadata.put("Tags", System.getenv("TAG"));
+        }
+
+        // Convert hashmap entries to a list
+        sortedTestMetaDataKeys = new ArrayList<>(testMetadata.entrySet());
+
+        // Sort the list by keys
+        Collections.sort(sortedTestMetaDataKeys, new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return o1.getKey().compareTo(o2.getKey());
+            }
+        });
     }
 
     private String getBuildId() {
@@ -153,8 +185,16 @@ public class RunTest {
             jsonFiles.forEach(file -> jsonPaths.add(file.getAbsolutePath()));
             net.masterthought.cucumber.Configuration config = new net.masterthought.cucumber.Configuration(new File(getPath(reportsDirectory, CUCUMBER_REPORTS_DIR)), PROJECT_NAME);
 
-            // config.setTagsToExcludeFromChart("@checkout", "@feature.*");
+            int count = 0;
+            String[] envList = new String[testDataConfig.keySet().size()];
+            for (Map.Entry<String, Object> stringObjectEntry : testDataConfig.entrySet()) {
+                envList[count] = "@" + stringObjectEntry.getKey();
+                count++;
+            }
+
+            config.setTagsToExcludeFromChart(envList);
             addClassifications(config);
+            System.out.println("Excluded tags from Cucumber-html tag report: " + config.getTagsToExcludeFromChart());
 
             net.masterthought.cucumber.ReportBuilder reportBuilder = new net.masterthought.cucumber.ReportBuilder(jsonPaths, config);
             reportBuilder.generateReports();
@@ -174,27 +214,49 @@ public class RunTest {
     }
 
     private void addClassifications(net.masterthought.cucumber.Configuration config) {
-        java.util.Map<String, Object> envConfig = null;
-        String baseUrl = "";
-        try {
-            String testDataFilePath = getPath(WORKING_DIR, TEST_DATA_FILE_NAME);
-            System.out.println("Test Data file path: " + testDataFilePath);
-            envConfig = JsonPath.parse(new File(testDataFilePath)).read("$." + getKarateEnv() + ".env", Map.class);
-            baseUrl = envConfig.get(BASE_URL).toString();
-        } catch (IOException e) {
-            System.out.println("Error in loading the test_data.json file");
+        for (Map.Entry<String, Integer> entry : sortedTestMetaDataKeys) {
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+            config.addClassifications(entry.getKey(), String.valueOf(entry.getValue()));
         }
+    }
 
-        config.addClassifications("Environment", getKarateEnv());
-        config.addClassifications("Base url", baseUrl);
-        config.addClassifications("Test Automation using", "Karate");
+    private String getBaseUrl() {
+        return envConfig.get(BASE_URL).toString();
+    }
+
+    private void getEnvConfig() {
+        String testDataFilePath = getPath(WORKING_DIR, TEST_DATA_FILE_NAME);
+        System.out.println("Test Data file path: " + testDataFilePath);
+        try {
+            testDataConfig = JsonPath.parse(new File(testDataFilePath)).read("$", Map.class);
+            envConfig = JsonPath.parse(testDataConfig).read("$." + getKarateEnv() + ".env", Map.class);
+        } catch (IOException e) {
+            throw new TestDataException(String.format("Unable to load test data file: '%s'", TEST_DATA_FILE_NAME), e);
+        }
+    }
+
+    private static String getCurrentDatestamp(Date today) {
+        SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy");
+        return df.format(today);
+    }
+
+    private static String getMonth(Date today) {
+        SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy");
+        return df.format(today);
+    }
+
+    private static String getCurrentTimestamp(Date today) {
+        SimpleDateFormat df = new SimpleDateFormat("HH-mm-ss");
+        return df.format(today);
     }
 
     private String getReportsDirectory() {
-        DateTime dateTime = DateTime.now();
-        String date = dateTime.getDayOfMonth() + "-" + dateTime.getMonthOfYear() + "-" + dateTime.getYear();
-        String time = dateTime.getHourOfDay() + "-" + dateTime.getMinuteOfHour() + "-" + dateTime.getSecondOfMinute();
-        String reportsDirPath = getPath(WORKING_DIR, "target/" + date + "/" + time);
+        Date today = new Date();
+        String reportsDirPath = getPath(WORKING_DIR,
+                                    "target" + File.separator
+                                            + getMonth(today) + File.separator
+                                            + getCurrentDatestamp(today) + File.separator
+                                            + getCurrentTimestamp(today));
         System.out.println("Reports directory: " + reportsDirPath);
         return reportsDirPath;
     }
@@ -204,7 +266,7 @@ public class RunTest {
         if ((null == karateEnv) || (karateEnv.isBlank())) {
             String message = "TARGET_ENVIRONMENT is not specified as an environment variable";
             System.out.println(message);
-            throw new RuntimeException(message);
+            throw new TestDataException(message);
         }
         System.setProperty("karate.env", karateEnv);
         return karateEnv;
