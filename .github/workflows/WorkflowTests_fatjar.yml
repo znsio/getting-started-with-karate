@@ -32,4 +32,4 @@ jobs:
       - name: Run Workflow tests from fatjar
         run: |
           cd upload
-          TYPE=workflow TARGET_ENVIRONMENT=prod  ./runAPIWorkflowTests.sh   
+          TYPE=workflow TARGET_ENVIRONMENT=prod java -jar getting-started-with-karate-0.0.1.jar   
