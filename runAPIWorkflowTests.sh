@@ -28,6 +28,13 @@ else
     testRunCommand+=" TARGET_ENVIRONMENT=$TARGET_ENVIRONMENT "
 fi
 
+if [ -z "$RP_ENABLE" ]
+then
+      echo "RP_ENABLE NOT provided"
+else
+    testRunCommand+=" RP_ENABLE=$RP_ENABLE "
+fi
+
 if [ -z "$PARALLEL" ]
 then
       echo "PARALLEL NOT provided. Use default"

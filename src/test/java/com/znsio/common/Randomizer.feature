@@ -1,6 +1,7 @@
+@template
 Feature: Randomizer Utilities
 
-  @randomizerUtilities @template
+  @randomizerUtilities
   Scenario: Define randomizer functions
     * def generateRandomNumber =
     """
@@ -85,6 +86,7 @@ Feature: Randomizer Utilities
     * def randomNumberInRange =
     """
     function (min, max) {
+      karate.log('Generate random number randomNumberInRange (Randomizer.feature) in between ' + min + ' and ' + max);
       return Math.floor(Math.random() * (max - min) + min);
     }
     """

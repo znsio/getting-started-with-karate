@@ -7,11 +7,11 @@ Feature: Templates for ConfEngine
   @t_getConferences
   Scenario: Get Conference Ids
     Given path '/conferences'
-    * print "Get all conference Ids"
+    And print "Get all conference Ids"
     When method GET
     Then status 200
     * def listOfConferences = response
-    * print "Number of conferences found: " + listOfConferences.length
+    And print "Number of conferences found: " + listOfConferences.length
     * def confIds = []
     * def getConfIds = function(x){ karate.appendTo(confIds, x.id) }
     * karate.forEach(listOfConferences, getConfIds)
@@ -19,11 +19,11 @@ Feature: Templates for ConfEngine
   @t_getNumberOfProposalsInEachConference
   Scenario: Find Number of proposals in each conference
     * def confIds = get ids.confIds
-    * print "Get number of proposals for " + confIds.length + " conferences"
+    And print "Get number of proposals for " + confIds.length + " conferences"
     * def conferenceUrls = []
     * def getConferenceUrl = function(x, i){ karate.appendTo(conferenceUrls, "/conferences/" + x + "/proposals") }
     * karate.forEach(confIds, getConferenceUrl)
-    * print "Number of conferences: " + conferenceUrls.length
+    And print "Number of conferences: " + conferenceUrls.length
 
     * def proposalsInAllConferences = []
     * def getProposalsPerConference =
@@ -41,12 +41,12 @@ Feature: Templates for ConfEngine
     }
     """
     * getProposalsPerConference(conferenceUrls)
-    * print "proposalsInAllConferences: " + proposalsInAllConferences.length
+    And print "proposalsInAllConferences: " + proposalsInAllConferences.length
 
   @t_getProposalsForAConference
   Scenario: Find list of proposals for a conference
-    * print "Get list of proposals for conference: " + confUrl
-    * print "Expected status code: " + expectedStatus
+    And print "Get list of proposals for conference: " + confUrl
+    And print "Expected status code: " + expectedStatus
     Given path confUrl
     When method GET
     Then match responseStatus == expectedStatus

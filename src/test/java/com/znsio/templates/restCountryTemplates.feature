@@ -1,15 +1,15 @@
 @template
-  Feature: API tests for https://restcountries.com/
+  Feature: API template tests for https://restcountries.com/
 
     Background:
-      * print "user: " + user
-      * print "number between: " + isNumberBetween(5,2,19)
-      * print "time: " + getCurrentTimeInMillis()
-      * print "addLeadingZeroes: " + addLeadingZeroes(5)
-      * print "generateRandomEmail: " + generateRandomEmail("email")
-      * print "dateBeforeXDaysInDDMMMYYYYFormat: " + dateBeforeXDaysInDDMMMYYYYFormat(5)
-      * print "generateAlphaNumericRandomString: " + generateAlphaNumericRandomString(20)
-      * print "randomNumberInRange: " + randomNumberInRange(20,1000)
+      And print "user: " + user
+      And print "number between: " + isNumberBetween(5,2,19)
+      And print "time: " + getCurrentTimeInMillis()
+      And print "addLeadingZeroes: " + addLeadingZeroes(5)
+      And print "generateRandomEmail: " + generateRandomEmail("email")
+      And print "dateBeforeXDaysInDDMMMYYYYFormat: " + dateBeforeXDaysInDDMMMYYYYFormat(5)
+      And print "generateAlphaNumericRandomString: " + generateAlphaNumericRandomString(20)
+      And print "randomNumberInRange: " + randomNumberInRange(20,1000)
       Given url env.restCountryUrl
       And print "restCountryUrl: " + env.restCountryUrl
 
@@ -20,9 +20,10 @@
       And path path
       When method GET
       Then status 200
-      And print response.length
       And def countries = response
-      * print "Response from /all: ", response
+      And print "Number of countries:", response.length
+      And print "Number of countries:", countries.length
+#      And print "Response from /all: ", response
 
     @t_getCountryDetails
     Scenario: Get country details

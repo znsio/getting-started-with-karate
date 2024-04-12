@@ -1,8 +1,9 @@
+@template
 Feature: Common Utility Functions
 
-  @generateRandomAlphaNumeric @template
+  @generateRandomAlphaNumeric
   Scenario: Get random alphanumeric string
-    * print "Get random alphanumeric string of length: " + len
+    And print "Get random alphanumeric string of length: ", len
     * def generateRandomAlphaNumeric =
     """
     function() {
@@ -11,11 +12,11 @@ Feature: Common Utility Functions
     }
     """
     * def generated = generateRandomAlphaNumeric(len)
-    * print "generateRandomAlphaNumeric: " + generated
+    And print "generateRandomAlphaNumeric: ", generated
 
- @generateRandomNumberInRange @template
+ @generateRandomNumberInRange
   Scenario: Generate random number in range
-    * print "Generate random number in range between: " + min + " and " + max
+    And print "Generate random number in range using CommonFunctions.feature's generateRandomNumberInRange function between: " + min + " and " + max
     * def generateRandomNumberInRange =
     """
     function() {
@@ -24,5 +25,4 @@ Feature: Common Utility Functions
     }
     """
    * def generated = generateRandomNumberInRange(min, max)
-   * print "generateRandomNumberInRange: " + generated
-
+   And print "generateRandomNumberInRange: ", generated

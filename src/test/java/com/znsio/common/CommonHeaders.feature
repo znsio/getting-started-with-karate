@@ -1,6 +1,7 @@
+@template
 Feature: Common Headers
 
-  @commonheaders @template
+  @commonheaders
   Scenario: Set common headers
     * def headerJson =
     """

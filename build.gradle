@@ -6,6 +6,7 @@ buildscript {
         karateVersion = '1.4.1'
         masterThoughtVersion = '5.8.0'
         junitPlatformsLauncherVersion = '1.10.2'
+        reportportalAgentJavaKarateVersion = '5.0.5'
     }
     repositories {
         mavenLocal()
@@ -49,6 +50,7 @@ dependencies {
     implementation "com.intuit.karate:karate-junit5:${karateVersion}"
     implementation "net.masterthought:cucumber-reporting:${masterThoughtVersion}"
     implementation "org.junit.platform:junit-platform-launcher:${junitPlatformsLauncherVersion}"
+    testImplementation "com.epam.reportportal:agent-java-karate:${reportportalAgentJavaKarateVersion}"
 }
 
 task karateDebug(type: JavaExec) {
@@ -92,6 +94,7 @@ shadowJar {
     zip64 true
     manifest {
         attributes "Main-Class": "com.znsio.FatJarRunner"
+        attributes 'Description': 'This is the getting-started-with-karate uber jar'
     }
     from sourceSets.test.output
     from('.') { include 'gradle/**/*' }

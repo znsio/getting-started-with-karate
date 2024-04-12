@@ -1,7 +1,9 @@
 package com.znsio;
 
+import com.epam.reportportal.karate.KarateReportPortalRunner;
+import com.epam.reportportal.karate.ReportPortalHook;
 import com.intuit.karate.Results;
-import com.intuit.karate.junit5.Karate;
+import com.intuit.karate.Runner;
 import com.jayway.jsonpath.JsonPath;
 import com.znsio.exceptions.TestExecutionException;
 import org.joda.time.DateTime;
@@ -16,7 +18,7 @@ import java.util.Map;
 public class RunTest {
     private static final String workingDir = System.getProperty("user.dir");
     private final String reportsDirectory;
-    private final String PROJECT_NAME = "com.com.znsio";
+    private final String PROJECT_NAME = "getting-started-with-karate";
     private final String KARATE_REPORTS_DIR = "karate-reports";
     private final String CUCUMBER_REPORTS_DIR = "reports";
     private final String CUCUMBER_REPORTS_FILE_NAME = "/cucumber-html-reports/overview-features.html";
@@ -32,17 +34,32 @@ public class RunTest {
     void runKarateTests() {
         System.out.printf("Class: %s :: Test: runKarateTests%n", this.getClass()
                                                                      .getSimpleName());
-        Results results = Karate.run(getClasspath())
-                                .tags(getTags())
-                                .karateEnv(getKarateEnv())
-                                .reportDir(reportsDirectory + File.separator + KARATE_REPORTS_DIR)
-                                .outputCucumberJson(true)
-                                .outputJunitXml(true)
-                                .outputHtmlReport(true)
-                                .parallel(getParallelCount());
+        List<String> tags = getTags();
+        System.setProperty("rp.launch", PROJECT_NAME + " " + getTestType() + " tests");
+        System.setProperty("rp.description", PROJECT_NAME + " " + getTestType() + " tests");
+        System.setProperty("rp.launch.uuid.print", String.valueOf(Boolean.TRUE));
+        System.setProperty("rp.client.join", String.valueOf(Boolean.FALSE));
+
+        String rpAttributes = "";
+        if (null != System.getenv("TAG")) {
+            rpAttributes += "Tags:" + System.getenv("TAG");
+        }
+        rpAttributes += ";TargetEnvironment:" + getKarateEnv();
+        rpAttributes += ";Type:" + getTestType();
+        System.setProperty("rp.attributes", rpAttributes);
+        Results results = KarateReportPortalRunner
+                .path(getClasspath())
+                .outputCucumberJson(true)
+                .tags(tags)
+                .karateEnv(getKarateEnv())
+                .reportDir(reportsDirectory + File.separator + KARATE_REPORTS_DIR)
+                .outputCucumberJson(true)
+                .outputJunitXml(true)
+                .outputHtmlReport(true)
+                .parallel(getParallelCount());
         String reportFilePath = generateReport(results.getReportDir());
         String message = "\n\n" + "Test execution summary: ";
-        message += "\n\t" + "Tags: " + getTags();
+        message += "\n\t" + "Tags: " + tags;
         message += "\n\t" + "Environment: " + getKarateEnv();
         message += "\n\t" + "Parallel count: " + getParallelCount();
         message += "\n\t" + "Scenarios: Failed: " + results.getScenariosFailed() + ", Passed: " + results.getScenariosPassed() + ", Total: " + results.getScenariosTotal();
@@ -162,14 +179,19 @@ public class RunTest {
     private String getClasspath() {
         System.out.println("In " + this.getClass()
                                        .getSimpleName() + " :: getClassPath");
+        String type = getTestType();
+        String classPath = "classpath:com/znsio/" + type;
+        System.out.printf("Running %s tests%n", classPath);
+        return classPath;
+    }
+
+    private static String getTestType() {
         String type = System.getenv("TYPE");
         if(null == type) {
             System.out.println("TYPE [api | workflow] is not provided");
             throw new RuntimeException("TYPE [api | workflow] is not provided");
         }
-        String classPath = "classpath:com/znsio/" + type.toLowerCase(Locale.ROOT);
-        System.out.printf("Running %s tests%n", classPath);
-        return classPath;
+        return type.toLowerCase(Locale.ROOT);
     }
 
     private int getParallelCount() {

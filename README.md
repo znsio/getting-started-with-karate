@@ -3,7 +3,7 @@ Sample project to get started with implementing and running karate tests, in a s
 
 Results are published in junit, html and cucumber-reporting format
 
-## Running the tests with gradle command:
+## Running the tests with gradle command
 
 Example
     
@@ -26,6 +26,21 @@ Example
 
     cd upload 
     PARALLEL=3 TARGET_ENVIRONMENT=prod TYPE=workflow java -jar getting-started-with-karate-0.0.1.jar
+
+## ReportPortal
+### Setup
+[Install and setup ReportPortal](https://reportportal.io/installation) as a central server in your organisation
+
+### Configure test framework
+* Update [reportportal.properties](./src/test/resources/reportportal.properties) with the appropriate reportportal server and team information
+
+### Enable sending reports to reportportal
+You can enable sending reports to reportportal in 2 ways:
+1. In [reportportal.properties](./src/test/resources/reportportal.properties), set `rp.enable=true`, or
+2. Set environment variable `RP_ENABLE=true` and then run the tests [Running the tests with gradle command]
+    Example
+    > RP_ENABLE=true TARGET_ENVIRONMENT=prod TYPE=workflow ./runAPIWorkflowTests.sh
+    > RP_ENABLE=true TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew clean test
 
 
 ### Configuration parameters

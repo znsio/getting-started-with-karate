@@ -3,7 +3,7 @@ Feature: sample api
 
   @demo2
   Scenario: first hello world api
-    * print 'hello api'
+    And print 'hello api'
 
   Scenario: second api
-    * print 'second api'
+    And print 'second api'
