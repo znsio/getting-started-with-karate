@@ -50,7 +50,7 @@ dependencies {
     implementation "com.intuit.karate:karate-junit5:${karateVersion}"
     implementation "net.masterthought:cucumber-reporting:${masterThoughtVersion}"
     implementation "org.junit.platform:junit-platform-launcher:${junitPlatformsLauncherVersion}"
-    testImplementation "com.epam.reportportal:agent-java-karate:${reportportalAgentJavaKarateVersion}"
+    implementation "com.epam.reportportal:agent-java-karate:${reportportalAgentJavaKarateVersion}"
 }
 
 task karateDebug(type: JavaExec) {
