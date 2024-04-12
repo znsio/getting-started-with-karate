@@ -13,7 +13,7 @@ Example
 
 - Build an uber jar:
 
-  `./gradlew shadowJar`
+  `./gradlew build`
 
 - The above command will create a jar in the upload folder with the name like: `upload/getting-started-with-karate-0.0.1.jar`
 
