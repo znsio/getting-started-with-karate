@@ -79,9 +79,8 @@ public class RunTest {
     }
 
     public RunTest() {
-        System.out.println("config file name: " + getConfigFileName());
-        properties = loadProperties(getConfigFileName());
         reportsDirectory = getReportsDirectory();
+        properties = loadProperties(getConfigFileName());
         buildId = getOverloadedValueFor(Metadata.BUILD_ID_ENV_VAR, NOT_SET);
         buildInitiationReason = getOverloadedValueFor(Metadata.BUILD_INITIATION_REASON_ENV_VAR, NOT_SET);
         cucumberReportsDirName = getOverloadedValueFromPropertiesFor(Metadata.CUCUMBER_REPORTS_DIR_NAME, DEFAULT_CUCUMBER_REPORTS_DIR_NAME);
@@ -98,67 +97,53 @@ public class RunTest {
         captureTestExecutionMetadata();
     }
 
-    public String getConfigFileName() {
-        String configFileToUse = NOT_SET;
+    private String getConfigFileName() {
         String providedConfigFileName = System.getenv(Metadata.CONFIG_FILE.name());
         System.out.printf("Config file name: %s%n", providedConfigFileName);
 
-        String defaultConfigWithoutPathFileName = new File(DEFAULT_CONFIG_FILE_NAME).getName();
-        System.out.printf("Default config file name without path: %s%n", defaultConfigWithoutPathFileName);
-
-        if (null != providedConfigFileName) {
-            System.out.printf("Provided config file name '%s'%n", providedConfigFileName);
-            File providedConfigFile = new File(providedConfigFileName);
-            System.out.printf("Does provided config file name '%s' exists? '%s'%n", providedConfigFileName, providedConfigFile.exists());
-            if (providedConfigFile.exists()) {
-                configFileToUse = providedConfigFile.getAbsolutePath();
-            } else {
-                System.out.printf("Provided config file name '%s' does not exist.%n\tCheck file name '%s' in current directory '%s'%n", providedConfigFileName, defaultConfigWithoutPathFileName, WORKING_DIR);
-                File defaultConfigWithoutPathFile = new File(defaultConfigWithoutPathFileName);
-                System.out.printf("Does file '%s' exists in current directory ('%s')? '%s'%n", defaultConfigWithoutPathFileName, defaultConfigWithoutPathFile.getAbsolutePath(), defaultConfigWithoutPathFile.exists());
-                if (defaultConfigWithoutPathFile.exists()) {
-                    configFileToUse = defaultConfigWithoutPathFile.getAbsolutePath();
-                } else {
-                    System.out.printf("Provided config file name '%s' does not exist. File name '%s' does not in current directory '%s'. Check if DEFAULT_CONFIG_FILE_NAME exists'%s' %n",
-                            providedConfigFileName, defaultConfigWithoutPathFileName, WORKING_DIR, DEFAULT_CONFIG_FILE_NAME);
-                    if (new File(DEFAULT_CONFIG_FILE_NAME).exists()) {
-                        System.out.println("Using DEFAULT_CONFIG_FILE_NAME");
-                        configFileToUse = new File(DEFAULT_CONFIG_FILE_NAME).getAbsolutePath();
-                    } else {
-                        throw new InvalidTestDataException("Config file '%s' and DEFAULT_CONFIG_FILE_NAME '%s' does not exist".formatted(providedConfigFile, DEFAULT_CONFIG_FILE_NAME));
-                    }
-                }
-            }
-        } else {
-            System.out.printf("Provided config file name not provided.%n\tCheck file name '%s' in current directory '%s'%n", defaultConfigWithoutPathFileName, WORKING_DIR);
-            File defaultConfigWithoutPathFile = new File(defaultConfigWithoutPathFileName);
-            System.out.printf("Does file '%s' exists in current directory ('%s')? '%s'%n", defaultConfigWithoutPathFileName, defaultConfigWithoutPathFile.getAbsolutePath(), defaultConfigWithoutPathFile.exists());
-            if (defaultConfigWithoutPathFile.exists()) {
-                configFileToUse = defaultConfigWithoutPathFile.getAbsolutePath();
-            } else {
-                System.out.printf("Provided config file name '%s' does not exist. File name '%s' does not in current directory '%s'. Check if DEFAULT_CONFIG_FILE_NAME exists'%s' %n",
-                        providedConfigFileName, defaultConfigWithoutPathFileName, WORKING_DIR, DEFAULT_CONFIG_FILE_NAME);
-                if (new File(DEFAULT_CONFIG_FILE_NAME).exists()) {
-                    System.out.println("Using DEFAULT_CONFIG_FILE_NAME");
-                    configFileToUse = new File(DEFAULT_CONFIG_FILE_NAME).getAbsolutePath();
-                } else {
-                    throw new InvalidTestDataException("Config file not provided");
-                }
-            }
-        }
+        String configFileToUse = findFile("config", providedConfigFileName, DEFAULT_CONFIG_FILE_NAME);
         System.out.println("Config file to use: " + configFileToUse);
         return configFileToUse;
     }
 
-    private String getTestDataFileName() {
-        String testDataLocalFileName = getOverloadedValueFromPropertiesFor(Metadata.TEST_DATA_FILE_NAME, DEFAULT_TEST_DATA_FILENAME);
-        String testDataFileName = testDataLocalFileName;
-        if (testDataFileName != null && new File(testDataFileName).exists()) {
-            System.out.printf("TEST_DATA_FILE_NAME: %s%n", testDataFileName);
-            return testDataFileName;
-        } else {
-            throw new InvalidTestDataException(String.format("Test data file not provided, or does not exist at '%s': ", testDataFileName));
+    private String findFile(String fileType, String providedConfigFileName, String defaultFileName) {
+        if (providedConfigFileName != null && new File(providedConfigFileName).exists()) {
+            System.out.printf("\tUsing provided " + fileType + " file name '%s'%n", providedConfigFileName);
+            return getCanonicalPath(providedConfigFileName);
         }
+
+        String defaultConfigWithoutPathFileName = new File(defaultFileName).getName();
+        System.out.printf("\tDefault " + fileType + " file name without path: %s%n", defaultConfigWithoutPathFileName);
+
+        File defaultConfigWithoutPathFile = new File(defaultConfigWithoutPathFileName);
+        if (defaultConfigWithoutPathFile.exists()) {
+            System.out.printf("\tUsing default " + fileType + " file name '%s' in current directory '%s'%n", defaultConfigWithoutPathFileName, WORKING_DIR);
+            return getCanonicalPath(defaultConfigWithoutPathFileName);
+        }
+
+        System.out.printf("\tNeither provided " + fileType + " file nor default config file exists. Checking if DEFAULT_" + fileType.toUpperCase() + "_FILE_NAME '%s' exists%n", defaultFileName);
+        if (new File(defaultFileName).exists()) {
+            System.out.println("\tUsing DEFAULT_" + fileType.toUpperCase() + "_FILE_NAME");
+            return getCanonicalPath(defaultFileName);
+        }
+
+        throw new InvalidTestDataException("Config file not provided and DEFAULT_" + fileType.toUpperCase() + "_FILE_NAME does not exist");
+    }
+
+    private static String getCanonicalPath(String fileName) {
+        try {
+            return new File(fileName).getCanonicalPath();
+        } catch (IOException e) {
+            throw new InvalidTestDataException("Failed to get canonical path for config file: " + fileName, e);
+        }
+    }
+
+    private String getTestDataFileName() {
+        System.out.println("Get test data file name");
+        String testDataFileName = getOverloadedValueFromPropertiesFor(Metadata.TEST_DATA_FILE_NAME, DEFAULT_TEST_DATA_FILENAME);
+        String testDataFileToUse = findFile("Test_Data", testDataFileName, DEFAULT_TEST_DATA_FILENAME);
+        System.out.println("Test data file to use: " + testDataFileToUse);
+        return testDataFileToUse;
     }
 
     @NotNull
@@ -326,10 +311,9 @@ public class RunTest {
     }
 
     private void loadEnvConfig() {
-        String testDataFilePath = getPath(WORKING_DIR, testDataFile);
-        System.out.println("Test Data file path: " + testDataFilePath);
+        System.out.println("Test Data file path: " + testDataFile);
         try {
-            testDataConfig = JsonPath.parse(new File(testDataFilePath)).read("$", Map.class);
+            testDataConfig = JsonPath.parse(new File(testDataFile)).read("$", Map.class);
             envConfig = JsonPath.parse(testDataConfig).read("$." + karateEnv + ".env", Map.class);
         } catch (IOException e) {
             throw new InvalidTestDataException(String.format("Unable to load test data file: '%s'", testDataFile), e);
