@@ -1,4 +1,4 @@
-package com.znsio;
+package com.znsio.apiteswiz;
 
 public class OverriddenVariable {
     public static String getOverriddenStringValue(String key) {

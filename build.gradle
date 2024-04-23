@@ -53,40 +53,75 @@ dependencies {
     implementation "com.epam.reportportal:agent-java-karate:${reportportalAgentJavaKarateVersion}"
 }
 
+static def getCurrentDatestamp() {
+    Date today = new Date()
+    SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy")
+    return df.format(today)
+}
+
+static def getMonth() {
+    Date today = new Date()
+    SimpleDateFormat df = new SimpleDateFormat("MMM-yyyy")
+    return df.format(today)
+}
+
+static def getCurrentTimestamp() {
+    Date today = new Date()
+    SimpleDateFormat df = new SimpleDateFormat("HH-mm-ss")
+    return df.format(today)
+}
+
+project.ext.logDir = "./target/" + getMonth() + "/" + getCurrentDatestamp() + "/" + getCurrentTimestamp()
+
 task karateDebug(type: JavaExec) {
     classpath = sourceSets.test.runtimeClasspath
     mainClass = 'com.intuit.karate.cli.Main'
 }
 
-test {
-    useJUnitPlatform()
-    // Pull karate options into the runtime
-    systemProperty "karate.options", System.getenv("karate.options")
-    // Pull karate options into the JVM
-    systemProperty "karate.env", System.getenv("env")
-
-    include '**/*Test*'
-
-    // Ensure tests are always run
-    outputs.upToDateWhen { false }
-
-    testLogging {
-        events "started", "passed", "skipped", "failed"
-        // show standard out and standard error of the test JVM(s) on the console
-        showStandardStreams = true
-        // show full exception trace
-        exceptionFormat = 'full'
-        showStackTraces = true
-        showCauses = true
-        showExceptions = true
-    }
-
-    // attach debugger
-    if (System.getProperty('debug', 'false') == 'true') {
-        println("In debug mode")
-        jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005'
-    }
-}
+//test {
+//    println "Using LOG_DIR: ${project.logDir}"
+//    System.setProperty "LOG_DIR", "${project.logDir}"
+//
+//    def configFile = System.getenv("CONFIG")
+//    if (null == configFile || !file(configFile).exists()) {
+//        configFile = "./src/test/java/config.properties"
+//        println("CONFIG file not provided, or does not exist")
+//        println("Run the test by providing the CONFIG file not provided, or does not exist. Using default configFile: ${configFile}")
+//    }
+//    assert file(configFile).exists()
+//    environment("CONFIG_FILE", configFile)
+//
+//    useJUnitPlatform()
+//    // Pull karate options into the runtime
+//    systemProperty "karate.options", System.getenv("karate.options")
+//    // Pull karate options into the JVM
+//    systemProperty "karate.env", System.getenv("env")
+//
+//    include '**/*Test*'
+//
+//    // Ensure tests are always run
+//    outputs.upToDateWhen { false }
+//
+//    testLogging {
+//        events "started", "passed", "skipped", "failed"
+//        // show standard out and standard error of the test JVM(s) on the console
+//        showStandardStreams = true
+//        // show full exception trace
+//        exceptionFormat = 'full'
+//        showStackTraces = true
+//        showCauses = true
+//        showExceptions = true
+//    }
+//
+//    println("Debug mode: " + System.getProperty('debug', 'false'))
+//    // attach debugger
+//    // example: ./gradlew run -Ddebug=true
+//    if (System.getProperty('debug', 'false') == 'true') {
+//        println("In debug mode")
+//        jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,' +
+//                'address=*:5005'
+//    }
+//}
 
 shadowJar {
     archiveBaseName.set("$project.name")
@@ -94,7 +129,7 @@ shadowJar {
     archiveVersion.set("$project.version")
     zip64 true
     manifest {
-        attributes "Main-Class": "com.znsio.FatJarRunner"
+        attributes "Main-Class": "com.znsio.apiteswiz.FatJarRunner"
         attributes 'Description': 'This is the getting-started-with-karate uber jar'
     }
     from sourceSets.test.output
@@ -106,6 +141,34 @@ shadowJar {
     doLast {
         println "Created jar: ${rootDir}/upload/${project.name}-${project.version}.jar"
     }
+}
+
+tasks.register('run', JavaExec) {
+    doFirst {
+        println "Using LOG_DIR: ${project.logDir}"
+        System.setProperty "LOG_DIR", "${project.logDir}"
+
+        def configFile = System.getenv("CONFIG")
+        if (null == configFile || !file(configFile).exists()) {
+            configFile = "./src/test/java/config.properties"
+            println("CONFIG file not provided, or does not exist")
+            println("Run the test by providing the CONFIG file not provided, or does not exist. Using default configFile: ${configFile}")
+        }
+        assert file(configFile).exists()
+        environment("CONFIG_FILE", configFile)
+
+        println("Debug mode: " + System.getProperty('debug', 'false'))
+        // attach debugger
+        // example: ./gradlew run -Ddebug=true
+        if (System.getProperty('debug', 'false') == 'true') {
+            println("In debug mode")
+            jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,' +
+                    'address=*:5005'
+        }
+    }
+    mainClass = "com.znsio.apiteswiz.FatJarRunner"
+//    classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+    classpath = sourceSets.test.runtimeClasspath + sourceSets.main.output + sourceSets.test.output
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -122,9 +185,11 @@ artifacts {
 task copyToUpload(type: Copy) {
     from 'src/test/java/test_data.json'
     into 'upload/src/test/java'
+    from 'src/test/java/config.properties'
+    into 'config.properties'
     from 'runAPIWorkflowTests.sh'
     into 'upload'
-    from (jar)
+    from(jar)
     into 'upload'
 }
 
