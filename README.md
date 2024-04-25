@@ -30,11 +30,13 @@ Example
     cd upload
     PARALLEL=3 TARGET_ENVIRONMENT=prod TEST_TYPE=workflow java -jar getting-started-with-karate-0.0.1.jar
 
-## [ReportPortal](https://github.com/znsio/kendo/blob/main/docs/ReportPortal.md)
-
 ## [Configuration parameters](https://github.com/znsio/kendo/blob/main/docs/ConfigurationParameters.md)
 
 ## [Project specific customisations](https://github.com/znsio/kendo/blob/main/docs/ProjectSpecificCustomizations.md)
+
+## [ReportPortal](https://github.com/znsio/kendo/blob/main/docs/ReportPortal.md)
+
+## [Setting up the Hard Gate](https://github.com/znsio/kendo/blob/main/docs/HardGate.md)
 
 ## [Machine setup](https://github.com/znsio/kendo/blob/main/docs/MachineSetup.md)
 
