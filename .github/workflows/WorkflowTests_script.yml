@@ -9,9 +9,9 @@ name: WorkflowTests_Script
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, fatJar ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, fatJar ]
 
 jobs:
   build:
