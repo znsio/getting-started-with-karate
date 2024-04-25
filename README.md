@@ -1,13 +1,16 @@
 # getting-started-with-karate
-Sample project to get started with implementing and running karate tests, in a structured fashion.
+Sample project to get started with implementing and running karate tests, using [kendo](https://www.github.com/znsio/kendo), in a structured fashion.
 
 Results are published in junit, html and cucumber-reporting format. Results are also published to [ReportPortal](./docs/ReportPortal.md)
 
-## Running the tests with gradle command
+## Running the tests
+
+### Running the tests with gradle command
+There are multiple ways to run the tests under `./src/test` folder
 
 Example
-    
-    TARGET_ENVIRONMENT=prod TYPE=workflow ./gradlew clean test
+
+    TARGET_ENVIRONMENT=prod TEST_TYPE=workflow ./gradlew clean test
 
 ## Build the uber jar
 
@@ -20,20 +23,20 @@ Example
 ### Running the tests with a shell script:
 
     cd upload 
-    PARALLEL=3 TARGET_ENVIRONMENT=prod TYPE=workflow ./runAPIWorkflowTests.sh
+    PARALLEL=3 TARGET_ENVIRONMENT=prod TEST_TYPE=workflow ./runAPIWorkflowTests.sh
 
 ### Running the tests with the uber jar:
 
-    cd upload 
-    PARALLEL=3 TARGET_ENVIRONMENT=prod TYPE=workflow java -jar getting-started-with-karate-0.0.1.jar
+    cd upload
+    PARALLEL=3 TARGET_ENVIRONMENT=prod TEST_TYPE=workflow java -jar getting-started-with-karate-0.0.1.jar
 
-## [ReportPortal](./docs/ReportPortal.md)
+## [ReportPortal](https://github.com/znsio/kendo/blob/main/docs/ReportPortal.md)
 
-## [Configuration parameters](./docs/ConfigurationParameters.md)
+## [Configuration parameters](https://github.com/znsio/kendo/blob/main/docs/ConfigurationParameters.md)
 
-## [Project specific customisations](./docs/ProjectSpecificCustomizations.md)
+## [Project specific customisations](https://github.com/znsio/kendo/blob/main/docs/ProjectSpecificCustomizations.md)
 
-## [Machine setup](./docs/MachineSetup.md)
+## [Machine setup](https://github.com/znsio/kendo/blob/main/docs/MachineSetup.md)
 
 ## Guidelines 
 Read the [CODING GUIDLINES FOR AUTOMATION USING KARATE](docs/READMEGuideline.md) for writing tests in this framework

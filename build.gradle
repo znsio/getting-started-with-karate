@@ -3,16 +3,13 @@ import java.text.SimpleDateFormat
 buildscript {
     ext {
         gradleVersionProperty = '8.7'
-        karateVersion = '1.4.1'
-        masterThoughtVersion = '5.8.0'
-        junitPlatformsLauncherVersion = '1.10.2'
-        reportportalAgentJavaKarateVersion = '5.0.5'
-        kendoVersion = '0.0.01'
+        kendoVersion = '0.0.1'
     }
     repositories {
         mavenLocal()
         mavenCentral()
         maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -32,9 +29,10 @@ java {
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven { url 'https://plugins.gradle.org/m2/' }
+    maven { url 'https://jitpack.io' }
+    mavenLocal()
 }
 
 sourceSets {
@@ -47,7 +45,7 @@ sourceSets {
 }
 
 dependencies {
-    implementation "com.znsio:kendo:${kendoVersion}"
+    implementation "com.github.znsio:kendo:${kendoVersion}"
 }
 
 static def getCurrentDatestamp() {

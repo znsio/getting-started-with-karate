@@ -7,9 +7,15 @@ function fn() {
   karate.configure('connectTimeout', 30000);
   karate.configure('readTimeout', 60000);
 
-  var config = read('classpath:test_data.json');
+  var testDataFile = java.lang.System.getProperty('TEST_DATA_FILE_NAME');
+  karate.log('Loading testDataFile: ', testDataFile);
+  var config = read(`classpath:${testDataFile}`);
   config = config[env];
+
+  /* Begin update of configuration based on project needs */
   var username = java.lang.System.getProperty('user.name').replace(".", "").toLowerCase();
+
+  // Add logic to determine if running in CI
   if (['anandbagmar'].indexOf(username) < 0) {
     username = "ci";
   }
@@ -26,9 +32,11 @@ function fn() {
   }
   config = randomizer();
 
-//  Calling a function from randomizer
-//  karate.log("Random number: ", config.generateRandomNumber(10))
+  //  Calling a function from randomizer
+  //  karate.log("Random number: ", config.generateRandomNumber(10))
 
-//  karate.log('Running test with config:', config);
+  /* End update of configuration based on project needs */
+
+  //  karate.log('Running test with config:', config);
   return config;
 }
