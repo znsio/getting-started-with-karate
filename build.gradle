@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 buildscript {
     ext {
         gradleVersionProperty = '8.7'
-        kendoVersion = '0.0.1'
+        kendoVersion = 'd2480ba38e'
     }
     repositories {
         mavenLocal()
