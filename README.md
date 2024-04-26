@@ -10,7 +10,7 @@ There are multiple ways to run the tests under `./src/test` folder
 
 Example
 
-    TARGET_ENVIRONMENT=prod TEST_TYPE=workflow ./gradlew clean test
+    TARGET_ENVIRONMENT=prod TEST_TYPE=workflow ./gradlew run test
 
 ## Build the uber jar
 
