@@ -1,0 +1,28 @@
+ {
+    "postSchema": {
+        "userId": "#number",
+        "id": "#number",
+        "title": "#string",
+        "body": "#string"
+      },
+   "albumSchema": {
+     "userId": "#number",
+     "id": "#number",
+     "title": "#string"
+      },
+   "Payload": {
+     "title": "Abhishek-QECC",
+     "body": "Sample Blog",
+     "userId": 11
+      },
+   "createdPostSchema": {
+     "title": "#string",
+     "body": "#string",
+     "userId": "#number",
+     "id": "#number"
+      },
+   "Payload_Patch": {
+     "title": "Abhishek-QECC-modified"
+      },
+   "id": 11
+ }
