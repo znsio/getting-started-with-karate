@@ -4,7 +4,7 @@ buildscript {
     ext {
         gradleVersionProperty = '8.7'
         karateVersion = '1.4.1'
-        masterThoughtVersion = '5.8.0'
+        masterThoughtVersion = '5.8.1'
         junitPlatformsLauncherVersion = '1.10.2'
         reportportalAgentJavaKarateVersion = '5.0.5'
     }
