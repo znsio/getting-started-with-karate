@@ -1,0 +1,37 @@
+ {
+      "update": {
+           "title": "Practice1",
+           "body": "BYE"
+      },
+      "create": {
+      "title": "Practice",
+      "body": "Hello",
+      "userId": 101
+      },
+     "getCommentSchema": {
+       "postId": "#number",
+       "id": "#number",
+       "name": "#string",
+       "email": "#string",
+       "body": "#string"
+     },
+   "getPostSchema": {
+     "userId": "#number",
+     "id": "#number",
+     "title": "#string",
+     "body": "#string"
+   },
+   "getInvalidSchema": {},
+   "getAlbumSchema": {
+     "userId": "#number",
+     "id": "#number",
+     "title": "#string"
+   },
+   "editedPostSchema": {
+     "userId": "#number",
+     "id": "#number",
+     "title": "#string",
+     "body": "#string"
+   }
+
+}
