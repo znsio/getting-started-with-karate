@@ -21,6 +21,35 @@
       "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
       "restCountryUrl": "https://restcountries.com/v3.1"
+    },
+    "jsonPlaceholder": {
+      "requestPayloads": {
+        "createPostPayload": {
+          "title": "This is the test title for the post",
+          "body": "This is the test body for the post",
+          "userId": 1
+        },
+        "editPostPayload": {
+          "title": "This is the edited test title for the post"
+        }
+      },
+      "postSchema": {
+        "id": "#number",
+        "userId": "#number",
+        "title": "#string",
+        "body": "#string"
+      },
+      "testData": {
+        "validTestData": {
+          "userId": 1,
+          "id": 1,
+          "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+          "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+        },
+        "invalidTestData": {
+          "nullTestData": {}
+        }
+      }
     }
   }
 }
