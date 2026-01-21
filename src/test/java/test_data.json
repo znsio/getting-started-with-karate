@@ -17,7 +17,7 @@
   },
   "prod": {
     "env": {
-      "baseUrl": "https://github.com",
+      "baseUrl": "https://jsonplaceholder.typicode.com",
       "confEngineUrl": "https://confengine.com/api/v3",
       "dummyRestAPIUrl": "https://jsonplaceholder.typicode.com",
       "restCountryUrl": "https://restcountries.com/v3.1"

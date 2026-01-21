@@ -1,0 +1,7 @@
+{
+  "getAlbumSchema": {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string"
+  },"getInvalidSchema": {}
+}

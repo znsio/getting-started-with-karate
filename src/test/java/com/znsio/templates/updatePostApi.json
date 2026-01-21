@@ -1,0 +1,12 @@
+{
+  "updateRequest": {
+    "title": "Practice1",
+    "body": "BYE"
+  },
+  "updateResponseSchema": {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string",
+    "body": "#string"
+  }
+}
