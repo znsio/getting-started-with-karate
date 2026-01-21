@@ -1,0 +1,33 @@
+{
+  "postSchema":
+  {
+    "userId": "#number",
+    "id": "#number",
+    "title": "#string",
+    "body": "#string"
+  },
+
+  "createdPostSchema":
+  {
+    "title": "#string",
+    "body": "#string",
+    "userId": "#number",
+    "id": "#number"
+  },
+
+  "Payload":
+  {
+    "title": "ABC_10",
+    "body": "Sample blog",
+    "userId": 1
+  },
+
+  "Payload_patch":
+  {
+    "title": "Modified_title"
+  },
+
+  "id": 101,
+  "status":200
+}
+
