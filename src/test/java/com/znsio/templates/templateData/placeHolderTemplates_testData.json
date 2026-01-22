@@ -1,0 +1,32 @@
+{
+  "positiveResponse": {
+    "status": 200,
+    "userId": 1,
+    "expectedPost": {
+      "userId": "#number",
+      "id": "#number",
+      "title": "#string",
+      "body": "#string"
+    },
+    "expectedComment": {
+      "length": 1,
+      "data": {
+        "name": "#string",
+        "postId": "#number",
+        "id": "#number",
+        "body": "#string",
+        "email": "#string"
+      }
+    }
+  },
+  "negativeResponse": {
+    "status": "404",
+    "expectedPost": {},
+    "expectedComment": []
+  },
+  "createPost": {
+    "userId": "123456",
+    "title": "sample title",
+    "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum"
+  }
+}
